@@ -5,7 +5,6 @@ import { useToast } from "@/components/ui/use-toast";
 import RandomAvatar from "./RandomAvatar";
 import { format, isToday, isYesterday } from "date-fns";
 import Aviator from "./Aviator";
-import MovingDots from "./MovingDots";
 import GameBackground from "./GameBackground";
 import ToggleSwitch from "./ToggleSwitch";
 import SliderSwitch from "./SliderSwitch";
@@ -60,7 +59,6 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import Account from "./Account";
 import { deleteBet, updateBalance, updateBets } from "@/lib/actions";
 import CloseOutlinedIcon from "@mui/icons-material/CloseOutlined";
 import { AnyPtrRecord } from "dns";
