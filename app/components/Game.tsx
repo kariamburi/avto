@@ -66,7 +66,9 @@ import Gameanimation from "./Gameanimation";
 import { requeststkpush } from "@/lib/requeststkpush";
 import useWebSocket from "../hooks/useWebSocket";
 import Button from "@mui/material/Button";
-
+import Link from "next/link";
+import LoginOutlinedIcon from "@mui/icons-material/LoginOutlined";
+import AppRegistrationOutlinedIcon from "@mui/icons-material/AppRegistrationOutlined";
 interface userData {
   name: string;
   phone: string;
@@ -1316,6 +1318,17 @@ const Game: React.FC = () => {
   const handleclickPopover = () => {
     setisPopover(false);
   };
+
+  const [isOpen, setIsOpen] = useState(false);
+
+  const toggleMenu = () => {
+    setIsOpen(!isOpen);
+  };
+  const [isOpen1, setIsOpen1] = useState(false);
+
+  const toggleMenu1 = () => {
+    setIsOpen1(!isOpen1);
+  };
   return (
     <div className="bg-gray-900 text-white min-h-screen flex flex-col">
       <section className="bg-gray-800 p-2 rounded-lg shadow-lg container mx-auto">
@@ -1489,618 +1502,842 @@ const Game: React.FC = () => {
                     </div>
                   </div>
                   {/*ACCOUNT*/}
-
-                  <div
-                    className="p-[5px] rounded-full bg-white text-gray-900 tooltip tooltip-bottom hover:cursor-pointer"
-                    data-tip="Profile"
-                  >
-                    <AlertDialog open={IsAlertDialogP}>
-                      <AlertDialogTrigger
-                        onClick={() => {
-                          setIsAlertDialogP(true);
-                        }}
+                  <div className="relative lg:hidden">
+                    <button
+                      onClick={toggleMenu}
+                      className="p-2 text-gray-400 rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500"
+                    >
+                      <svg
+                        className="w-6 h-6"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                        xmlns="http://www.w3.org/2000/svg"
                       >
-                        <TooltipProvider>
-                          <Tooltip>
-                            <TooltipTrigger asChild>
-                              <PersonOutlineOutlinedIcon />
-                            </TooltipTrigger>
-                            <TooltipContent>
-                              <p>Account</p>
-                            </TooltipContent>
-                          </Tooltip>
-                        </TooltipProvider>
-                      </AlertDialogTrigger>
-                      <AlertDialogContent>
-                        <AlertDialogHeader>
-                          <AlertDialogTitle>
-                            <div className="flex justify-between items-center">
-                              <div className="text-gray-900 font-bold">
-                                ACCOUNT
-                              </div>
-                              <div
-                                onClick={handleclickAlertDialogP}
-                                className="cursor-pointer"
-                              >
-                                <CloseOutlinedIcon />
-                              </div>
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M4 6h16M4 12h16M4 18h16"
+                        />
+                      </svg>
+                    </button>
+                    {isOpen && (
+                      <div className="absolute right-0 mt-2 py-2 w-48 bg-white rounded-md shadow-xl z-20">
+                        <div
+                          onClick={() => {
+                            setIsAlertDialogP(true);
+                          }}
+                          className="flex cursor-pointer items-center gap-1 block px-4 py-2 text-gray-900 hover:bg-gray-200"
+                        >
+                          <PersonOutlineOutlinedIcon /> Account
+                        </div>
+                        <div
+                          onClick={handleLogout}
+                          className="flex cursor-pointer items-center gap-1 block px-4 py-2 text-gray-800 hover:bg-gray-200"
+                        >
+                          <LockOutlinedIcon />
+                          Logout
+                        </div>
+                        {userstatus === "admin" && (
+                          <>
+                            <div
+                              onClick={() =>
+                                router.push("/xadmn_893dhflsncch_crs")
+                              }
+                              className="flex cursor-pointer items-center gap-1 block px-4 py-2 text-gray-800 hover:bg-gray-200"
+                            >
+                              <AdminPanelSettingsOutlinedIcon /> Admin
                             </div>
-                          </AlertDialogTitle>
-                          <AlertDialogDescription>
-                            <div className="p-3 w-full items-center">
-                              <div className="flex flex-col items-center rounded-t-lg w-full p-1 bg-grey-50">
-                                <div className="w-36 p-1">
-                                  <img
-                                    className="w-full h-full rounded-full object-cover"
-                                    src="/logo1.png"
-                                    alt="Profile Image"
-                                  />
-                                </div>
-
-                                <p className="text-lg font-bold text-gray-900">
-                                  {username}
-                                </p>
-
-                                <p className="text-lg font-bold text-gray-900">
-                                  {userID}
-                                </p>
-
-                                <p className="text-3xl text-green-600 font-bold p-2">
-                                  KES {balance.toFixed(2)}
-                                </p>
-
-                                <div className="gap-1 h-[350px] items-center w-full border rounded-lg">
-                                  <div className="flex bg-gray-900 rounded-lg p-1 w-full">
-                                    {tabss.map((tab, index) => (
-                                      <button
-                                        key={index}
-                                        className={`flex-1 text-sm py-1 px-0 rounded-lg text-center ${
-                                          activeTabb === index
-                                            ? "text-gray-900 bg-white"
-                                            : "bg-gray-900 text-white"
-                                        }`}
-                                        onClick={() => setActiveTabb(index)}
-                                      >
-                                        {tab.title}
-                                      </button>
-                                    ))}
-                                  </div>
-                                  <div className="p-2">
-                                    {activeTabb === 0 && (
-                                      <>
-                                        <div className="flex flex-col items-center">
-                                          <div className="text-lg p-1 font-bold text-gray-900">
-                                            Deposit via M-Pesa
-                                          </div>
-                                          <div className="flex flex-col gap-1 mb-5 w-full">
-                                            <TextField
-                                              id="outlined-password-input"
-                                              label="M-pesa Phone Number"
-                                              type="text"
-                                              value={payphone}
-                                              onChange={(e) =>
-                                                setpayphone(
-                                                  formatPhoneNumber(
-                                                    e.target.value
-                                                  )
-                                                )
-                                              }
-                                            />
-                                            <div className="text-red-400">
-                                              {errormpesaphone}
-                                            </div>
-                                          </div>
-                                          <div className="flex flex-col gap-1 mb-5 w-full">
-                                            <TextField
-                                              id="outlined-password-input"
-                                              label="Amount"
-                                              type="text"
-                                              value={deposit}
-                                              onChange={(e) =>
-                                                setdeposit(e.target.value)
-                                              }
-                                            />
-                                            <div className="text-red-400">
-                                              {errordeposit}
-                                            </div>
-                                          </div>
-                                          <button
-                                            onClick={handleTopup}
-                                            disabled={isSubmitting}
-                                            className="w-full bg-emerald-600 text-white hover:emerald-900 mt-2 p-2 rounded-lg shadow"
-                                          >
-                                            {isSubmitting
-                                              ? "Sending request..."
-                                              : `Deposit`}
-                                          </button>
-                                          {stkresponse && (
-                                            <div className="mt-2 text-green-800 text-sm bg-green-100 rounded-lg w-full p-2 items-center">
-                                              {stkresponse}
-                                            </div>
-                                          )}
-                                          {errorstkresponse && (
-                                            <div className="mt-1 text-red-800 text-sm bg-red-100 rounded-lg w-full p-2 items-center">
-                                              {errorstkresponse}
-                                            </div>
-                                          )}
-                                        </div>
-                                      </>
-                                    )}
-                                    {activeTabb === 1 && (
-                                      <>
-                                        <div className="flex flex-col items-center">
-                                          <div className="text-lg p-1 font-bold text-gray-900">
-                                            Withdraw via M-Pesa
-                                          </div>
-                                          <div className="flex flex-col gap-1 mb-5 w-full">
-                                            <TextField
-                                              id="outlined-password-input"
-                                              label="Send to Phone Number"
-                                              type="text"
-                                              value={sendphone}
-                                              onChange={(e) =>
-                                                setsendphone(
-                                                  formatPhoneNumber(
-                                                    e.target.value
-                                                  )
-                                                )
-                                              }
-                                            />
-                                            <div className="text-red-400">
-                                              {errorwithdrawphone}
-                                            </div>
-                                          </div>
-                                          <div className="flex flex-col gap-1 mb-5 w-full">
-                                            <TextField
-                                              id="outlined-password-input"
-                                              label="Amount to withdraw"
-                                              type="text"
-                                              value={withdraw}
-                                              onChange={(e) =>
-                                                setwithdraw(e.target.value)
-                                              }
-                                            />
-                                            <div className="text-red-400">
-                                              {errorwithdraw}
-                                            </div>
-                                          </div>
-                                          <button
-                                            onClick={handleWithdraw}
-                                            disabled={isSubmitting}
-                                            className="w-full bg-emerald-600 text-white hover:emerald-900 mt-2 p-2 rounded-lg shadow"
-                                          >
-                                            {isSubmitting
-                                              ? "Sending request..."
-                                              : `Withdraw`}
-                                          </button>
-                                        </div>
-                                      </>
-                                    )}
-                                  </div>
-                                </div>
-                              </div>
-                            </div>
-                          </AlertDialogDescription>
-                        </AlertDialogHeader>
-                        <AlertDialogFooter></AlertDialogFooter>
-                      </AlertDialogContent>
-                    </AlertDialog>
+                          </>
+                        )}
+                        ;
+                      </div>
+                    )}
                   </div>
-                  {/*ACCOUNT*/}
-
-                  {userstatus === "admin" && (
-                    <>
+                  <div className="hidden lg:inline">
+                    <div className="flex gap-2">
                       <div
                         className="p-[5px] rounded-full bg-white text-gray-900 tooltip tooltip-bottom hover:cursor-pointer"
-                        data-tip="admin"
-                        onClick={() => router.push("/xadmn_893dhflsncch_crs")}
+                        data-tip="Profile"
+                      >
+                        <AlertDialog open={IsAlertDialogP}>
+                          <AlertDialogTrigger
+                            onClick={() => {
+                              setIsAlertDialogP(true);
+                            }}
+                          >
+                            <TooltipProvider>
+                              <Tooltip>
+                                <TooltipTrigger asChild>
+                                  <PersonOutlineOutlinedIcon />
+                                </TooltipTrigger>
+                                <TooltipContent>
+                                  <p>Account</p>
+                                </TooltipContent>
+                              </Tooltip>
+                            </TooltipProvider>
+                          </AlertDialogTrigger>
+                          <AlertDialogContent>
+                            <AlertDialogHeader>
+                              <AlertDialogTitle>
+                                <div className="flex justify-between items-center">
+                                  <div className="text-gray-900 font-bold">
+                                    ACCOUNT
+                                  </div>
+                                  <div
+                                    onClick={handleclickAlertDialogP}
+                                    className="cursor-pointer"
+                                  >
+                                    <CloseOutlinedIcon />
+                                  </div>
+                                </div>
+                              </AlertDialogTitle>
+                              <AlertDialogDescription>
+                                <div className="p-3 w-full items-center">
+                                  <div className="flex flex-col items-center rounded-t-lg w-full p-1 bg-grey-50">
+                                    <div className="w-36 p-1">
+                                      <img
+                                        className="w-full h-full rounded-full object-cover"
+                                        src="/logo1.png"
+                                        alt="Profile Image"
+                                      />
+                                    </div>
+
+                                    <p className="text-lg font-bold text-gray-900">
+                                      {username}
+                                    </p>
+
+                                    <p className="text-lg font-bold text-gray-900">
+                                      {userID}
+                                    </p>
+
+                                    <p className="text-3xl text-green-600 font-bold p-2">
+                                      KES {balance.toFixed(2)}
+                                    </p>
+
+                                    <div className="gap-1 h-[350px] items-center w-full border rounded-lg">
+                                      <div className="flex bg-gray-900 rounded-lg p-1 w-full">
+                                        {tabss.map((tab, index) => (
+                                          <button
+                                            key={index}
+                                            className={`flex-1 text-sm py-1 px-0 rounded-lg text-center ${
+                                              activeTabb === index
+                                                ? "text-gray-900 bg-white"
+                                                : "bg-gray-900 text-white"
+                                            }`}
+                                            onClick={() => setActiveTabb(index)}
+                                          >
+                                            {tab.title}
+                                          </button>
+                                        ))}
+                                      </div>
+                                      <div className="p-2">
+                                        {activeTabb === 0 && (
+                                          <>
+                                            <div className="flex flex-col items-center">
+                                              <div className="text-lg p-1 font-bold text-gray-900">
+                                                Deposit via M-Pesa
+                                              </div>
+                                              <div className="flex flex-col gap-1 mb-5 w-full">
+                                                <TextField
+                                                  id="outlined-password-input"
+                                                  label="M-pesa Phone Number"
+                                                  type="text"
+                                                  value={payphone}
+                                                  onChange={(e) =>
+                                                    setpayphone(
+                                                      formatPhoneNumber(
+                                                        e.target.value
+                                                      )
+                                                    )
+                                                  }
+                                                />
+                                                <div className="text-red-400">
+                                                  {errormpesaphone}
+                                                </div>
+                                              </div>
+                                              <div className="flex flex-col gap-1 mb-5 w-full">
+                                                <TextField
+                                                  id="outlined-password-input"
+                                                  label="Amount"
+                                                  type="text"
+                                                  value={deposit}
+                                                  onChange={(e) =>
+                                                    setdeposit(e.target.value)
+                                                  }
+                                                />
+                                                <div className="text-red-400">
+                                                  {errordeposit}
+                                                </div>
+                                              </div>
+                                              <button
+                                                onClick={handleTopup}
+                                                disabled={isSubmitting}
+                                                className="w-full bg-emerald-600 text-white hover:emerald-900 mt-2 p-2 rounded-lg shadow"
+                                              >
+                                                {isSubmitting
+                                                  ? "Sending request..."
+                                                  : `Deposit`}
+                                              </button>
+                                              {stkresponse && (
+                                                <div className="mt-2 text-green-800 text-sm bg-green-100 rounded-lg w-full p-2 items-center">
+                                                  {stkresponse}
+                                                </div>
+                                              )}
+                                              {errorstkresponse && (
+                                                <div className="mt-1 text-red-800 text-sm bg-red-100 rounded-lg w-full p-2 items-center">
+                                                  {errorstkresponse}
+                                                </div>
+                                              )}
+                                            </div>
+                                          </>
+                                        )}
+                                        {activeTabb === 1 && (
+                                          <>
+                                            <div className="flex flex-col items-center">
+                                              <div className="text-lg p-1 font-bold text-gray-900">
+                                                Withdraw via M-Pesa
+                                              </div>
+                                              <div className="flex flex-col gap-1 mb-5 w-full">
+                                                <TextField
+                                                  id="outlined-password-input"
+                                                  label="Send to Phone Number"
+                                                  type="text"
+                                                  value={sendphone}
+                                                  onChange={(e) =>
+                                                    setsendphone(
+                                                      formatPhoneNumber(
+                                                        e.target.value
+                                                      )
+                                                    )
+                                                  }
+                                                />
+                                                <div className="text-red-400">
+                                                  {errorwithdrawphone}
+                                                </div>
+                                              </div>
+                                              <div className="flex flex-col gap-1 mb-5 w-full">
+                                                <TextField
+                                                  id="outlined-password-input"
+                                                  label="Amount to withdraw"
+                                                  type="text"
+                                                  value={withdraw}
+                                                  onChange={(e) =>
+                                                    setwithdraw(e.target.value)
+                                                  }
+                                                />
+                                                <div className="text-red-400">
+                                                  {errorwithdraw}
+                                                </div>
+                                              </div>
+                                              <button
+                                                onClick={handleWithdraw}
+                                                disabled={isSubmitting}
+                                                className="w-full bg-emerald-600 text-white hover:emerald-900 mt-2 p-2 rounded-lg shadow"
+                                              >
+                                                {isSubmitting
+                                                  ? "Sending request..."
+                                                  : `Withdraw`}
+                                              </button>
+                                            </div>
+                                          </>
+                                        )}
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                              </AlertDialogDescription>
+                            </AlertDialogHeader>
+                            <AlertDialogFooter></AlertDialogFooter>
+                          </AlertDialogContent>
+                        </AlertDialog>
+                      </div>
+                      {/*ACCOUNT*/}
+
+                      {userstatus === "admin" && (
+                        <>
+                          <div
+                            className="p-[5px] rounded-full bg-white text-gray-900 tooltip tooltip-bottom hover:cursor-pointer"
+                            data-tip="admin"
+                            onClick={() =>
+                              router.push("/xadmn_893dhflsncch_crs")
+                            }
+                          >
+                            <TooltipProvider>
+                              <Tooltip>
+                                <TooltipTrigger asChild>
+                                  <AdminPanelSettingsOutlinedIcon />
+                                </TooltipTrigger>
+                                <TooltipContent>
+                                  <p>Admin</p>
+                                </TooltipContent>
+                              </Tooltip>
+                            </TooltipProvider>
+                          </div>
+                        </>
+                      )}
+
+                      <div
+                        className="p-[5px] rounded-full bg-white text-gray-900 tooltip tooltip-bottom hover:cursor-pointer"
+                        data-tip="Logout"
+                        onClick={handleLogout}
                       >
                         <TooltipProvider>
                           <Tooltip>
                             <TooltipTrigger asChild>
-                              <AdminPanelSettingsOutlinedIcon />
+                              <LockOutlinedIcon />
                             </TooltipTrigger>
                             <TooltipContent>
-                              <p>Admin</p>
+                              <p>Logout</p>
                             </TooltipContent>
                           </Tooltip>
                         </TooltipProvider>
                       </div>
-                    </>
-                  )}
-
-                  <div
-                    className="p-[5px] rounded-full bg-white text-gray-900 tooltip tooltip-bottom hover:cursor-pointer"
-                    data-tip="Logout"
-                    onClick={handleLogout}
-                  >
-                    <TooltipProvider>
-                      <Tooltip>
-                        <TooltipTrigger asChild>
-                          <LockOutlinedIcon />
-                        </TooltipTrigger>
-                        <TooltipContent>
-                          <p>Logout</p>
-                        </TooltipContent>
-                      </Tooltip>
-                    </TooltipProvider>
+                    </div>
                   </div>
                 </div>
               ) : (
                 <div className="flex gap-1">
-                  <AlertDialog open={IsAlertDialogL}>
-                    <AlertDialogTrigger
-                      onClick={() => {
-                        setIsAlertDialogL(true);
-                      }}
+                  <div className="relative lg:hidden">
+                    <button
+                      onClick={toggleMenu1}
+                      className="p-2 text-gray-400 rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500"
                     >
-                      <button className="w-[70px] lg:w-[100px] text-gray-900 bg-white font-bold p-1 items-center rounded-full hover:bg-gray-400">
-                        Login
-                      </button>
-                    </AlertDialogTrigger>
-                    <AlertDialogContent>
-                      <AlertDialogHeader>
-                        <AlertDialogTitle>
-                          <div className="text-gray-900 font-bold">LOGIN</div>
-                        </AlertDialogTitle>
-                        <AlertDialogDescription>
-                          <div className="p-3 w-full items-center">
-                            <div className="flex flex-col gap-1 mb-5 w-full">
-                              <div className="flex w-full gap-1">
-                                <select
-                                  className="bg-gray-100 text-xs text-gray-900 p-1 border ml-0 rounded-sm w-[100px]"
-                                  value={countryCode}
-                                  onChange={handleCountryCodeChange}
+                      <svg
+                        className="w-6 h-6"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M4 6h16M4 12h16M4 18h16"
+                        />
+                      </svg>
+                    </button>
+                    {isOpen1 && (
+                      <div className="absolute right-0 mt-2 py-2 w-48 bg-white rounded-md shadow-xl z-20">
+                        <div
+                          onClick={() => {
+                            setIsAlertDialogL(true);
+                          }}
+                          className="flex cursor-pointer items-center gap-1 block px-4 py-2 text-gray-900 hover:bg-gray-200"
+                        >
+                          <LoginOutlinedIcon /> Login
+                        </div>
+
+                        <div
+                          onClick={() => {
+                            setIsAlertDialog(true);
+                          }}
+                          className="flex cursor-pointer items-center gap-1 block px-4 py-2 text-gray-800 hover:bg-gray-200"
+                        >
+                          <AppRegistrationOutlinedIcon /> Register
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                  <div className="hidden lg:inline">
+                    <div className="flex gap-1">
+                      <AlertDialog open={IsAlertDialogL}>
+                        <AlertDialogTrigger
+                          onClick={() => {
+                            setIsAlertDialogL(true);
+                          }}
+                        >
+                          <button className="w-[70px] lg:w-[100px] text-gray-900 bg-white font-bold p-1 items-center rounded-full hover:bg-gray-400">
+                            Login
+                          </button>
+                        </AlertDialogTrigger>
+                        <AlertDialogContent>
+                          <AlertDialogHeader>
+                            <AlertDialogTitle>
+                              <div className="text-gray-900 font-bold">
+                                LOGIN
+                              </div>
+                            </AlertDialogTitle>
+                            <AlertDialogDescription>
+                              <div className="p-3 w-full items-center">
+                                <div className="flex flex-col gap-1 mb-5 w-full">
+                                  <div className="flex w-full gap-1">
+                                    <select
+                                      className="bg-gray-100 text-xs text-gray-900 p-1 border ml-0 rounded-sm w-[100px]"
+                                      value={countryCode}
+                                      onChange={handleCountryCodeChange}
+                                    >
+                                      <option value="+254">Kenya (+254)</option>
+                                      <option value="+213">
+                                        Algeria (+213)
+                                      </option>
+                                      <option value="+244">
+                                        Angola (+244)
+                                      </option>
+                                      <option value="+229">Benin (+229)</option>
+                                      <option value="+267">
+                                        Botswana (+267)
+                                      </option>
+                                      <option value="+226">
+                                        Burkina Faso (+226)
+                                      </option>
+                                      <option value="+257">
+                                        Burundi (+257)
+                                      </option>
+                                      <option value="+237">
+                                        Cameroon (+237)
+                                      </option>
+                                      <option value="+238">
+                                        Cape Verde (+238)
+                                      </option>
+                                      <option value="+236">
+                                        Central African Republic (+236)
+                                      </option>
+                                      <option value="+235">Chad (+235)</option>
+                                      <option value="+269">
+                                        Comoros (+269)
+                                      </option>
+                                      <option value="+243">
+                                        Democratic Republic of the Congo (+243)
+                                      </option>
+                                      <option value="+253">
+                                        Djibouti (+253)
+                                      </option>
+                                      <option value="+20">Egypt (+20)</option>
+                                      <option value="+240">
+                                        Equatorial Guinea (+240)
+                                      </option>
+                                      <option value="+291">
+                                        Eritrea (+291)
+                                      </option>
+                                      <option value="+268">
+                                        Eswatini (+268)
+                                      </option>
+                                      <option value="+251">
+                                        Ethiopia (+251)
+                                      </option>
+                                      <option value="+241">Gabon (+241)</option>
+                                      <option value="+220">
+                                        Gambia (+220)
+                                      </option>
+                                      <option value="+233">Ghana (+233)</option>
+                                      <option value="+224">
+                                        Guinea (+224)
+                                      </option>
+                                      <option value="+245">
+                                        Guinea-Bissau (+245)
+                                      </option>
+                                      <option value="+225">
+                                        Ivory Coast (+225)
+                                      </option>
+                                      <option value="+266">
+                                        Lesotho (+266)
+                                      </option>
+                                      <option value="+231">
+                                        Liberia (+231)
+                                      </option>
+                                      <option value="+218">Libya (+218)</option>
+                                      <option value="+261">
+                                        Madagascar (+261)
+                                      </option>
+                                      <option value="+265">
+                                        Malawi (+265)
+                                      </option>
+                                      <option value="+223">Mali (+223)</option>
+                                      <option value="+222">
+                                        Mauritania (+222)
+                                      </option>
+                                      <option value="+230">
+                                        Mauritius (+230)
+                                      </option>
+                                      <option value="+212">
+                                        Morocco (+212)
+                                      </option>
+                                      <option value="+258">
+                                        Mozambique (+258)
+                                      </option>
+                                      <option value="+264">
+                                        Namibia (+264)
+                                      </option>
+                                      <option value="+227">Niger (+227)</option>
+                                      <option value="+234">
+                                        Nigeria (+234)
+                                      </option>
+                                      <option value="+242">
+                                        Republic of the Congo (+242)
+                                      </option>
+                                      <option value="+250">
+                                        Rwanda (+250)
+                                      </option>
+                                      <option value="+239">
+                                        Sao Tome and Principe (+239)
+                                      </option>
+                                      <option value="+221">
+                                        Senegal (+221)
+                                      </option>
+                                      <option value="+248">
+                                        Seychelles (+248)
+                                      </option>
+                                      <option value="+232">
+                                        Sierra Leone (+232)
+                                      </option>
+                                      <option value="+252">
+                                        Somalia (+252)
+                                      </option>
+                                      <option value="+27">
+                                        South Africa (+27)
+                                      </option>
+                                      <option value="+211">
+                                        South Sudan (+211)
+                                      </option>
+                                      <option value="+249">Sudan (+249)</option>
+                                      <option value="+255">
+                                        Tanzania (+255)
+                                      </option>
+                                      <option value="+228">Togo (+228)</option>
+                                      <option value="+216">
+                                        Tunisia (+216)
+                                      </option>
+                                      <option value="+256">
+                                        Uganda (+256)
+                                      </option>
+                                      <option value="+260">
+                                        Zambia (+260)
+                                      </option>
+                                      <option value="+263">
+                                        Zimbabwe (+263)
+                                      </option>
+                                    </select>
+
+                                    <TextField
+                                      label="Enter phone number"
+                                      type="tel"
+                                      value={phonenumber}
+                                      onChange={handleInputChange}
+                                      className="w-full"
+                                    />
+                                  </div>
+                                  <div className="text-red-400">
+                                    {errorphonenumberL}
+                                  </div>
+                                </div>
+
+                                <div className="flex flex-col gap-1 mb-5 w-full">
+                                  <TextField
+                                    id="outlined-password-input"
+                                    label="Password"
+                                    type="text"
+                                    value={password}
+                                    onChange={(e) =>
+                                      setpassword(e.target.value)
+                                    }
+                                  />
+                                  <div className="text-red-400">
+                                    {errorpasswordL}
+                                  </div>
+                                </div>
+                                <div
+                                  onClick={handleLoginRegister}
+                                  className="text-sm flex flex-col gap-1 mb-5 w-full text-gray-900 hover:text-green-600 cursor-pointer"
                                 >
-                                  <option value="+254">Kenya (+254)</option>
-                                  <option value="+213">Algeria (+213)</option>
-                                  <option value="+244">Angola (+244)</option>
-                                  <option value="+229">Benin (+229)</option>
-                                  <option value="+267">Botswana (+267)</option>
-                                  <option value="+226">
-                                    Burkina Faso (+226)
-                                  </option>
-                                  <option value="+257">Burundi (+257)</option>
-                                  <option value="+237">Cameroon (+237)</option>
-                                  <option value="+238">
-                                    Cape Verde (+238)
-                                  </option>
-                                  <option value="+236">
-                                    Central African Republic (+236)
-                                  </option>
-                                  <option value="+235">Chad (+235)</option>
-                                  <option value="+269">Comoros (+269)</option>
-                                  <option value="+243">
-                                    Democratic Republic of the Congo (+243)
-                                  </option>
-                                  <option value="+253">Djibouti (+253)</option>
-                                  <option value="+20">Egypt (+20)</option>
-                                  <option value="+240">
-                                    Equatorial Guinea (+240)
-                                  </option>
-                                  <option value="+291">Eritrea (+291)</option>
-                                  <option value="+268">Eswatini (+268)</option>
-                                  <option value="+251">Ethiopia (+251)</option>
-                                  <option value="+241">Gabon (+241)</option>
-                                  <option value="+220">Gambia (+220)</option>
-                                  <option value="+233">Ghana (+233)</option>
-                                  <option value="+224">Guinea (+224)</option>
-                                  <option value="+245">
-                                    Guinea-Bissau (+245)
-                                  </option>
-                                  <option value="+225">
-                                    Ivory Coast (+225)
-                                  </option>
-                                  <option value="+266">Lesotho (+266)</option>
-                                  <option value="+231">Liberia (+231)</option>
-                                  <option value="+218">Libya (+218)</option>
-                                  <option value="+261">
-                                    Madagascar (+261)
-                                  </option>
-                                  <option value="+265">Malawi (+265)</option>
-                                  <option value="+223">Mali (+223)</option>
-                                  <option value="+222">
-                                    Mauritania (+222)
-                                  </option>
-                                  <option value="+230">Mauritius (+230)</option>
-                                  <option value="+212">Morocco (+212)</option>
-                                  <option value="+258">
-                                    Mozambique (+258)
-                                  </option>
-                                  <option value="+264">Namibia (+264)</option>
-                                  <option value="+227">Niger (+227)</option>
-                                  <option value="+234">Nigeria (+234)</option>
-                                  <option value="+242">
-                                    Republic of the Congo (+242)
-                                  </option>
-                                  <option value="+250">Rwanda (+250)</option>
-                                  <option value="+239">
-                                    Sao Tome and Principe (+239)
-                                  </option>
-                                  <option value="+221">Senegal (+221)</option>
-                                  <option value="+248">
-                                    Seychelles (+248)
-                                  </option>
-                                  <option value="+232">
-                                    Sierra Leone (+232)
-                                  </option>
-                                  <option value="+252">Somalia (+252)</option>
-                                  <option value="+27">
-                                    South Africa (+27)
-                                  </option>
-                                  <option value="+211">
-                                    South Sudan (+211)
-                                  </option>
-                                  <option value="+249">Sudan (+249)</option>
-                                  <option value="+255">Tanzania (+255)</option>
-                                  <option value="+228">Togo (+228)</option>
-                                  <option value="+216">Tunisia (+216)</option>
-                                  <option value="+256">Uganda (+256)</option>
-                                  <option value="+260">Zambia (+260)</option>
-                                  <option value="+263">Zimbabwe (+263)</option>
-                                </select>
-
-                                <TextField
-                                  label="Enter phone number"
-                                  type="tel"
-                                  value={phonenumber}
-                                  onChange={handleInputChange}
-                                  className="w-full"
-                                />
+                                  Don't have account? Register
+                                </div>
                               </div>
-                              <div className="text-red-400">
-                                {errorphonenumberL}
-                              </div>
-                            </div>
-
-                            <div className="flex flex-col gap-1 mb-5 w-full">
-                              <TextField
-                                id="outlined-password-input"
-                                label="Password"
-                                type="text"
-                                value={password}
-                                onChange={(e) => setpassword(e.target.value)}
-                              />
-                              <div className="text-red-400">
-                                {errorpasswordL}
-                              </div>
-                            </div>
-                            <div
-                              onClick={handleLoginRegister}
-                              className="text-sm flex flex-col gap-1 mb-5 w-full text-gray-900 hover:text-green-600 cursor-pointer"
+                            </AlertDialogDescription>
+                          </AlertDialogHeader>
+                          <AlertDialogFooter>
+                            <AlertDialogCancel
+                              onClick={handleclickAlertDialogL}
                             >
-                              Don't have account? Register
-                            </div>
-                          </div>
-                        </AlertDialogDescription>
-                      </AlertDialogHeader>
-                      <AlertDialogFooter>
-                        <AlertDialogCancel onClick={handleclickAlertDialogL}>
-                          Cancel
-                        </AlertDialogCancel>
-                        <AlertDialogAction onClick={handleLogin}>
-                          Continue
-                        </AlertDialogAction>
-                      </AlertDialogFooter>
-                    </AlertDialogContent>
-                  </AlertDialog>
+                              Cancel
+                            </AlertDialogCancel>
+                            <AlertDialogAction onClick={handleLogin}>
+                              Continue
+                            </AlertDialogAction>
+                          </AlertDialogFooter>
+                        </AlertDialogContent>
+                      </AlertDialog>
 
-                  <AlertDialog open={IsAlertDialog}>
-                    <AlertDialogTrigger
-                      onClick={() => {
-                        setIsAlertDialog(true);
-                      }}
-                    >
-                      <button className="w-[70px] lg:w-[100px] text-gray-900 p-1 font-bold items-center rounded-full bg-white mr-3 hover:bg-gray-400">
-                        Register
-                      </button>
-                    </AlertDialogTrigger>
-                    <AlertDialogContent>
-                      <AlertDialogHeader>
-                        <AlertDialogTitle>
-                          <div className="text-gray-900 font-bold">
-                            REGISTER
-                          </div>
-                        </AlertDialogTitle>
-                        <AlertDialogDescription>
-                          <div className="p-3 w-full items-center">
-                            <div className="flex flex-col gap-1 mb-5 w-full">
-                              <TextField
-                                id="outlined-password-input"
-                                label="Name"
-                                type="text"
-                                value={username}
-                                onChange={(e) => setusername(e.target.value)}
-                              />
-                              <div className="text-red-400">
-                                {" "}
-                                {errorusername}
+                      <AlertDialog open={IsAlertDialog}>
+                        <AlertDialogTrigger
+                          onClick={() => {
+                            setIsAlertDialog(true);
+                          }}
+                        >
+                          <button className="w-[70px] lg:w-[100px] text-gray-900 p-1 font-bold items-center rounded-full bg-white mr-3 hover:bg-gray-400">
+                            Register
+                          </button>
+                        </AlertDialogTrigger>
+                        <AlertDialogContent>
+                          <AlertDialogHeader>
+                            <AlertDialogTitle>
+                              <div className="text-gray-900 font-bold">
+                                REGISTER
                               </div>
-                            </div>
-                            <div className="flex flex-col gap-1 mb-5 w-full">
-                              <div className="flex w-full gap-1">
-                                <select
-                                  className="bg-gray-100 text-sm text-gray-900 p-1 border ml-0 rounded-sm w-[100px]"
-                                  value={countryCode}
-                                  onChange={handleCountryCodeChange}
+                            </AlertDialogTitle>
+                            <AlertDialogDescription>
+                              <div className="p-3 w-full items-center">
+                                <div className="flex flex-col gap-1 mb-5 w-full">
+                                  <TextField
+                                    id="outlined-password-input"
+                                    label="Name"
+                                    type="text"
+                                    value={username}
+                                    onChange={(e) =>
+                                      setusername(e.target.value)
+                                    }
+                                  />
+                                  <div className="text-red-400">
+                                    {" "}
+                                    {errorusername}
+                                  </div>
+                                </div>
+                                <div className="flex flex-col gap-1 mb-5 w-full">
+                                  <div className="flex w-full gap-1">
+                                    <select
+                                      className="bg-gray-100 text-sm text-gray-900 p-1 border ml-0 rounded-sm w-[100px]"
+                                      value={countryCode}
+                                      onChange={handleCountryCodeChange}
+                                    >
+                                      <option value="+254">Kenya (+254)</option>
+                                      <option value="+213">
+                                        Algeria (+213)
+                                      </option>
+                                      <option value="+244">
+                                        Angola (+244)
+                                      </option>
+                                      <option value="+229">Benin (+229)</option>
+                                      <option value="+267">
+                                        Botswana (+267)
+                                      </option>
+                                      <option value="+226">
+                                        Burkina Faso (+226)
+                                      </option>
+                                      <option value="+257">
+                                        Burundi (+257)
+                                      </option>
+                                      <option value="+237">
+                                        Cameroon (+237)
+                                      </option>
+                                      <option value="+238">
+                                        Cape Verde (+238)
+                                      </option>
+                                      <option value="+236">
+                                        Central African Republic (+236)
+                                      </option>
+                                      <option value="+235">Chad (+235)</option>
+                                      <option value="+269">
+                                        Comoros (+269)
+                                      </option>
+                                      <option value="+243">
+                                        Democratic Republic of the Congo (+243)
+                                      </option>
+                                      <option value="+253">
+                                        Djibouti (+253)
+                                      </option>
+                                      <option value="+20">Egypt (+20)</option>
+                                      <option value="+240">
+                                        Equatorial Guinea (+240)
+                                      </option>
+                                      <option value="+291">
+                                        Eritrea (+291)
+                                      </option>
+                                      <option value="+268">
+                                        Eswatini (+268)
+                                      </option>
+                                      <option value="+251">
+                                        Ethiopia (+251)
+                                      </option>
+                                      <option value="+241">Gabon (+241)</option>
+                                      <option value="+220">
+                                        Gambia (+220)
+                                      </option>
+                                      <option value="+233">Ghana (+233)</option>
+                                      <option value="+224">
+                                        Guinea (+224)
+                                      </option>
+                                      <option value="+245">
+                                        Guinea-Bissau (+245)
+                                      </option>
+                                      <option value="+225">
+                                        Ivory Coast (+225)
+                                      </option>
+                                      <option value="+266">
+                                        Lesotho (+266)
+                                      </option>
+                                      <option value="+231">
+                                        Liberia (+231)
+                                      </option>
+                                      <option value="+218">Libya (+218)</option>
+                                      <option value="+261">
+                                        Madagascar (+261)
+                                      </option>
+                                      <option value="+265">
+                                        Malawi (+265)
+                                      </option>
+                                      <option value="+223">Mali (+223)</option>
+                                      <option value="+222">
+                                        Mauritania (+222)
+                                      </option>
+                                      <option value="+230">
+                                        Mauritius (+230)
+                                      </option>
+                                      <option value="+212">
+                                        Morocco (+212)
+                                      </option>
+                                      <option value="+258">
+                                        Mozambique (+258)
+                                      </option>
+                                      <option value="+264">
+                                        Namibia (+264)
+                                      </option>
+                                      <option value="+227">Niger (+227)</option>
+                                      <option value="+234">
+                                        Nigeria (+234)
+                                      </option>
+                                      <option value="+242">
+                                        Republic of the Congo (+242)
+                                      </option>
+                                      <option value="+250">
+                                        Rwanda (+250)
+                                      </option>
+                                      <option value="+239">
+                                        Sao Tome and Principe (+239)
+                                      </option>
+                                      <option value="+221">
+                                        Senegal (+221)
+                                      </option>
+                                      <option value="+248">
+                                        Seychelles (+248)
+                                      </option>
+                                      <option value="+232">
+                                        Sierra Leone (+232)
+                                      </option>
+                                      <option value="+252">
+                                        Somalia (+252)
+                                      </option>
+                                      <option value="+27">
+                                        South Africa (+27)
+                                      </option>
+                                      <option value="+211">
+                                        South Sudan (+211)
+                                      </option>
+                                      <option value="+249">Sudan (+249)</option>
+                                      <option value="+255">
+                                        Tanzania (+255)
+                                      </option>
+                                      <option value="+228">Togo (+228)</option>
+                                      <option value="+216">
+                                        Tunisia (+216)
+                                      </option>
+                                      <option value="+256">
+                                        Uganda (+256)
+                                      </option>
+                                      <option value="+260">
+                                        Zambia (+260)
+                                      </option>
+                                      <option value="+263">
+                                        Zimbabwe (+263)
+                                      </option>
+                                    </select>
+
+                                    <TextField
+                                      label="Enter phone number"
+                                      type="tel"
+                                      value={phonenumber}
+                                      onChange={handleInputChange}
+                                      className="w-full"
+                                    />
+                                  </div>
+                                  <div className="text-red-400">
+                                    {errorphonenumber}
+                                  </div>
+                                </div>
+
+                                <div className="flex flex-col gap-1 mb-5 w-full">
+                                  <TextField
+                                    id="outlined-password-input"
+                                    label="Password"
+                                    type="text"
+                                    value={password}
+                                    onChange={(e) =>
+                                      setpassword(e.target.value)
+                                    }
+                                  />
+                                  <div className="text-red-400">
+                                    {" "}
+                                    {errorpassword}
+                                  </div>
+                                </div>
+                                <div className="flex flex-col gap-1 mb-5 w-full">
+                                  <TextField
+                                    id="outlined-password-input"
+                                    label="Confirm Password"
+                                    type="text"
+                                    value={passwordconfirm}
+                                    onChange={(e) =>
+                                      setpasswordconfirm(e.target.value)
+                                    }
+                                  />
+                                  <div className="text-red-400">
+                                    {" "}
+                                    {errorpasswordconfirm}
+                                  </div>
+                                </div>
+
+                                <div className="flex items-center mb-5 w-full gap-1 text-gray-900">
+                                  <div>
+                                    {" "}
+                                    <input
+                                      type="checkbox"
+                                      id="terms"
+                                      checked={isChecked}
+                                      onChange={() => setIsChecked(!isChecked)}
+                                      className="mr-2"
+                                    />
+                                  </div>
+                                  <div>
+                                    <label
+                                      htmlFor="terms"
+                                      className="text-gray-900"
+                                    ></label>
+                                  </div>
+                                  <div> I accept the</div>
+                                  <div
+                                    className="cursor-pointer hover:text-green-400"
+                                    onClick={() => router.push("/terms")}
+                                  >
+                                    terms and conditions
+                                  </div>
+
+                                  <div className="text-red-400">
+                                    {errorterms}
+                                  </div>
+                                </div>
+                                <div
+                                  onClick={handleRegisterLogin}
+                                  className="text-sm flex flex-col gap-1 mb-5 w-full text-gray-700 hover:text-green-600 cursor-pointer"
                                 >
-                                  <option value="+254">Kenya (+254)</option>
-                                  <option value="+213">Algeria (+213)</option>
-                                  <option value="+244">Angola (+244)</option>
-                                  <option value="+229">Benin (+229)</option>
-                                  <option value="+267">Botswana (+267)</option>
-                                  <option value="+226">
-                                    Burkina Faso (+226)
-                                  </option>
-                                  <option value="+257">Burundi (+257)</option>
-                                  <option value="+237">Cameroon (+237)</option>
-                                  <option value="+238">
-                                    Cape Verde (+238)
-                                  </option>
-                                  <option value="+236">
-                                    Central African Republic (+236)
-                                  </option>
-                                  <option value="+235">Chad (+235)</option>
-                                  <option value="+269">Comoros (+269)</option>
-                                  <option value="+243">
-                                    Democratic Republic of the Congo (+243)
-                                  </option>
-                                  <option value="+253">Djibouti (+253)</option>
-                                  <option value="+20">Egypt (+20)</option>
-                                  <option value="+240">
-                                    Equatorial Guinea (+240)
-                                  </option>
-                                  <option value="+291">Eritrea (+291)</option>
-                                  <option value="+268">Eswatini (+268)</option>
-                                  <option value="+251">Ethiopia (+251)</option>
-                                  <option value="+241">Gabon (+241)</option>
-                                  <option value="+220">Gambia (+220)</option>
-                                  <option value="+233">Ghana (+233)</option>
-                                  <option value="+224">Guinea (+224)</option>
-                                  <option value="+245">
-                                    Guinea-Bissau (+245)
-                                  </option>
-                                  <option value="+225">
-                                    Ivory Coast (+225)
-                                  </option>
-                                  <option value="+266">Lesotho (+266)</option>
-                                  <option value="+231">Liberia (+231)</option>
-                                  <option value="+218">Libya (+218)</option>
-                                  <option value="+261">
-                                    Madagascar (+261)
-                                  </option>
-                                  <option value="+265">Malawi (+265)</option>
-                                  <option value="+223">Mali (+223)</option>
-                                  <option value="+222">
-                                    Mauritania (+222)
-                                  </option>
-                                  <option value="+230">Mauritius (+230)</option>
-                                  <option value="+212">Morocco (+212)</option>
-                                  <option value="+258">
-                                    Mozambique (+258)
-                                  </option>
-                                  <option value="+264">Namibia (+264)</option>
-                                  <option value="+227">Niger (+227)</option>
-                                  <option value="+234">Nigeria (+234)</option>
-                                  <option value="+242">
-                                    Republic of the Congo (+242)
-                                  </option>
-                                  <option value="+250">Rwanda (+250)</option>
-                                  <option value="+239">
-                                    Sao Tome and Principe (+239)
-                                  </option>
-                                  <option value="+221">Senegal (+221)</option>
-                                  <option value="+248">
-                                    Seychelles (+248)
-                                  </option>
-                                  <option value="+232">
-                                    Sierra Leone (+232)
-                                  </option>
-                                  <option value="+252">Somalia (+252)</option>
-                                  <option value="+27">
-                                    South Africa (+27)
-                                  </option>
-                                  <option value="+211">
-                                    South Sudan (+211)
-                                  </option>
-                                  <option value="+249">Sudan (+249)</option>
-                                  <option value="+255">Tanzania (+255)</option>
-                                  <option value="+228">Togo (+228)</option>
-                                  <option value="+216">Tunisia (+216)</option>
-                                  <option value="+256">Uganda (+256)</option>
-                                  <option value="+260">Zambia (+260)</option>
-                                  <option value="+263">Zimbabwe (+263)</option>
-                                </select>
+                                  I have account? Login
+                                </div>
+                              </div>
+                            </AlertDialogDescription>
+                          </AlertDialogHeader>
 
-                                <TextField
-                                  label="Enter phone number"
-                                  type="tel"
-                                  value={phonenumber}
-                                  onChange={handleInputChange}
-                                  className="w-full"
-                                />
-                              </div>
-                              <div className="text-red-400">
-                                {errorphonenumber}
-                              </div>
-                            </div>
-
-                            <div className="flex flex-col gap-1 mb-5 w-full">
-                              <TextField
-                                id="outlined-password-input"
-                                label="Password"
-                                type="text"
-                                value={password}
-                                onChange={(e) => setpassword(e.target.value)}
-                              />
-                              <div className="text-red-400">
-                                {" "}
-                                {errorpassword}
-                              </div>
-                            </div>
-                            <div className="flex flex-col gap-1 mb-5 w-full">
-                              <TextField
-                                id="outlined-password-input"
-                                label="Confirm Password"
-                                type="text"
-                                value={passwordconfirm}
-                                onChange={(e) =>
-                                  setpasswordconfirm(e.target.value)
-                                }
-                              />
-                              <div className="text-red-400">
-                                {" "}
-                                {errorpasswordconfirm}
-                              </div>
-                            </div>
-
-                            <div className="flex items-center mb-5 w-full gap-1 text-gray-900">
-                              <div>
-                                {" "}
-                                <input
-                                  type="checkbox"
-                                  id="terms"
-                                  checked={isChecked}
-                                  onChange={() => setIsChecked(!isChecked)}
-                                  className="mr-2"
-                                />
-                              </div>
-                              <div>
-                                <label
-                                  htmlFor="terms"
-                                  className="text-gray-900"
-                                ></label>
-                              </div>
-                              <div> I accept the</div>
-                              <div
-                                className="cursor-pointer hover:text-green-400"
-                                onClick={() => router.push("/terms")}
-                              >
-                                terms and conditions
-                              </div>
-
-                              <div className="text-red-400">{errorterms}</div>
-                            </div>
-                            <div
-                              onClick={handleRegisterLogin}
-                              className="text-sm flex flex-col gap-1 mb-5 w-full text-gray-700 hover:text-green-600 cursor-pointer"
-                            >
-                              I have account? Login
-                            </div>
-                          </div>
-                        </AlertDialogDescription>
-                      </AlertDialogHeader>
-
-                      <AlertDialogFooter>
-                        <AlertDialogCancel onClick={handleclickAlertDialog}>
-                          Cancel
-                        </AlertDialogCancel>
-                        <AlertDialogAction onClick={handleRegister}>
-                          Continue
-                        </AlertDialogAction>
-                      </AlertDialogFooter>
-                    </AlertDialogContent>
-                  </AlertDialog>
+                          <AlertDialogFooter>
+                            <AlertDialogCancel onClick={handleclickAlertDialog}>
+                              Cancel
+                            </AlertDialogCancel>
+                            <AlertDialogAction onClick={handleRegister}>
+                              Continue
+                            </AlertDialogAction>
+                          </AlertDialogFooter>
+                        </AlertDialogContent>
+                      </AlertDialog>
+                    </div>
+                  </div>
                 </div>
               )}
             </div>
