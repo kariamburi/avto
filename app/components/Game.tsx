@@ -1320,7 +1320,7 @@ const Game: React.FC = () => {
     <div className="bg-gray-900 text-white min-h-screen flex flex-col">
       <section className="bg-gray-800 p-2 rounded-lg shadow-lg container mx-auto">
         <div className="w-full flex justify-between items-center">
-          <div className="flex gap-10 items-center">
+          <div className="flex gap-10 items-center hidden lg:inline">
             <div className="flex gap-3 p-4 items-center">
               <div className="rounded-full overflow-hidden">
                 <img
@@ -1335,11 +1335,13 @@ const Game: React.FC = () => {
 
           <div className="flex gap-2 items-center text-xs">
             {/* Second Betting Area  <p>Server: {isConnected ? "Connected" : "Disconnected"}</p>
-
+             */}
+            <div className="text-xs">
+              <p>Server: {isConnected ? "Connected" : "Disconnected"}</p>
+            </div>
             <div className="text-xs">
               Game status:{gameStatus}-{betstatus}
-            </div>*/}
-
+            </div>
             <div className="flex gap-2 items-center">
               <Popover open={isPopover}>
                 <PopoverTrigger
@@ -1348,14 +1350,14 @@ const Game: React.FC = () => {
                     setisPopover(true);
                   }}
                 >
-                  <div className="flex gap-1 p-1 cursor-pointer text-sm text-gray-900 bg-orange-400 items-center rounded-full hover:bg-orange-500">
+                  <div className="flex w-[100px] gap-1 p-1 cursor-pointer text-xs text-gray-900 bg-orange-400 items-center rounded-full hover:bg-orange-500">
                     <div>How to play</div>
                     <div>
-                      <HelpOutlineOutlinedIcon sx={{ fontSize: 18 }} />
+                      <HelpOutlineOutlinedIcon sx={{ fontSize: 16 }} />
                     </div>
                   </div>
                 </PopoverTrigger>
-                <PopoverContent className="w-[400px] bg-gray-900">
+                <PopoverContent className="w-80 lg:w-[400px] bg-gray-900">
                   <div className="grid gap-4">
                     <div className="flex justify-between items-center">
                       <div className="text-orange-400 font-bold">
@@ -1721,7 +1723,7 @@ const Game: React.FC = () => {
                         setIsAlertDialogL(true);
                       }}
                     >
-                      <button className="w-[100px] text-gray-900 bg-white font-bold p-1 items-center rounded-full hover:bg-gray-400">
+                      <button className="w-[70px] lg:w-[100px] text-gray-900 bg-white font-bold p-1 items-center rounded-full hover:bg-gray-400">
                         Login
                       </button>
                     </AlertDialogTrigger>
@@ -1735,7 +1737,7 @@ const Game: React.FC = () => {
                             <div className="flex flex-col gap-1 mb-5 w-full">
                               <div className="flex w-full gap-1">
                                 <select
-                                  className="bg-gray-100 text-gray-900 p-1 border ml-0 rounded-sm w-[200px]"
+                                  className="bg-gray-100 text-xs text-gray-900 p-1 border ml-0 rounded-sm w-[100px]"
                                   value={countryCode}
                                   onChange={handleCountryCodeChange}
                                 >
@@ -1878,7 +1880,7 @@ const Game: React.FC = () => {
                         setIsAlertDialog(true);
                       }}
                     >
-                      <button className="w-[100px] text-gray-900 p-1 font-bold items-center rounded-full bg-white mr-3 hover:bg-gray-400">
+                      <button className="w-[70px] lg:w-[100px] text-gray-900 p-1 font-bold items-center rounded-full bg-white mr-3 hover:bg-gray-400">
                         Register
                       </button>
                     </AlertDialogTrigger>
@@ -1907,7 +1909,7 @@ const Game: React.FC = () => {
                             <div className="flex flex-col gap-1 mb-5 w-full">
                               <div className="flex w-full gap-1">
                                 <select
-                                  className="bg-gray-100 text-gray-900 p-1 border ml-0 rounded-sm w-[200px]"
+                                  className="bg-gray-100 text-sm text-gray-900 p-1 border ml-0 rounded-sm w-[100px]"
                                   value={countryCode}
                                   onChange={handleCountryCodeChange}
                                 >
@@ -2094,7 +2096,7 @@ const Game: React.FC = () => {
           </div>
         </div>
       </section>
-      <main className="flex-grow container mx-auto p-4 grid grid-cols-1 md:grid-cols-3 gap-6">
+      <main className="flex-grow container mx-auto p-1 lg:p-4 grid grid-cols-1 md:grid-cols-3 gap-6">
         <div className="bg-gray-800 p-2 rounded-lg shadow-lg space-y-6 hidden lg:inline">
           <div className="w-full max-w-xl mx-auto mt-10">
             <div className="flex bg-gray-900 rounded-full p-1">
@@ -2810,7 +2812,7 @@ const Game: React.FC = () => {
         <audio ref={cashOutSound} src="/cashOut.mp3" />
         <audio ref={backgroundMusic} src="/backgroundMusic.mp3" loop />
       </main>
-      <section className="p-4 container mx-auto mt-2 lg:hidden">
+      <section className="p-1 container mx-auto lg:hidden">
         <div className="bg-gray-800 p-2 rounded-lg shadow-lg space-y-6">
           <div className="w-full max-w-xl mx-auto mt-10">
             <div className="flex bg-gray-900 rounded-full p-1">

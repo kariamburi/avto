@@ -16,7 +16,7 @@ export default function Navbar() {
     <div className="flex bg-gray-800 shadow-lg py-1 w-full h-20 items-center">
       <div className="flex-1 my-auto">
         <div className="flex gap-2 p-4 items-center">
-          <div className="rounded-full overflow-hidden">
+          <div className="rounded-full overflow-hidden hidden lg:inline">
             <img
               src="/logo1.png"
               alt="logo"
@@ -32,7 +32,7 @@ export default function Navbar() {
       <div
         className="p-[5px] rounded-full bg-white text-gray-900 tooltip tooltip-bottom hover:cursor-pointer mr-2"
         data-tip="home"
-        onClick={() => router.push("/site")}
+        onClick={() => router.push("/")}
       >
         <HomeOutlinedIcon />
       </div>
