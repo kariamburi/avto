@@ -1,0 +1,46 @@
+.bg-container {
+    
+    width: 1000px;
+    height: 350px;
+    border-radius: 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .clouds {
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 200%;
+    height: 100%;
+    background: url('/cloud.png') repeat-x;
+    animation: moveClouds 60s linear infinite;
+  }
+  
+  .cloud-layer-1 {
+    opacity: 0.3;
+    animation-duration: 60s;
+  }
+  
+  .cloud-layer-2 {
+    opacity: 0.5;
+    animation-duration: 90s;
+  }
+  
+  .cloud-layer-3 {
+    opacity: 0.7;
+    animation-duration: 120s;
+  }
+  
+  @keyframes moveClouds {
+    0% {
+      transform: translateX(0);
+    }
+    100% {
+      transform: translateX(-50%);
+    }
+  }
+  

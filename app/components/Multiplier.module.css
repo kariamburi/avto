@@ -1,0 +1,29 @@
+@keyframes lightRays {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
+  
+  .animatedBackground {
+    display: inline-block;
+    padding: 20px;
+    text-align: center;
+    border-radius: 10px;
+    position: relative;
+    z-index: 1;
+    overflow: hidden;
+  }
+  
+  .animatedBackground::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: conic-gradient(from 0deg, #ff0000, #00ff00, #0000ff, #ffff00, #ff0000);
+    animation: lightRays 4s linear infinite;
+    z-index: -1;
+    filter: blur(20px);
+    opacity: 0.2; /* Add some opacity to make the effect more subtle */
+  }
+  
