@@ -1343,13 +1343,14 @@ const Game: React.FC = () => {
 
           <div className="flex gap-2 items-center text-xs">
             {/* Second Betting Area  <p>Server: {isConnected ? "Connected" : "Disconnected"}</p>
-             */}
-            <div className="text-xs">
+               <div className="text-xs">
               <p>Server: {isConnected ? "Connected" : "Disconnected"}</p>
             </div>
             <div className="text-xs">
               Game status:{gameStatus}-{betstatus}
             </div>
+             */}
+
             <div className="flex gap-2 items-center">
               <Popover open={isPopover}>
                 <PopoverTrigger
