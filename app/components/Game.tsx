@@ -1320,14 +1320,22 @@ const Game: React.FC = () => {
     <div className="bg-gray-900 text-white min-h-screen flex flex-col">
       <section className="bg-gray-800 p-2 rounded-lg shadow-lg container mx-auto">
         <div className="w-full flex justify-between items-center">
-          <div className="flex gap-10 items-center hidden lg:inline">
+          <div className="flex gap-10 items-center">
             <div className="flex gap-3 p-4 items-center">
-              <div className="rounded-full overflow-hidden">
+              <div className="rounded-full overflow-hidden hidden lg:inline">
                 <img
                   src="/logo1.png"
                   alt="logo"
                   onClick={() => router.push("/")}
-                  className="w-24 ml-1 hover:cursor-pointer"
+                  className="w-24 hover:cursor-pointer"
+                />
+              </div>
+              <div className="rounded-full overflow-hidden lg:hidden">
+                <img
+                  src="/logo1.png"
+                  alt="logo"
+                  onClick={() => router.push("/")}
+                  className="h-8 hover:cursor-pointer"
                 />
               </div>
             </div>
@@ -1472,7 +1480,9 @@ const Game: React.FC = () => {
               {userID !== "" ? (
                 <div className="flex gap-2 items-center">
                   <div className="flex gap-1 items-center">
-                    <div className="text-gray-400 text-xs">Balance:</div>
+                    <div className="text-gray-400 text-xs hidden lg:inline">
+                      Balance:
+                    </div>
                     <div className="text-lg font-bold text-green-600 rounded-lg p-1">
                       KES {balance.toFixed(2)}
                     </div>

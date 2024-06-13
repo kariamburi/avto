@@ -21,7 +21,15 @@ export default function Navbar() {
               src="/logo1.png"
               alt="logo"
               onClick={() => router.push("/")}
-              className="w-24 ml-1 hover:cursor-pointer"
+              className="w-24 hover:cursor-pointer"
+            />
+          </div>
+          <div className="rounded-full overflow-hidden lg:hidden">
+            <img
+              src="/logo1.png"
+              alt="logo"
+              onClick={() => router.push("/")}
+              className="h-8 hover:cursor-pointer"
             />
           </div>
           <h1 className="text-lg text-white font-bold text-center">
