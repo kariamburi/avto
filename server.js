@@ -1,9 +1,10 @@
 const express = require('express');
 const http = require('http');
+const https = require('https');
 const WebSocket = require('ws');
 const next = require('next');
+const fs = require('fs');
 const crypto = require('crypto');
-//const fetchhouseEdge = require('./lib/fetchhouseEdge'); // Adjust the path as needed
 
 // Create a Next.js app
 const app = next({ dev: process.env.NODE_ENV !== 'production' });
@@ -14,7 +15,7 @@ let crashPoint;
 let gameInProgress = false;
 let multiplier = 1.0;
 let bettingPhase = false;
-let houseEdge=0;
+let houseEdge = 0;
 let currentGameStatus = 'waiting';
 const clients = new Set();
 
@@ -29,7 +30,7 @@ function getCrashPoint() {
 
 const generateCrashPoint = () => {
   const h = Math.random();
-  const p = Math.floor(h * 10);  // generates an integer between 0 and 9
+  const p = Math.floor(h * 10);
   const r = h * (1 - houseEdge);
 
   if (p % 5 === 0) {
@@ -126,7 +127,12 @@ app.prepare().then(async () => {
     res.json({ message: 'Hello from custom server!' });
   });
 
-  const httpServer = http.createServer(server);
+  const sslOptions = {
+    key: fs.readFileSync('/etc/letsencrypt/live/aviatorgm.com/privkey.pem'),
+    cert: fs.readFileSync('/etc/letsencrypt/live/aviatorgm.com/fullchain.pem')
+  };
+
+  const httpsServer = https.createServer(sslOptions, server);
 
   const wss = new WebSocket.Server({ noServer: true });
 
@@ -168,7 +174,7 @@ app.prepare().then(async () => {
           }
           broadcastCurrentBets();
         }else if(data.type === 'houseEdge'){
-          houseEdge=Number(data.value);
+          houseEdge = Number(data.value);
         }
       } catch (err) {
         console.error('Error processing message:', err);
@@ -188,7 +194,7 @@ app.prepare().then(async () => {
     });
   });
 
-  httpServer.on('upgrade', (request, socket, head) => {
+  httpsServer.on('upgrade', (request, socket, head) => {
     if (request.url === '/ws') {
       wss.handleUpgrade(request, socket, head, (ws) => {
         wss.emit('connection', ws, request);
@@ -203,18 +209,16 @@ app.prepare().then(async () => {
   });
 
   const PORT = process.env.PORT || 3000;
-  httpServer.listen(PORT, async (err) => {
+  httpsServer.listen(PORT, async (err) => {
     if (err) throw err;
-    console.log(`> Ready on http://localhost:${PORT}`);
+    console.log(`> Ready on https://localhost:${PORT}`);
 
     // Fetch the house edge value
- 
-     // houseEdge = await fetchhouseEdge();
-      //console.log(`House Edge: ${houseEdge}`);
+    // houseEdge = await fetchhouseEdge();
+    // console.log(`House Edge: ${houseEdge}`);
 
-      // Start the initial betting phase after fetching house edge
-      startupdateserverPhase();
-   
+    // Start the initial betting phase after fetching house edge
+    startupdateserverPhase();
   });
 }).catch((err) => {
   console.error('Error preparing Next.js app:', err);
