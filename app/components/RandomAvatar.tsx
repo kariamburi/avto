@@ -14,7 +14,7 @@ const RandomAvatar: React.FC = () => {
 
   return (
     <div style={{ textAlign: "center" }}>
-      <Avatar name={seed} size="27" round={true} />
+      <Avatar name={seed} size="24" round={true} />
     </div>
   );
 };

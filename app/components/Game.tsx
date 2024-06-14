@@ -1399,7 +1399,7 @@ const Game: React.FC = () => {
                     setisPopover(true);
                   }}
                 >
-                  <div className="flex gap-1 pl-1 pt-1 pb-1 cursor-pointer text-xs text-gray-900 bg-orange-400 items-center rounded-full hover:bg-orange-500">
+                  <div className="flex gap-1 p-1 w-[96px] cursor-pointer text-xs text-gray-900 bg-orange-400 items-center rounded-full hover:bg-orange-500">
                     <div>How to play</div>
                     <div>
                       <HelpOutlineOutlinedIcon sx={{ fontSize: 16 }} />
@@ -1891,7 +1891,7 @@ const Game: React.FC = () => {
                                 <div className="flex flex-col gap-1 mb-5 w-full">
                                   <div className="flex w-full gap-1">
                                     <select
-                                      className="bg-gray-100 text-xs text-gray-900 p-1 border ml-0 rounded-sm w-[100px]"
+                                      className="bg-gray-100 text-sm text-gray-900 p-1 border ml-0 rounded-sm w-[110px]"
                                       value={countryCode}
                                       onChange={handleCountryCodeChange}
                                     >
@@ -2123,7 +2123,7 @@ const Game: React.FC = () => {
                                 <div className="flex flex-col gap-1 mb-5 w-full">
                                   <div className="flex w-full gap-1">
                                     <select
-                                      className="bg-gray-100 text-sm text-gray-900 p-1 border ml-0 rounded-sm w-[100px]"
+                                      className="bg-gray-100 text-sm text-gray-900 p-1 border ml-0 rounded-sm w-[110px]"
                                       value={countryCode}
                                       onChange={handleCountryCodeChange}
                                     >
@@ -2389,275 +2389,283 @@ const Game: React.FC = () => {
               ))}
             </div>
             <div className="p-0">
-              {activeTab === 0 && (
-                <>
-                  <div className="w-full">
-                    <div className="m-1 flex flex-col text-white text-sm">
-                      <div>ALL BETS</div>
-                      <div>{currentBets.length}</div>
-                    </div>
+              <ScrollArea className="h-[500px]">
+                {activeTab === 0 && (
+                  <>
+                    <div className="w-full">
+                      <div className="m-1 flex flex-col text-white text-sm">
+                        <div>ALL BETS</div>
+                        <div>{currentBets.length}</div>
+                      </div>
 
-                    <div className="border-gray-900 border w-full mb-1"></div>
-                    <div className="grid grid-cols-4 text-gray-400 text-xs">
-                      <div>User</div>
-                      <div>Bet KES</div>
-                      <div>Multiplier</div>
-                      <div>Cash out KES</div>
-                    </div>
-                    <ul className="w-full">
-                      {currentBets.map((bet: any, index) => {
-                        const bgColor =
-                          cashoutmultiplier >= 6
-                            ? "text-[#9F1C90]"
-                            : cashoutmultiplier >= 2
-                            ? "text-[#4490CC]"
-                            : cashoutmultiplier >= 1
-                            ? "text-[#7848B6]"
-                            : "text-[#29aa08]";
-                        const bgColor2 =
-                          cashoutmultiplier2 >= 6
-                            ? "text-[#9F1C90]"
-                            : cashoutmultiplier2 >= 2
-                            ? "text-[#4490CC]"
-                            : cashoutmultiplier2 >= 1
-                            ? "text-[#7848B6]"
-                            : "text-[#29aa08]";
+                      <div className="border-gray-900 border w-full mb-1"></div>
+                      <div className="grid grid-cols-4 text-gray-400 text-xs">
+                        <div>User</div>
+                        <div>Bet KES</div>
+                        <div>Multiplier</div>
+                        <div>Cash out KES</div>
+                      </div>
+                      <ul className="w-full">
+                        {currentBets.map((bet: any, index) => {
+                          const bgColor =
+                            cashoutmultiplier >= 6
+                              ? "text-[#9F1C90]"
+                              : cashoutmultiplier >= 2
+                              ? "text-[#4490CC]"
+                              : cashoutmultiplier >= 1
+                              ? "text-[#7848B6]"
+                              : "text-[#29aa08]";
+                          const bgColor2 =
+                            cashoutmultiplier2 >= 6
+                              ? "text-[#9F1C90]"
+                              : cashoutmultiplier2 >= 2
+                              ? "text-[#4490CC]"
+                              : cashoutmultiplier2 >= 1
+                              ? "text-[#7848B6]"
+                              : "text-[#29aa08]";
 
-                        return (
-                          <li className="w-full" key={index}>
-                            <div
-                              className={`p-1 mt-1 rounded-sm grid grid-cols-4 gap-1 w-full items-center text-xs ${
-                                bet.cashoutStatus === true
-                                  ? "bg-[#103408] border border-[#4D6936]"
-                                  : "bg-gray-900 "
-                              }`}
-                            >
-                              <div className="flex gap-1 items-center">
-                                <RandomAvatar /> {bet.username}
-                              </div>
-                              <div>${bet.bet}</div>
-                              <div>
-                                {bet.cashoutStatus === false ? (
-                                  <>{bet.multiplier.toFixed(2)}</>
-                                ) : (
-                                  <div
-                                    className={`flex flex-col p-1 justify-center items-center w-[70px] bg-gray-900 rounded-full ${bgColor}`}
-                                  >
-                                    {bet.betno === 1 &&
-                                      cashoutmultiplier.toFixed(2)}
-                                    {bet.betno === 2 &&
-                                      cashoutmultiplier2.toFixed(2)}
-                                  </div>
-                                )}
-                              </div>
-                              <div>
-                                {bet.cashoutStatus === false ? (
-                                  <>${(bet.bet * bet.multiplier).toFixed(2)}</>
-                                ) : (
-                                  <>
-                                    $
-                                    {bet.betno === 1 &&
-                                      (bet.bet * cashoutmultiplier).toFixed(2)}
-                                    {bet.betno === 2 &&
-                                      (bet.bet * cashoutmultiplier2).toFixed(2)}
-                                  </>
-                                )}
-                              </div>
-                              <div></div>
-                            </div>
-                          </li>
-                        );
-                      })}
-                    </ul>
-                  </div>
-                </>
-              )}
-              {activeTab === 1 && (
-                <>
-                  <div>
-                    <div className="m-1 flex flex-col text-white text-sm">
-                      <div>MY BETS</div>
-                      <div>{mybets.length}</div>
-                    </div>
-
-                    <div className="border-gray-900 border w-full mb-1"></div>
-                    <div className="grid grid-cols-5 text-gray-400 text-xs">
-                      <div>Status</div>
-                      <div>Bet KES</div>
-                      <div>Multiplier</div>
-                      <div>Cash out KES</div>
-                      <div>Date</div>
-                    </div>
-                    <ul className="w-full">
-                      {mybets.map((bet: any, index) => {
-                        let formattedCreatedAt = "";
-                        try {
-                          const createdAtDate = new Date(
-                            bet.createdAt.seconds * 1000
-                          ); // Convert seconds to milliseconds
-
-                          // Get today's date
-                          const today = new Date();
-
-                          // Check if the message was sent today
-                          if (isToday(createdAtDate)) {
-                            formattedCreatedAt =
-                              "Today " + format(createdAtDate, "HH:mm"); // Set as "Today"
-                          } else if (isYesterday(createdAtDate)) {
-                            // Check if the message was sent yesterday
-                            formattedCreatedAt =
-                              "Yesterday " + format(createdAtDate, "HH:mm"); // Set as "Yesterday"
-                          } else {
-                            // Format the createdAt date with day, month, and year
-                            formattedCreatedAt = format(
-                              createdAtDate,
-                              "dd-MM-yyyy"
-                            ); // Format as 'day/month/year'
-                          }
-
-                          // Append hours and minutes if the message is not from today or yesterday
-                          if (
-                            !isToday(createdAtDate) &&
-                            !isYesterday(createdAtDate)
-                          ) {
-                            formattedCreatedAt +=
-                              " " + format(createdAtDate, "HH:mm"); // Append hours and minutes
-                          }
-                        } catch {
-                          // Handle error when formatting date
-                        }
-                        const bgColor =
-                          cashoutmultiplier >= 6
-                            ? "text-[#9F1C90]"
-                            : cashoutmultiplier >= 2
-                            ? "text-[#4490CC]"
-                            : cashoutmultiplier >= 1
-                            ? "text-[#7848B6]"
-                            : "text-[#29aa08]";
-                        return (
-                          <li className="w-full" key={index}>
-                            <div
-                              className={`p-1 mt-1 rounded-sm grid grid-cols-5 gap-1 w-full items-center text-xs ${
-                                bet.status === "Win"
-                                  ? "bg-[#103408] border border-[#4D6936]"
-                                  : "bg-gray-900 "
-                              }`}
-                            >
-                              <div>{bet.status}</div>
-                              <div>KES {bet.bet}</div>
+                          return (
+                            <li className="w-full" key={index}>
                               <div
-                                className={`flex flex-col p-1 justify-center items-center bg-gray-900 rounded-full ${bgColor}`}
+                                className={`p-1 mt-1 rounded-sm grid grid-cols-4 gap-1 w-full items-center text-xs ${
+                                  bet.cashoutStatus === true
+                                    ? "bg-[#103408] border border-[#4D6936]"
+                                    : "bg-gray-900 "
+                                }`}
                               >
-                                {bet.multiplier}
+                                <div className="flex gap-1 items-center">
+                                  <RandomAvatar /> {bet.username}
+                                </div>
+                                <div>${bet.bet}</div>
+                                <div>
+                                  {bet.cashoutStatus === false ? (
+                                    <>{bet.multiplier.toFixed(2)}</>
+                                  ) : (
+                                    <div
+                                      className={`flex flex-col p-1 justify-center items-center w-[70px] bg-gray-900 rounded-full ${bgColor}`}
+                                    >
+                                      {bet.betno === 1 &&
+                                        cashoutmultiplier.toFixed(2)}
+                                      {bet.betno === 2 &&
+                                        cashoutmultiplier2.toFixed(2)}
+                                    </div>
+                                  )}
+                                </div>
+                                <div>
+                                  {bet.cashoutStatus === false ? (
+                                    <>
+                                      ${(bet.bet * bet.multiplier).toFixed(2)}
+                                    </>
+                                  ) : (
+                                    <>
+                                      $
+                                      {bet.betno === 1 &&
+                                        (bet.bet * cashoutmultiplier).toFixed(
+                                          2
+                                        )}
+                                      {bet.betno === 2 &&
+                                        (bet.bet * cashoutmultiplier2).toFixed(
+                                          2
+                                        )}
+                                    </>
+                                  )}
+                                </div>
+                                <div></div>
                               </div>
-                              <div>KES {bet.cashout}</div>
-                              <div>{formattedCreatedAt}</div>
-
-                              <div></div>
-                            </div>
-                          </li>
-                        );
-                      })}
-                    </ul>
-                  </div>
-                </>
-              )}
-              {activeTab === 2 && (
-                <>
-                  <div>
-                    <div className="m-1 flex flex-col text-white text-sm">
-                      <div>TOP BETS</div>
+                            </li>
+                          );
+                        })}
+                      </ul>
                     </div>
+                  </>
+                )}
+                {activeTab === 1 && (
+                  <>
+                    <div>
+                      <div className="m-1 flex flex-col text-white text-sm">
+                        <div>MY BETS</div>
+                        <div>{mybets.length}</div>
+                      </div>
 
-                    <div className="border-gray-900 border w-full mb-1"></div>
-                    <div className="grid grid-cols-6 text-gray-400 text-xs">
-                      <div>User</div>
-                      <div>Status</div>
-                      <div>Bet KES</div>
-                      <div>Multiplier</div>
-                      <div>Cashout</div>
-                      <div>Date</div>
-                    </div>
-                    <ul className="w-full">
-                      {topbets.map((bet: any, index) => {
-                        let formattedCreatedAt = "";
-                        try {
-                          const createdAtDate = new Date(
-                            bet.createdAt.seconds * 1000
-                          ); // Convert seconds to milliseconds
+                      <div className="border-gray-900 border w-full mb-1"></div>
+                      <div className="grid grid-cols-5 text-gray-400 text-xs">
+                        <div>Status</div>
+                        <div>Bet KES</div>
+                        <div>Multiplier</div>
+                        <div>Cash out KES</div>
+                        <div>Date</div>
+                      </div>
+                      <ul className="w-full">
+                        {mybets.map((bet: any, index) => {
+                          let formattedCreatedAt = "";
+                          try {
+                            const createdAtDate = new Date(
+                              bet.createdAt.seconds * 1000
+                            ); // Convert seconds to milliseconds
 
-                          // Get today's date
-                          const today = new Date();
+                            // Get today's date
+                            const today = new Date();
 
-                          // Check if the message was sent today
-                          if (isToday(createdAtDate)) {
-                            formattedCreatedAt =
-                              "Today " + format(createdAtDate, "HH:mm"); // Set as "Today"
-                          } else if (isYesterday(createdAtDate)) {
-                            // Check if the message was sent yesterday
-                            formattedCreatedAt =
-                              "Yesterday " + format(createdAtDate, "HH:mm"); // Set as "Yesterday"
-                          } else {
-                            // Format the createdAt date with day, month, and year
-                            formattedCreatedAt = format(
-                              createdAtDate,
-                              "dd-MM-yyyy"
-                            ); // Format as 'day/month/year'
+                            // Check if the message was sent today
+                            if (isToday(createdAtDate)) {
+                              formattedCreatedAt =
+                                "Today " + format(createdAtDate, "HH:mm"); // Set as "Today"
+                            } else if (isYesterday(createdAtDate)) {
+                              // Check if the message was sent yesterday
+                              formattedCreatedAt =
+                                "Yesterday " + format(createdAtDate, "HH:mm"); // Set as "Yesterday"
+                            } else {
+                              // Format the createdAt date with day, month, and year
+                              formattedCreatedAt = format(
+                                createdAtDate,
+                                "dd-MM-yyyy"
+                              ); // Format as 'day/month/year'
+                            }
+
+                            // Append hours and minutes if the message is not from today or yesterday
+                            if (
+                              !isToday(createdAtDate) &&
+                              !isYesterday(createdAtDate)
+                            ) {
+                              formattedCreatedAt +=
+                                " " + format(createdAtDate, "HH:mm"); // Append hours and minutes
+                            }
+                          } catch {
+                            // Handle error when formatting date
                           }
-
-                          // Append hours and minutes if the message is not from today or yesterday
-                          if (
-                            !isToday(createdAtDate) &&
-                            !isYesterday(createdAtDate)
-                          ) {
-                            formattedCreatedAt +=
-                              " " + format(createdAtDate, "HH:mm"); // Append hours and minutes
-                          }
-                        } catch {
-                          // Handle error when formatting date
-                        }
-                        const bgColor =
-                          cashoutmultiplier >= 6
-                            ? "text-[#9F1C90]"
-                            : cashoutmultiplier >= 2
-                            ? "text-[#4490CC]"
-                            : cashoutmultiplier >= 1
-                            ? "text-[#7848B6]"
-                            : "text-[#29aa08]";
-                        return (
-                          <li className="w-full" key={index}>
-                            <div
-                              className={`p-1 mt-1 rounded-sm grid grid-cols-6 gap-1 w-full items-center text-xs ${
-                                bet.status === "Win"
-                                  ? "bg-[#103408] border border-[#4D6936]"
-                                  : "bg-gray-900 "
-                              }`}
-                            >
-                              <div className="flex gap-1 items-center">
-                                <RandomAvatar />{" "}
-                                {bet.name
-                                  ? bet.name.substring(0, 2) + "xxx"
-                                  : "xxx"}
-                              </div>
-                              <div>{bet.status}</div>
-                              <div>KES {bet.bet}</div>
+                          const bgColor =
+                            cashoutmultiplier >= 6
+                              ? "text-[#9F1C90]"
+                              : cashoutmultiplier >= 2
+                              ? "text-[#4490CC]"
+                              : cashoutmultiplier >= 1
+                              ? "text-[#7848B6]"
+                              : "text-[#29aa08]";
+                          return (
+                            <li className="w-full" key={index}>
                               <div
-                                className={`flex flex-col p-1 justify-center items-center bg-gray-900 rounded-full ${bgColor}`}
+                                className={`p-1 mt-1 rounded-sm grid grid-cols-5 gap-1 w-full items-center text-xs ${
+                                  bet.status === "Win"
+                                    ? "bg-[#103408] border border-[#4D6936]"
+                                    : "bg-gray-900 "
+                                }`}
                               >
-                                {bet.multiplier}
-                              </div>
-                              <div>KES {bet.cashout}</div>
-                              <div>{formattedCreatedAt}</div>
+                                <div>{bet.status}</div>
+                                <div>KES {bet.bet}</div>
+                                <div
+                                  className={`flex flex-col p-1 justify-center items-center bg-gray-900 rounded-full ${bgColor}`}
+                                >
+                                  {bet.multiplier}
+                                </div>
+                                <div>KES {bet.cashout}</div>
+                                <div>{formattedCreatedAt}</div>
 
-                              <div></div>
-                            </div>
-                          </li>
-                        );
-                      })}
-                    </ul>
-                  </div>
-                </>
-              )}
+                                <div></div>
+                              </div>
+                            </li>
+                          );
+                        })}
+                      </ul>
+                    </div>
+                  </>
+                )}
+                {activeTab === 2 && (
+                  <>
+                    <div>
+                      <div className="m-1 flex flex-col text-white text-sm">
+                        <div>TOP BETS</div>
+                      </div>
+
+                      <div className="border-gray-900 border w-full mb-1"></div>
+                      <div className="grid grid-cols-6 text-gray-400 text-xs">
+                        <div>User</div>
+                        <div>Status</div>
+                        <div>Bet KES</div>
+                        <div>Multiplier</div>
+                        <div>Cashout</div>
+                        <div>Date</div>
+                      </div>
+                      <ul className="w-full">
+                        {topbets.map((bet: any, index) => {
+                          let formattedCreatedAt = "";
+                          try {
+                            const createdAtDate = new Date(
+                              bet.createdAt.seconds * 1000
+                            ); // Convert seconds to milliseconds
+
+                            // Get today's date
+                            const today = new Date();
+
+                            // Check if the message was sent today
+                            if (isToday(createdAtDate)) {
+                              formattedCreatedAt =
+                                "Today " + format(createdAtDate, "HH:mm"); // Set as "Today"
+                            } else if (isYesterday(createdAtDate)) {
+                              // Check if the message was sent yesterday
+                              formattedCreatedAt =
+                                "Yesterday " + format(createdAtDate, "HH:mm"); // Set as "Yesterday"
+                            } else {
+                              // Format the createdAt date with day, month, and year
+                              formattedCreatedAt = format(
+                                createdAtDate,
+                                "dd-MM-yyyy"
+                              ); // Format as 'day/month/year'
+                            }
+
+                            // Append hours and minutes if the message is not from today or yesterday
+                            if (
+                              !isToday(createdAtDate) &&
+                              !isYesterday(createdAtDate)
+                            ) {
+                              formattedCreatedAt +=
+                                " " + format(createdAtDate, "HH:mm"); // Append hours and minutes
+                            }
+                          } catch {
+                            // Handle error when formatting date
+                          }
+                          const bgColor =
+                            cashoutmultiplier >= 6
+                              ? "text-[#9F1C90]"
+                              : cashoutmultiplier >= 2
+                              ? "text-[#4490CC]"
+                              : cashoutmultiplier >= 1
+                              ? "text-[#7848B6]"
+                              : "text-[#29aa08]";
+                          return (
+                            <li className="w-full" key={index}>
+                              <div
+                                className={`p-1 mt-1 rounded-sm grid grid-cols-6 gap-1 w-full items-center text-xs ${
+                                  bet.status === "Win"
+                                    ? "bg-[#103408] border border-[#4D6936]"
+                                    : "bg-gray-900 "
+                                }`}
+                              >
+                                <div className="flex gap-1 items-center">
+                                  <RandomAvatar />{" "}
+                                  {bet.name
+                                    ? bet.name.substring(0, 2) + "xxx"
+                                    : "xxx"}
+                                </div>
+                                <div>{bet.status}</div>
+                                <div>KES {bet.bet}</div>
+                                <div
+                                  className={`flex flex-col p-1 justify-center items-center bg-gray-900 rounded-full ${bgColor}`}
+                                >
+                                  {bet.multiplier}
+                                </div>
+                                <div>KES {bet.cashout}</div>
+                                <div>{formattedCreatedAt}</div>
+
+                                <div></div>
+                              </div>
+                            </li>
+                          );
+                        })}
+                      </ul>
+                    </div>
+                  </>
+                )}
+              </ScrollArea>
             </div>
           </div>
         </div>
@@ -3169,275 +3177,283 @@ const Game: React.FC = () => {
               ))}
             </div>
             <div className="p-0">
-              {activeTab === 0 && (
-                <>
-                  <div className="w-full">
-                    <div className="m-1 flex flex-col text-white text-sm">
-                      <div>ALL BETS</div>
-                      <div>{currentBets.length}</div>
-                    </div>
+              <ScrollArea className="h-[500px]">
+                {activeTab === 0 && (
+                  <>
+                    <div className="w-full">
+                      <div className="m-1 flex flex-col text-white text-sm">
+                        <div>ALL BETS</div>
+                        <div>{currentBets.length}</div>
+                      </div>
 
-                    <div className="border-gray-900 border w-full mb-1"></div>
-                    <div className="grid grid-cols-4 text-gray-400 text-xs">
-                      <div>User</div>
-                      <div>Bet KES</div>
-                      <div>Multiplier</div>
-                      <div>Cash out KES</div>
-                    </div>
-                    <ul className="w-full">
-                      {currentBets.map((bet: any, index) => {
-                        const bgColor =
-                          cashoutmultiplier >= 6
-                            ? "text-[#9F1C90]"
-                            : cashoutmultiplier >= 2
-                            ? "text-[#4490CC]"
-                            : cashoutmultiplier >= 1
-                            ? "text-[#7848B6]"
-                            : "text-[#29aa08]";
-                        const bgColor2 =
-                          cashoutmultiplier2 >= 6
-                            ? "text-[#9F1C90]"
-                            : cashoutmultiplier2 >= 2
-                            ? "text-[#4490CC]"
-                            : cashoutmultiplier2 >= 1
-                            ? "text-[#7848B6]"
-                            : "text-[#29aa08]";
+                      <div className="border-gray-900 border w-full mb-1"></div>
+                      <div className="grid grid-cols-4 text-gray-400 text-xs">
+                        <div>User</div>
+                        <div>Bet KES</div>
+                        <div>Multiplier</div>
+                        <div>Cash out KES</div>
+                      </div>
+                      <ul className="w-full">
+                        {currentBets.map((bet: any, index) => {
+                          const bgColor =
+                            cashoutmultiplier >= 6
+                              ? "text-[#9F1C90]"
+                              : cashoutmultiplier >= 2
+                              ? "text-[#4490CC]"
+                              : cashoutmultiplier >= 1
+                              ? "text-[#7848B6]"
+                              : "text-[#29aa08]";
+                          const bgColor2 =
+                            cashoutmultiplier2 >= 6
+                              ? "text-[#9F1C90]"
+                              : cashoutmultiplier2 >= 2
+                              ? "text-[#4490CC]"
+                              : cashoutmultiplier2 >= 1
+                              ? "text-[#7848B6]"
+                              : "text-[#29aa08]";
 
-                        return (
-                          <li className="w-full" key={index}>
-                            <div
-                              className={`p-1 mt-1 rounded-sm grid grid-cols-4 gap-1 w-full items-center text-xs ${
-                                bet.cashoutStatus === true
-                                  ? "bg-[#103408] border border-[#4D6936]"
-                                  : "bg-gray-900 "
-                              }`}
-                            >
-                              <div className="flex gap-1 items-center">
-                                <RandomAvatar /> {bet.username}
-                              </div>
-                              <div>${bet.bet}</div>
-                              <div>
-                                {bet.cashoutStatus === false ? (
-                                  <>{bet.multiplier.toFixed(2)}</>
-                                ) : (
-                                  <div
-                                    className={`flex flex-col p-1 justify-center items-center w-[70px] bg-gray-900 rounded-full ${bgColor}`}
-                                  >
-                                    {bet.betno === 1 &&
-                                      cashoutmultiplier.toFixed(2)}
-                                    {bet.betno === 2 &&
-                                      cashoutmultiplier2.toFixed(2)}
-                                  </div>
-                                )}
-                              </div>
-                              <div>
-                                {bet.cashoutStatus === false ? (
-                                  <>${(bet.bet * bet.multiplier).toFixed(2)}</>
-                                ) : (
-                                  <>
-                                    $
-                                    {bet.betno === 1 &&
-                                      (bet.bet * cashoutmultiplier).toFixed(2)}
-                                    {bet.betno === 2 &&
-                                      (bet.bet * cashoutmultiplier2).toFixed(2)}
-                                  </>
-                                )}
-                              </div>
-                              <div></div>
-                            </div>
-                          </li>
-                        );
-                      })}
-                    </ul>
-                  </div>
-                </>
-              )}
-              {activeTab === 1 && (
-                <>
-                  <div>
-                    <div className="m-1 flex flex-col text-white text-sm">
-                      <div>MY BETS</div>
-                      <div>{mybets.length}</div>
-                    </div>
-
-                    <div className="border-gray-900 border w-full mb-1"></div>
-                    <div className="grid grid-cols-5 text-gray-400 text-xs">
-                      <div>Status</div>
-                      <div>Bet KES</div>
-                      <div>Multiplier</div>
-                      <div>Cash out KES</div>
-                      <div>Date</div>
-                    </div>
-                    <ul className="w-full">
-                      {mybets.map((bet: any, index) => {
-                        let formattedCreatedAt = "";
-                        try {
-                          const createdAtDate = new Date(
-                            bet.createdAt.seconds * 1000
-                          ); // Convert seconds to milliseconds
-
-                          // Get today's date
-                          const today = new Date();
-
-                          // Check if the message was sent today
-                          if (isToday(createdAtDate)) {
-                            formattedCreatedAt =
-                              "Today " + format(createdAtDate, "HH:mm"); // Set as "Today"
-                          } else if (isYesterday(createdAtDate)) {
-                            // Check if the message was sent yesterday
-                            formattedCreatedAt =
-                              "Yesterday " + format(createdAtDate, "HH:mm"); // Set as "Yesterday"
-                          } else {
-                            // Format the createdAt date with day, month, and year
-                            formattedCreatedAt = format(
-                              createdAtDate,
-                              "dd-MM-yyyy"
-                            ); // Format as 'day/month/year'
-                          }
-
-                          // Append hours and minutes if the message is not from today or yesterday
-                          if (
-                            !isToday(createdAtDate) &&
-                            !isYesterday(createdAtDate)
-                          ) {
-                            formattedCreatedAt +=
-                              " " + format(createdAtDate, "HH:mm"); // Append hours and minutes
-                          }
-                        } catch {
-                          // Handle error when formatting date
-                        }
-                        const bgColor =
-                          cashoutmultiplier >= 6
-                            ? "text-[#9F1C90]"
-                            : cashoutmultiplier >= 2
-                            ? "text-[#4490CC]"
-                            : cashoutmultiplier >= 1
-                            ? "text-[#7848B6]"
-                            : "text-[#29aa08]";
-                        return (
-                          <li className="w-full" key={index}>
-                            <div
-                              className={`p-1 mt-1 rounded-sm grid grid-cols-5 gap-1 w-full items-center text-xs ${
-                                bet.status === "Win"
-                                  ? "bg-[#103408] border border-[#4D6936]"
-                                  : "bg-gray-900 "
-                              }`}
-                            >
-                              <div>{bet.status}</div>
-                              <div>KES {bet.bet}</div>
+                          return (
+                            <li className="w-full" key={index}>
                               <div
-                                className={`flex flex-col p-1 justify-center items-center bg-gray-900 rounded-full ${bgColor}`}
+                                className={`p-1 mt-1 rounded-sm grid grid-cols-4 gap-1 w-full items-center text-xs ${
+                                  bet.cashoutStatus === true
+                                    ? "bg-[#103408] border border-[#4D6936]"
+                                    : "bg-gray-900 "
+                                }`}
                               >
-                                {bet.multiplier}
+                                <div className="flex gap-1 items-center">
+                                  <RandomAvatar /> {bet.username}
+                                </div>
+                                <div>${bet.bet}</div>
+                                <div>
+                                  {bet.cashoutStatus === false ? (
+                                    <>{bet.multiplier.toFixed(2)}</>
+                                  ) : (
+                                    <div
+                                      className={`flex flex-col p-1 justify-center items-center w-[70px] bg-gray-900 rounded-full ${bgColor}`}
+                                    >
+                                      {bet.betno === 1 &&
+                                        cashoutmultiplier.toFixed(2)}
+                                      {bet.betno === 2 &&
+                                        cashoutmultiplier2.toFixed(2)}
+                                    </div>
+                                  )}
+                                </div>
+                                <div>
+                                  {bet.cashoutStatus === false ? (
+                                    <>
+                                      ${(bet.bet * bet.multiplier).toFixed(2)}
+                                    </>
+                                  ) : (
+                                    <>
+                                      $
+                                      {bet.betno === 1 &&
+                                        (bet.bet * cashoutmultiplier).toFixed(
+                                          2
+                                        )}
+                                      {bet.betno === 2 &&
+                                        (bet.bet * cashoutmultiplier2).toFixed(
+                                          2
+                                        )}
+                                    </>
+                                  )}
+                                </div>
+                                <div></div>
                               </div>
-                              <div>KES {bet.cashout}</div>
-                              <div>{formattedCreatedAt}</div>
-
-                              <div></div>
-                            </div>
-                          </li>
-                        );
-                      })}
-                    </ul>
-                  </div>
-                </>
-              )}
-              {activeTab === 2 && (
-                <>
-                  <div>
-                    <div className="m-1 flex flex-col text-white text-sm">
-                      <div>TOP BETS</div>
+                            </li>
+                          );
+                        })}
+                      </ul>
                     </div>
+                  </>
+                )}
+                {activeTab === 1 && (
+                  <>
+                    <div>
+                      <div className="m-1 flex flex-col text-white text-sm">
+                        <div>MY BETS</div>
+                        <div>{mybets.length}</div>
+                      </div>
 
-                    <div className="border-gray-900 border w-full mb-1"></div>
-                    <div className="grid grid-cols-6 text-gray-400 text-xs">
-                      <div>User</div>
-                      <div>Status</div>
-                      <div>Bet KES</div>
-                      <div>Multiplier</div>
-                      <div>Cashout</div>
-                      <div>Date</div>
-                    </div>
-                    <ul className="w-full">
-                      {topbets.map((bet: any, index) => {
-                        let formattedCreatedAt = "";
-                        try {
-                          const createdAtDate = new Date(
-                            bet.createdAt.seconds * 1000
-                          ); // Convert seconds to milliseconds
+                      <div className="border-gray-900 border w-full mb-1"></div>
+                      <div className="grid grid-cols-5 text-gray-400 text-xs">
+                        <div>Status</div>
+                        <div>Bet KES</div>
+                        <div>Multiplier</div>
+                        <div>Cash out KES</div>
+                        <div>Date</div>
+                      </div>
+                      <ul className="w-full">
+                        {mybets.map((bet: any, index) => {
+                          let formattedCreatedAt = "";
+                          try {
+                            const createdAtDate = new Date(
+                              bet.createdAt.seconds * 1000
+                            ); // Convert seconds to milliseconds
 
-                          // Get today's date
-                          const today = new Date();
+                            // Get today's date
+                            const today = new Date();
 
-                          // Check if the message was sent today
-                          if (isToday(createdAtDate)) {
-                            formattedCreatedAt =
-                              "Today " + format(createdAtDate, "HH:mm"); // Set as "Today"
-                          } else if (isYesterday(createdAtDate)) {
-                            // Check if the message was sent yesterday
-                            formattedCreatedAt =
-                              "Yesterday " + format(createdAtDate, "HH:mm"); // Set as "Yesterday"
-                          } else {
-                            // Format the createdAt date with day, month, and year
-                            formattedCreatedAt = format(
-                              createdAtDate,
-                              "dd-MM-yyyy"
-                            ); // Format as 'day/month/year'
+                            // Check if the message was sent today
+                            if (isToday(createdAtDate)) {
+                              formattedCreatedAt =
+                                "Today " + format(createdAtDate, "HH:mm"); // Set as "Today"
+                            } else if (isYesterday(createdAtDate)) {
+                              // Check if the message was sent yesterday
+                              formattedCreatedAt =
+                                "Yesterday " + format(createdAtDate, "HH:mm"); // Set as "Yesterday"
+                            } else {
+                              // Format the createdAt date with day, month, and year
+                              formattedCreatedAt = format(
+                                createdAtDate,
+                                "dd-MM-yyyy"
+                              ); // Format as 'day/month/year'
+                            }
+
+                            // Append hours and minutes if the message is not from today or yesterday
+                            if (
+                              !isToday(createdAtDate) &&
+                              !isYesterday(createdAtDate)
+                            ) {
+                              formattedCreatedAt +=
+                                " " + format(createdAtDate, "HH:mm"); // Append hours and minutes
+                            }
+                          } catch {
+                            // Handle error when formatting date
                           }
-
-                          // Append hours and minutes if the message is not from today or yesterday
-                          if (
-                            !isToday(createdAtDate) &&
-                            !isYesterday(createdAtDate)
-                          ) {
-                            formattedCreatedAt +=
-                              " " + format(createdAtDate, "HH:mm"); // Append hours and minutes
-                          }
-                        } catch {
-                          // Handle error when formatting date
-                        }
-                        const bgColor =
-                          cashoutmultiplier >= 6
-                            ? "text-[#9F1C90]"
-                            : cashoutmultiplier >= 2
-                            ? "text-[#4490CC]"
-                            : cashoutmultiplier >= 1
-                            ? "text-[#7848B6]"
-                            : "text-[#29aa08]";
-                        return (
-                          <li className="w-full" key={index}>
-                            <div
-                              className={`p-1 mt-1 rounded-sm grid grid-cols-6 gap-1 w-full items-center text-xs ${
-                                bet.status === "Win"
-                                  ? "bg-[#103408] border border-[#4D6936]"
-                                  : "bg-gray-900 "
-                              }`}
-                            >
-                              <div className="flex gap-1 items-center">
-                                <RandomAvatar />{" "}
-                                {bet.name
-                                  ? bet.name.substring(0, 2) + "xxx"
-                                  : "xxx"}
-                              </div>
-                              <div>{bet.status}</div>
-                              <div>KES {bet.bet}</div>
+                          const bgColor =
+                            cashoutmultiplier >= 6
+                              ? "text-[#9F1C90]"
+                              : cashoutmultiplier >= 2
+                              ? "text-[#4490CC]"
+                              : cashoutmultiplier >= 1
+                              ? "text-[#7848B6]"
+                              : "text-[#29aa08]";
+                          return (
+                            <li className="w-full" key={index}>
                               <div
-                                className={`flex flex-col p-1 justify-center items-center bg-gray-900 rounded-full ${bgColor}`}
+                                className={`p-1 mt-1 rounded-sm grid grid-cols-5 gap-1 w-full items-center text-xs ${
+                                  bet.status === "Win"
+                                    ? "bg-[#103408] border border-[#4D6936]"
+                                    : "bg-gray-900 "
+                                }`}
                               >
-                                {bet.multiplier}
-                              </div>
-                              <div>KES {bet.cashout}</div>
-                              <div>{formattedCreatedAt}</div>
+                                <div>{bet.status}</div>
+                                <div>KES {bet.bet}</div>
+                                <div
+                                  className={`flex flex-col p-1 justify-center items-center bg-gray-900 rounded-full ${bgColor}`}
+                                >
+                                  {bet.multiplier}
+                                </div>
+                                <div>KES {bet.cashout}</div>
+                                <div>{formattedCreatedAt}</div>
 
-                              <div></div>
-                            </div>
-                          </li>
-                        );
-                      })}
-                    </ul>
-                  </div>
-                </>
-              )}
+                                <div></div>
+                              </div>
+                            </li>
+                          );
+                        })}
+                      </ul>
+                    </div>
+                  </>
+                )}
+                {activeTab === 2 && (
+                  <>
+                    <div>
+                      <div className="m-1 flex flex-col text-white text-sm">
+                        <div>TOP BETS</div>
+                      </div>
+
+                      <div className="border-gray-900 border w-full mb-1"></div>
+                      <div className="grid grid-cols-6 text-gray-400 text-xs">
+                        <div>User</div>
+                        <div>Status</div>
+                        <div>Bet KES</div>
+                        <div>Multiplier</div>
+                        <div>Cashout</div>
+                        <div>Date</div>
+                      </div>
+                      <ul className="w-full">
+                        {topbets.map((bet: any, index) => {
+                          let formattedCreatedAt = "";
+                          try {
+                            const createdAtDate = new Date(
+                              bet.createdAt.seconds * 1000
+                            ); // Convert seconds to milliseconds
+
+                            // Get today's date
+                            const today = new Date();
+
+                            // Check if the message was sent today
+                            if (isToday(createdAtDate)) {
+                              formattedCreatedAt =
+                                "Today " + format(createdAtDate, "HH:mm"); // Set as "Today"
+                            } else if (isYesterday(createdAtDate)) {
+                              // Check if the message was sent yesterday
+                              formattedCreatedAt =
+                                "Yesterday " + format(createdAtDate, "HH:mm"); // Set as "Yesterday"
+                            } else {
+                              // Format the createdAt date with day, month, and year
+                              formattedCreatedAt = format(
+                                createdAtDate,
+                                "dd-MM-yyyy"
+                              ); // Format as 'day/month/year'
+                            }
+
+                            // Append hours and minutes if the message is not from today or yesterday
+                            if (
+                              !isToday(createdAtDate) &&
+                              !isYesterday(createdAtDate)
+                            ) {
+                              formattedCreatedAt +=
+                                " " + format(createdAtDate, "HH:mm"); // Append hours and minutes
+                            }
+                          } catch {
+                            // Handle error when formatting date
+                          }
+                          const bgColor =
+                            cashoutmultiplier >= 6
+                              ? "text-[#9F1C90]"
+                              : cashoutmultiplier >= 2
+                              ? "text-[#4490CC]"
+                              : cashoutmultiplier >= 1
+                              ? "text-[#7848B6]"
+                              : "text-[#29aa08]";
+                          return (
+                            <li className="w-full" key={index}>
+                              <div
+                                className={`p-1 mt-1 rounded-sm grid grid-cols-6 gap-1 w-full items-center text-xs ${
+                                  bet.status === "Win"
+                                    ? "bg-[#103408] border border-[#4D6936]"
+                                    : "bg-gray-900 "
+                                }`}
+                              >
+                                <div className="flex gap-1 items-center">
+                                  <RandomAvatar />{" "}
+                                  {bet.name
+                                    ? bet.name.substring(0, 2) + "xxx"
+                                    : "xxx"}
+                                </div>
+                                <div>{bet.status}</div>
+                                <div>KES {bet.bet}</div>
+                                <div
+                                  className={`flex flex-col p-1 justify-center items-center bg-gray-900 rounded-full ${bgColor}`}
+                                >
+                                  {bet.multiplier}
+                                </div>
+                                <div>KES {bet.cashout}</div>
+                                <div>{formattedCreatedAt}</div>
+
+                                <div></div>
+                              </div>
+                            </li>
+                          );
+                        })}
+                      </ul>
+                    </div>
+                  </>
+                )}
+              </ScrollArea>
             </div>
           </div>
         </div>
