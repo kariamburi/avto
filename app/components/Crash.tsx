@@ -3,6 +3,7 @@ import { motion, useAnimation } from "framer-motion";
 
 type CrashProps = {
   multiplier: string;
+  sound: boolean;
 };
 
 const aviatorVariants = {
@@ -11,13 +12,13 @@ const aviatorVariants = {
   exit: { y: 0 },
 };
 
-const Aviator = ({ multiplier }: CrashProps) => {
+const Aviator = ({ multiplier, sound }: CrashProps) => {
   const takeoffSound = useRef<HTMLAudioElement | null>(null);
   const [displayMessage, setDisplayMessage] = useState("flewAway");
   const controls = useAnimation();
 
   useEffect(() => {
-    if (takeoffSound.current) {
+    if (takeoffSound.current && sound === true) {
       takeoffSound.current.play();
     }
 

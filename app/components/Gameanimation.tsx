@@ -6,8 +6,9 @@ import Crash from "./Crash";
 type gameProps = {
   gameStatus: string;
   multiplier: number;
+  sound: boolean;
 };
-const Gameanimation = ({ gameStatus, multiplier }: gameProps) => {
+const Gameanimation = ({ gameStatus, multiplier, sound }: gameProps) => {
   return (
     <div
       className={`mb-2 w-full h-72 rounded-lg flex items-center justify-center relative overflow-hidden ${
@@ -31,7 +32,7 @@ const Gameanimation = ({ gameStatus, multiplier }: gameProps) => {
               <Waiting />
             </>
           ) : (
-            <Crash multiplier={multiplier.toFixed(2)} />
+            <Crash multiplier={multiplier.toFixed(2)} sound={sound} />
           )}
         </>
       )}

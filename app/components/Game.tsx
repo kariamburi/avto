@@ -22,6 +22,7 @@ import PersonOutlineOutlinedIcon from "@mui/icons-material/PersonOutlineOutlined
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import HelpOutlineOutlinedIcon from "@mui/icons-material/HelpOutlineOutlined";
 import AdminPanelSettingsOutlinedIcon from "@mui/icons-material/AdminPanelSettingsOutlined";
+import VolumeUpOutlinedIcon from "@mui/icons-material/VolumeUpOutlined";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -167,6 +168,7 @@ const Game: React.FC = () => {
   const cashOutSound = useRef<HTMLAudioElement | null>(null);
   const backgroundMusic = useRef<HTMLAudioElement | null>(null);
   const [isMusicPlaying, setIsMusicPlaying] = useState<boolean>(false);
+  const [isMusicPlaying1, setIsMusicPlaying1] = useState<boolean>(true);
   const [isSubmitting, setisSubmitting] = useState<boolean>(false);
 
   // const [betearns, setbetearns] = useState<number>(0); // Example initial balance
@@ -190,7 +192,7 @@ const Game: React.FC = () => {
       setbetValue(0);
       setcashoutMultiplier(multiplier);
       cashOut(username, 1);
-      if (cashOutSound.current) {
+      if (cashOutSound.current && isMusicPlaying1) {
         cashOutSound.current.play();
       }
 
@@ -214,7 +216,7 @@ const Game: React.FC = () => {
             title: "Win!",
             description: "Cashout $" + (bet * multiplier).toFixed(2),
             duration: 5000,
-            className: "bg-emerald-600 text-white",
+            className: "bg-green-600 text-white",
           });
         }
       } catch (error) {
@@ -293,10 +295,10 @@ const Game: React.FC = () => {
                 setBet(bet);
                 setbetValue(bet);
                 setBetMode(false);
-                placeBet(bet, username.substring(0, 2) + "xxxx", 1);
+                placeBet(bet, username.substring(0, 2) + "xxx", 1);
                 //  alert("bety" + bet);
                 // setbetearns(bet);
-                if (placeBetSound.current) {
+                if (placeBetSound.current && isMusicPlaying1) {
                   placeBetSound.current.play();
                 }
 
@@ -385,10 +387,10 @@ const Game: React.FC = () => {
         title: "Win!",
         description: "Cashout $" + (bet * multiplier).toFixed(2),
         duration: 5000,
-        className: "bg-emerald-600 text-white",
+        className: "bg-green-600 text-white",
       });
 
-      if (cashOutSound.current) {
+      if (cashOutSound.current && isMusicPlaying1) {
         cashOutSound.current.play();
       }
     }
@@ -418,10 +420,10 @@ const Game: React.FC = () => {
         title: "Win!",
         description: "Cashout $" + (bet2 * multiplier).toFixed(2),
         duration: 5000,
-        className: "bg-emerald-600 text-white",
+        className: "bg-green-600 text-white",
       });
 
-      if (cashOutSound.current) {
+      if (cashOutSound.current && isMusicPlaying1) {
         cashOutSound.current.play();
       }
     }
@@ -523,10 +525,10 @@ const Game: React.FC = () => {
         if (balance >= bet) {
           setBalance(balance - bet);
           sessionStorage.setItem("balance", (balance - bet).toString());
-          placeBet(bet, username.substring(0, 2) + "xxxx", 1);
+          placeBet(bet, username.substring(0, 2) + "xxx", 1);
           setbetValue(bet);
           setBetMode(false);
-          if (placeBetSound.current) {
+          if (placeBetSound.current && isMusicPlaying1) {
             placeBetSound.current.play();
           }
           //update server
@@ -575,10 +577,10 @@ const Game: React.FC = () => {
         if (balance >= bet2) {
           setBalance(balance - bet2);
           sessionStorage.setItem("balance", (balance - bet2).toString());
-          placeBet(bet2, username.substring(0, 2) + "xxxx", 2);
+          placeBet(bet2, username.substring(0, 2) + "xxx", 2);
           setbetValue2(bet2);
           setBetMode2(false);
-          if (placeBetSound.current) {
+          if (placeBetSound.current && isMusicPlaying1) {
             placeBetSound.current.play();
           }
           //update server
@@ -651,7 +653,7 @@ const Game: React.FC = () => {
       setbetValue2(0);
       setcashoutMultiplier2(multiplier);
       cashOut(username, 2);
-      if (cashOutSound.current) {
+      if (cashOutSound.current && isMusicPlaying1) {
         cashOutSound.current.play();
       }
 
@@ -675,7 +677,7 @@ const Game: React.FC = () => {
             title: "Win!",
             description: "Cashout $" + (bet2 * multiplier).toFixed(2),
             duration: 5000,
-            className: "bg-emerald-600 text-white",
+            className: "bg-green-600 text-white",
           });
         }
       } catch (error) {
@@ -754,10 +756,10 @@ const Game: React.FC = () => {
                 setBet2(bet2);
                 setbetValue2(bet2);
                 setBetMode2(false);
-                placeBet(bet2, username.substring(0, 2) + "xxxx", 2);
+                placeBet(bet2, username.substring(0, 2) + "xxx", 2);
                 //  alert("bety" + bet);
                 // setbetearns(bet);
-                if (placeBetSound.current) {
+                if (placeBetSound.current && isMusicPlaying1) {
                   placeBetSound.current.play();
                 }
 
@@ -927,6 +929,9 @@ const Game: React.FC = () => {
       setIsMusicPlaying(!isMusicPlaying);
     }
   };
+  const handleToggleMusic1 = () => {
+    setIsMusicPlaying1(!isMusicPlaying1);
+  };
   const [countryCode, setCountryCode] = useState("254"); // Default country code
   const formatPhoneNumber = (input: any) => {
     // Remove all non-digit characters
@@ -1053,7 +1058,7 @@ const Game: React.FC = () => {
           title: "Successful",
           description: "You have registered successfully",
           duration: 5000,
-          className: "bg-emerald-600 text-white",
+          className: "bg-green-600 text-white",
         });
         setIsAlertDialog(false);
         // window.location.reload();
@@ -1240,7 +1245,7 @@ const Game: React.FC = () => {
               sendphone +
               " Successful pending Approval",
             duration: 5000,
-            className: "bg-emerald-600 text-white",
+            className: "bg-green-600 text-white",
           });
           setisSubmitting(false);
           // window.location.reload();
@@ -1345,6 +1350,11 @@ const Game: React.FC = () => {
 
   const toggleMenu1 = () => {
     setIsOpen1(!isOpen1);
+  };
+
+  const [isOpen2, setIsOpen2] = useState(false);
+  const toggleMenu2 = () => {
+    setIsOpen2(!isOpen2);
   };
   return (
     <div className="bg-gray-900 text-white min-h-screen flex flex-col">
@@ -1511,11 +1521,11 @@ const Game: React.FC = () => {
               {userID !== "" ? (
                 <div className="flex gap-2 items-center">
                   <div className="flex gap-1 items-center">
-                    <div className="text-gray-400 text-xs hidden lg:inline">
-                      Balance:
-                    </div>
-                    <div className="text-lg font-bold text-green-600 rounded-lg p-1">
-                      KES {balance.toFixed(2)}
+                    <div className="flex rounded-lg gap-1 items-center">
+                      <div className="text-xs text-gray-400">KES:</div>{" "}
+                      <div className="text-lg font-bold text-green-600">
+                        {balance.toFixed(2)}
+                      </div>
                     </div>
                   </div>
                   {/*ACCOUNT*/}
@@ -1540,18 +1550,18 @@ const Game: React.FC = () => {
                       </svg>
                     </button>
                     {isOpen && (
-                      <div className="absolute right-0 mt-2 py-2 w-48 bg-white rounded-md shadow-xl z-20">
+                      <div className="absolute right-0 mt-2 p-2 w-48 bg-gray-200 rounded-md shadow-xl z-20">
                         <div
                           onClick={() => {
                             setIsAlertDialogP(true);
                           }}
-                          className="flex text-lg cursor-pointer items-center gap-1 block px-4 py-2 text-gray-900 hover:bg-gray-200"
+                          className="flex text-lg cursor-pointer items-center gap-1 block px-4 py-2  text-gray-900 hover:bg-white hover:rounded-full"
                         >
                           <PersonOutlineOutlinedIcon /> Account
                         </div>
                         <div
                           onClick={handleLogout}
-                          className="flex text-lg cursor-pointer items-center gap-1 block px-4 py-2 text-gray-800 hover:bg-gray-200"
+                          className="flex text-lg cursor-pointer items-center gap-1 block px-4 py-2  text-gray-800 hover:bg-white hover:rounded-full"
                         >
                           <LockOutlinedIcon />
                           Logout
@@ -1562,13 +1572,12 @@ const Game: React.FC = () => {
                               onClick={() =>
                                 router.push("/xadmn_893dhflsncch_crs")
                               }
-                              className="flex text-lg cursor-pointer items-center gap-1 block px-4 py-2 text-gray-800 hover:bg-gray-200"
+                              className="flex text-lg cursor-pointer items-center gap-1 block px-4 py-2  text-gray-800 hover:bg-white hover:rounded-full"
                             >
                               <AdminPanelSettingsOutlinedIcon /> Admin
                             </div>
                           </>
                         )}
-                        ;
                       </div>
                     )}
                   </div>
@@ -1837,12 +1846,12 @@ const Game: React.FC = () => {
                       </svg>
                     </button>
                     {isOpen1 && (
-                      <div className="absolute right-0 mt-2 py-2 w-48 bg-white rounded-md shadow-xl z-20">
+                      <div className="absolute right-0 mt-2 p-2 w-48 bg-gray-200 rounded-md shadow-xl z-20">
                         <div
                           onClick={() => {
                             setIsAlertDialogL(true);
                           }}
-                          className="flex text-lg cursor-pointer items-center gap-1 block px-4 py-2 text-gray-900 hover:bg-gray-200"
+                          className="flex text-lg cursor-pointer items-center gap-1 block px-4 py-2 text-gray-900 hover:bg-white hover:rounded-full"
                         >
                           <LoginOutlinedIcon /> Login
                         </div>
@@ -1851,7 +1860,7 @@ const Game: React.FC = () => {
                           onClick={() => {
                             setIsAlertDialog(true);
                           }}
-                          className="flex text-lg cursor-pointer items-center gap-1 block px-4 py-2 text-gray-800 hover:bg-gray-200"
+                          className="flex text-lg cursor-pointer items-center gap-1 block px-4 py-2 text-gray-800 hover:bg-white hover:rounded-full"
                         >
                           <AppRegistrationOutlinedIcon /> Register
                         </div>
@@ -2627,8 +2636,8 @@ const Game: React.FC = () => {
                               <div className="flex gap-1 items-center">
                                 <RandomAvatar />{" "}
                                 {bet.name
-                                  ? bet.name.substring(0, 2) + "xxxx"
-                                  : "xxxx"}
+                                  ? bet.name.substring(0, 2) + "xxx"
+                                  : "xxx"}
                               </div>
                               <div>{bet.status}</div>
                               <div>KES {bet.bet}</div>
@@ -2653,25 +2662,57 @@ const Game: React.FC = () => {
           </div>
         </div>
         <div className="md:col-span-2 bg-gray-800 p-2 rounded-lg shadow-lg flex flex-col items-center">
-          <div className="w-full flex justify-between items-center mb-2">
-            <div className="flex w-[160px] items-center mr-2 gap-1">
-              <label className="block text-xs text-gray-400">
-                {isMusicPlaying ? "Pause Music" : "Play Music"}
-              </label>
-              <div className="flex flex-col items-center">
-                <div
-                  className={`relative w-12 h-5 rounded-full cursor-pointer transition-colors ${
-                    isMusicPlaying ? "bg-[#DE3D26]" : "bg-gray-400"
-                  }`}
-                  onClick={handleToggleMusic}
-                >
-                  <div
-                    className={`absolute top-0 left-0 w-5 h-5 bg-white rounded-full shadow-md transform transition-transform ${
-                      isMusicPlaying ? "translate-x-8" : "translate-x-0"
-                    }`}
-                  />
+          <div className="w-full gap-2 flex justify-between items-center mb-2">
+            <div className="relative">
+              <button
+                onClick={toggleMenu2}
+                className="p-1 gap-1 text-xs text-gray-400 rounded-md ring-1 ring-gray-500"
+              >
+                <VolumeUpOutlinedIcon sx={{ fontSize: 14 }} />
+                Sound
+              </button>
+              {isOpen2 && (
+                <div className="absolute left-0 mt-2 py-2 w-48 bg-gray-200 rounded-md shadow-xl z-20">
+                  <div className="flex justify-between items-center p-1">
+                    <label className="block text-xs text-gray-900">
+                      {isMusicPlaying
+                        ? "Pause Backgroud Music"
+                        : "Play Backgroud Music"}
+                    </label>
+                    <div
+                      className={`relative w-12 h-5 rounded-full cursor-pointer transition-colors ${
+                        isMusicPlaying ? "bg-[#DE3D26]" : "bg-gray-400"
+                      }`}
+                      onClick={handleToggleMusic}
+                    >
+                      <div
+                        className={`absolute top-0 left-0 w-5 h-5 bg-white rounded-full shadow-md transform transition-transform ${
+                          isMusicPlaying ? "translate-x-8" : "translate-x-0"
+                        }`}
+                      />
+                    </div>
+                  </div>
+                  <div className="flex flex justify-between items-center p-1">
+                    <label className="block text-xs text-gray-900">
+                      {isMusicPlaying1
+                        ? "Pause Sound Effect"
+                        : "Play Sound Effect"}
+                    </label>
+                    <div
+                      className={`relative w-12 h-5 rounded-full cursor-pointer transition-colors ${
+                        isMusicPlaying1 ? "bg-[#DE3D26]" : "bg-gray-400"
+                      }`}
+                      onClick={handleToggleMusic1}
+                    >
+                      <div
+                        className={`absolute top-0 left-0 w-5 h-5 bg-white rounded-full shadow-md transform transition-transform ${
+                          isMusicPlaying1 ? "translate-x-8" : "translate-x-0"
+                        }`}
+                      />
+                    </div>
+                  </div>
                 </div>
-              </div>
+              )}
             </div>
 
             <ScrollArea className="h-[35px]">
@@ -2703,7 +2744,11 @@ const Game: React.FC = () => {
             </ScrollArea>
           </div>
 
-          <Gameanimation gameStatus={gameStatus} multiplier={multiplier} />
+          <Gameanimation
+            gameStatus={gameStatus}
+            multiplier={multiplier}
+            sound={isMusicPlaying1}
+          />
 
           <div className="w-full lg:flex gap-2 items-center justify-center space-y-0">
             <div className="flex w-full p-1 flex-col bg-gray-700 mb-2 lg:mb-0 rounded-lg shadow-lg items-center justify-center">
@@ -3371,8 +3416,8 @@ const Game: React.FC = () => {
                               <div className="flex gap-1 items-center">
                                 <RandomAvatar />{" "}
                                 {bet.name
-                                  ? bet.name.substring(0, 2) + "xxxx"
-                                  : "xxxx"}
+                                  ? bet.name.substring(0, 2) + "xxx"
+                                  : "xxx"}
                               </div>
                               <div>{bet.status}</div>
                               <div>KES {bet.bet}</div>
