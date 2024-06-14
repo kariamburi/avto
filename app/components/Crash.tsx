@@ -24,8 +24,11 @@ const Aviator = ({ multiplier }: CrashProps) => {
     const timer = setTimeout(() => {
       setDisplayMessage("loadingNextRound");
     }, 5000); // Switch message after 5 seconds
-
-    controls.start("animate"); // Start animation
+    try {
+      controls.start("animate"); // Start animation
+    } catch (error) {
+      console.error("Animation error:", error);
+    }
 
     return () => clearTimeout(timer); // Cleanup timer on component unmount
   }, [controls]);

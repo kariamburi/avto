@@ -435,6 +435,22 @@ const Game: React.FC = () => {
   const [maxbet, setmaxbet] = useState("5000");
   const [houseEdge, sethouseEdge] = useState("0");
   useEffect(() => {
+    if (userID !== "") {
+      const loadbalance = async () => {
+        const userQuery = query(
+          collection(db, "balance"),
+          where("phone", "==", userID)
+        );
+        const userSnapshot = await getDocs(userQuery);
+        if (!userSnapshot.empty) {
+          const userData = userSnapshot.docs[0].data();
+
+          setBalance(Number(userData.amount));
+          sessionStorage.setItem("balance", userData.amount);
+        }
+      };
+      loadbalance();
+    }
     const loadSettings = async () => {
       const userQuery = query(collection(db, "settings"));
       const userSnapshot = await getDocs(userQuery);
@@ -452,6 +468,7 @@ const Game: React.FC = () => {
     loadSettings();
   }, []);
   // Effect to run when balance changes
+
   useEffect(() => {
     if (gameStatus === "crashed" && betstatus === "updateserver") {
       setMultipliers((prevMultipliers) => [...prevMultipliers, multiplier]);
@@ -1528,13 +1545,13 @@ const Game: React.FC = () => {
                           onClick={() => {
                             setIsAlertDialogP(true);
                           }}
-                          className="flex cursor-pointer items-center gap-1 block px-4 py-2 text-gray-900 hover:bg-gray-200"
+                          className="flex text-lg cursor-pointer items-center gap-1 block px-4 py-2 text-gray-900 hover:bg-gray-200"
                         >
                           <PersonOutlineOutlinedIcon /> Account
                         </div>
                         <div
                           onClick={handleLogout}
-                          className="flex cursor-pointer items-center gap-1 block px-4 py-2 text-gray-800 hover:bg-gray-200"
+                          className="flex text-lg cursor-pointer items-center gap-1 block px-4 py-2 text-gray-800 hover:bg-gray-200"
                         >
                           <LockOutlinedIcon />
                           Logout
@@ -1545,7 +1562,7 @@ const Game: React.FC = () => {
                               onClick={() =>
                                 router.push("/xadmn_893dhflsncch_crs")
                               }
-                              className="flex cursor-pointer items-center gap-1 block px-4 py-2 text-gray-800 hover:bg-gray-200"
+                              className="flex text-lg cursor-pointer items-center gap-1 block px-4 py-2 text-gray-800 hover:bg-gray-200"
                             >
                               <AdminPanelSettingsOutlinedIcon /> Admin
                             </div>
@@ -1825,7 +1842,7 @@ const Game: React.FC = () => {
                           onClick={() => {
                             setIsAlertDialogL(true);
                           }}
-                          className="flex cursor-pointer items-center gap-1 block px-4 py-2 text-gray-900 hover:bg-gray-200"
+                          className="flex text-lg cursor-pointer items-center gap-1 block px-4 py-2 text-gray-900 hover:bg-gray-200"
                         >
                           <LoginOutlinedIcon /> Login
                         </div>
@@ -1834,7 +1851,7 @@ const Game: React.FC = () => {
                           onClick={() => {
                             setIsAlertDialog(true);
                           }}
-                          className="flex cursor-pointer items-center gap-1 block px-4 py-2 text-gray-800 hover:bg-gray-200"
+                          className="flex text-lg cursor-pointer items-center gap-1 block px-4 py-2 text-gray-800 hover:bg-gray-200"
                         >
                           <AppRegistrationOutlinedIcon /> Register
                         </div>
@@ -2689,7 +2706,7 @@ const Game: React.FC = () => {
           <Gameanimation gameStatus={gameStatus} multiplier={multiplier} />
 
           <div className="w-full lg:flex gap-2 items-center justify-center space-y-0">
-            <div className="flex w-full h-[200px] flex-col bg-gray-700 mb-2 rounded-lg shadow-lg items-center justify-center">
+            <div className="flex w-full p-1 flex-col bg-gray-700 mb-2 lg:mb-0 rounded-lg shadow-lg items-center justify-center">
               <div className="bg-gray-70 mt-2 p-2 rounded-lg flex items-center justify-center">
                 <div className="flex flex-col items-center gap-2">
                   <div
@@ -2772,31 +2789,45 @@ const Game: React.FC = () => {
                     </div>
                   </div>
                 </div>
-                <button
-                  onClick={
-                    userID !== "" ? handleBet : () => setIsAlertDialogL(true)
-                  }
-                  className={`${getButtonClass()} text-white rounded-lg font-bold py-2 px-4 w-[120px]`}
-                >
-                  {BetMode === false ? (
+                <div className="flex flex-col">
+                  {BetMode === false && (
                     <>
                       {gameStatus === "running" && betValue > 0 ? (
-                        <>Cashout ${(bet * multiplier).toFixed(2)}</>
+                        <></>
                       ) : (
-                        <div className="flex flex-col w-full items-center">
-                          <div>Cancel</div>
-                          <div>BET</div> <div>KES {bet}</div>
+                        <div className="flex flex-col w-full items-center text-gray-400 text-xs p-1">
+                          Waiting next round
                         </div>
                       )}
                     </>
-                  ) : (
-                    <>
-                      <div className="flex flex-col w-full items-center">
-                        <div>BET</div> <div>KES {bet}</div>
-                      </div>
-                    </>
                   )}
-                </button>
+
+                  <button
+                    onClick={
+                      userID !== "" ? handleBet : () => setIsAlertDialogL(true)
+                    }
+                    className={`${getButtonClass()} text-white rounded-lg font-bold py-2 px-4 w-[120px] h-[100px]`}
+                  >
+                    {BetMode === false ? (
+                      <>
+                        {gameStatus === "running" && betValue > 0 ? (
+                          <>Cashout ${(bet * multiplier).toFixed(2)}</>
+                        ) : (
+                          <div className="flex flex-col w-full items-center">
+                            <div>Cancel</div>
+                            <div>BET</div> <div>KES {bet}</div>
+                          </div>
+                        )}
+                      </>
+                    ) : (
+                      <>
+                        <div className="flex flex-col w-full items-center">
+                          <div>BET</div> <div>KES {bet}</div>
+                        </div>
+                      </>
+                    )}
+                  </button>
+                </div>
               </div>
 
               {!isBet && (
@@ -2871,7 +2902,7 @@ const Game: React.FC = () => {
             </div>
 
             {/* Second Betting Area */}
-            <div className="flex w-full h-[200px] flex-col bg-gray-700 mb-2 rounded-lg shadow-lg items-center justify-center">
+            <div className="flex w-full p-1 flex-col bg-gray-700 mb-2 rounded-lg shadow-lg items-center justify-center">
               <div className="bg-gray-70 w-full mt-2 p-2 rounded-lg flex items-center justify-center">
                 <div className="flex flex-col items-center gap-2">
                   <div
@@ -2956,32 +2987,46 @@ const Game: React.FC = () => {
                     </div>
                   </div>
                 </div>
-
-                <button
-                  onClick={
-                    userID !== "" ? handleBet2 : () => setIsAlertDialogL(true)
-                  }
-                  className={`${getButtonClass2()} text-white rounded-lg font-bold py-2 px-4 w-[120px]`}
-                >
-                  {BetMode2 === false ? (
+                <div className="flex flex-col">
+                  {BetMode2 === false && (
                     <>
+                      {" "}
                       {gameStatus === "running" && betValue2 > 0 ? (
-                        <>Cashout ${(bet2 * multiplier).toFixed(2)}</>
+                        <></>
                       ) : (
-                        <div className="flex flex-col w-full items-center">
-                          <div>Cancel</div>
-                          <div>BET</div> <div>KES {bet2}</div>
+                        <div className="flex flex-col w-full items-center text-gray-400 text-xs p-1">
+                          Waiting next round
                         </div>
                       )}
                     </>
-                  ) : (
-                    <>
-                      <div className="flex flex-col w-full items-center">
-                        <div>BET</div> <div>KES {bet2}</div>
-                      </div>
-                    </>
                   )}
-                </button>
+
+                  <button
+                    onClick={
+                      userID !== "" ? handleBet2 : () => setIsAlertDialogL(true)
+                    }
+                    className={`${getButtonClass2()} text-white rounded-lg font-bold py-2 px-4 w-[120px] h-[100px]`}
+                  >
+                    {BetMode2 === false ? (
+                      <>
+                        {gameStatus === "running" && betValue2 > 0 ? (
+                          <>Cashout ${(bet2 * multiplier).toFixed(2)}</>
+                        ) : (
+                          <div className="flex flex-col w-full items-center">
+                            <div>Cancel</div>
+                            <div>BET</div> <div>KES {bet2}</div>
+                          </div>
+                        )}
+                      </>
+                    ) : (
+                      <>
+                        <div className="flex flex-col w-full items-center">
+                          <div>BET</div> <div>KES {bet2}</div>
+                        </div>
+                      </>
+                    )}
+                  </button>
+                </div>
               </div>
 
               {!isBet2 && (
