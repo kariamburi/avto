@@ -1360,8 +1360,8 @@ const Game: React.FC = () => {
     <div className="bg-gray-900 text-white min-h-screen flex flex-col">
       <section className="bg-gray-800 p-2 rounded-lg shadow-lg container mx-auto">
         <div className="w-full flex justify-between items-center">
-          <div className="flex gap-10 items-center">
-            <div className="flex gap-3 p-4 items-center">
+          <div className="flex items-center">
+            <div className="flex gap-3 p-1 items-center">
               <div className="rounded-full overflow-hidden hidden lg:inline">
                 <img
                   src="/logo1.png"
@@ -2672,9 +2672,9 @@ const Game: React.FC = () => {
                 Sound
               </button>
               {isOpen2 && (
-                <div className="absolute left-0 mt-2 py-2 w-48 bg-gray-200 rounded-md shadow-xl z-20">
-                  <div className="flex justify-between items-center p-1">
-                    <label className="block text-xs text-gray-900">
+                <div className="absolute left-0 mt-2 py-2 w-56 bg-gray-200 rounded-md shadow-xl z-20">
+                  <div className="flex justify-between items-center p-1 mb-2">
+                    <label className="block text-sm text-gray-900">
                       {isMusicPlaying
                         ? "Pause Backgroud Music"
                         : "Play Backgroud Music"}
@@ -2693,7 +2693,7 @@ const Game: React.FC = () => {
                     </div>
                   </div>
                   <div className="flex flex justify-between items-center p-1">
-                    <label className="block text-xs text-gray-900">
+                    <label className="block text-sm text-gray-900">
                       {isMusicPlaying1
                         ? "Pause Sound Effect"
                         : "Play Sound Effect"}
