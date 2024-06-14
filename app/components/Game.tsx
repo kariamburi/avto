@@ -214,7 +214,7 @@ const Game: React.FC = () => {
           updateBets(userID, bet, betno, multiplier, cashout, status);
           toast({
             title: "Win!",
-            description: "Cashout $" + (bet * multiplier).toFixed(2),
+            description: "Cashout KES " + (bet * multiplier).toFixed(2),
             duration: 5000,
             className: "bg-green-600 text-white",
           });
@@ -385,7 +385,7 @@ const Game: React.FC = () => {
       updateBets(userID, bet, 1, multiplier, cashout, status);
       toast({
         title: "Win!",
-        description: "Cashout $" + (bet * multiplier).toFixed(2),
+        description: "Cashout KES " + (bet * multiplier).toFixed(2),
         duration: 5000,
         className: "bg-green-600 text-white",
       });
@@ -418,7 +418,7 @@ const Game: React.FC = () => {
       updateBets(userID, bet2, 2, multiplier, cashout, status);
       toast({
         title: "Win!",
-        description: "Cashout $" + (bet2 * multiplier).toFixed(2),
+        description: "Cashout KES " + (bet2 * multiplier).toFixed(2),
         duration: 5000,
         className: "bg-green-600 text-white",
       });
@@ -675,7 +675,7 @@ const Game: React.FC = () => {
           updateBets(userID, bet2, betno, multiplier, cashout, status);
           toast({
             title: "Win!",
-            description: "Cashout $" + (bet2 * multiplier).toFixed(2),
+            description: "Cashout KES " + (bet2 * multiplier).toFixed(2),
             duration: 5000,
             className: "bg-green-600 text-white",
           });
@@ -1399,7 +1399,7 @@ const Game: React.FC = () => {
                     setisPopover(true);
                   }}
                 >
-                  <div className="flex w-[100px] gap-1 p-1 cursor-pointer text-xs text-gray-900 bg-orange-400 items-center rounded-full hover:bg-orange-500">
+                  <div className="flex gap-1 pl-1 pt-1 pb-1 cursor-pointer text-xs text-gray-900 bg-orange-400 items-center rounded-full hover:bg-orange-500">
                     <div>How to play</div>
                     <div>
                       <HelpOutlineOutlinedIcon sx={{ fontSize: 16 }} />
@@ -3162,7 +3162,7 @@ const Game: React.FC = () => {
                       ? "bg-gray-800 text-white"
                       : "bg-gray-900 text-gray-500"
                   }`}
-                  onClick={() => setActiveTab(index)}
+                  onClick={() => handleMybets(index)}
                 >
                   {tab.title}
                 </button>
