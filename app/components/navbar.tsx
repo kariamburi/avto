@@ -13,9 +13,9 @@ export default function Navbar() {
 
   // console.log(unreadCount);
   return (
-    <div className="flex bg-gray-800 shadow-lg py-1 w-full h-20 items-center">
+    <div className="flex bg-gray-800 shadow-lg py-1 w-full items-center">
       <div className="flex-1 my-auto">
-        <div className="flex gap-2 p-4 items-center">
+        <div className="flex gap-2 p-2 items-center">
           <div className="rounded-full overflow-hidden hidden lg:inline">
             <img
               src="/logo1.png"
@@ -32,9 +32,6 @@ export default function Navbar() {
               className="h-8 hover:cursor-pointer"
             />
           </div>
-          <h1 className="text-lg text-white font-bold text-center">
-            Admin Panel
-          </h1>
         </div>
       </div>
       <div

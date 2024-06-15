@@ -9,7 +9,7 @@ const nextConfig = {
             { key: "X-Forwarded-Proto", value: "https" }
           ]
        }
-     ]
+    ]
    }
   };
   

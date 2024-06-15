@@ -533,7 +533,7 @@ const page = () => {
                                 <RandomAvatar /> {bet.phone}
                               </div>
                               <div className="justify-center items-center flex flex-col">
-                                KES {bet.amount}
+                                KES {bet.amount.toFixed(2)}
                               </div>
                               <div className="justify-center items-center flex flex-col">
                                 {bet.id}
@@ -643,13 +643,13 @@ const page = () => {
                                 {bet.mode}
                               </div>
                               <div className="justify-center items-center flex flex-col">
-                                KES {bet.amount}
+                                KES {bet.amount.toFixed(2)}
                               </div>
                               <div className="justify-center items-center flex flex-col">
                                 {bet.receiptno}
                               </div>
                               <div className="justify-center items-center flex flex-col">
-                                KES {bet.org_balance}
+                                KES {bet.org_balance.toFixed(2)}
                               </div>
                               <div className="justify-center items-center flex flex-col">
                                 {formattedCreatedAt}
@@ -791,7 +791,7 @@ const page = () => {
                               </div>
 
                               <div className="justify-center items-center flex flex-col">
-                                KES {bet.amount}
+                                KES {bet.amount.toFixed(2)}
                               </div>
                               <div className="justify-center items-center flex flex-col">
                                 {formattedCreatedAt}
