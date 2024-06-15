@@ -1,14 +1,14 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
    async headers() {
-     return [
-        {
+return [
+       {
           // matching all API routes
-          source: "/api/:path*",
+         source: "/api/:path*",
           headers: [
             { key: "X-Forwarded-Proto", value: "https" }
           ]
-       }
+      }
     ]
    }
   };

@@ -23,6 +23,7 @@ import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import HelpOutlineOutlinedIcon from "@mui/icons-material/HelpOutlineOutlined";
 import AdminPanelSettingsOutlinedIcon from "@mui/icons-material/AdminPanelSettingsOutlined";
 import VolumeUpOutlinedIcon from "@mui/icons-material/VolumeUpOutlined";
+import QuestionAnswerOutlinedIcon from "@mui/icons-material/QuestionAnswerOutlined";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -72,7 +73,7 @@ import LoginOutlinedIcon from "@mui/icons-material/LoginOutlined";
 import AppRegistrationOutlinedIcon from "@mui/icons-material/AppRegistrationOutlined";
 import Share from "./Share";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
-
+import ContactSupportOutlinedIcon from "@mui/icons-material/ContactSupportOutlined";
 interface userData {
   name: string;
   phone: string;
@@ -1166,6 +1167,7 @@ const Game: React.FC = () => {
         setuserID(userData.phone);
         setusername(userData.name);
         setuserstatus(userData.status);
+
         //check balance
 
         const balQuery = query(
@@ -1197,8 +1199,12 @@ const Game: React.FC = () => {
     sessionStorage.setItem("status", "");
     sessionStorage.setItem("balance", "0");
 
+    setuserID("");
+    setusername("");
+    setuserstatus("");
+
     // Reload the current page
-    window.location.reload();
+    //window.location.reload();
   };
 
   //ACOUNT
@@ -2441,7 +2447,24 @@ const Game: React.FC = () => {
       <main className="flex-grow container mx-auto p-1 lg:p-4 grid grid-cols-1 md:grid-cols-3 gap-6">
         <div className="bg-gray-800 p-2 rounded-lg shadow-lg space-y-6 hidden lg:inline">
           <div className="flex justify-between rounded-full p-1 mb-2">
-            <div></div>
+            <div>
+              {userID && (
+                <a href={`/chat/TR658DYD6R6`}>
+                  <TooltipProvider>
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <button className="hover:bg-gray-700 bg-orange-600 text-white text-xs p-1 rounded-full shadow">
+                          <QuestionAnswerOutlinedIcon sx={{ fontSize: 18 }} />
+                        </button>
+                      </TooltipTrigger>
+                      <TooltipContent>
+                        <p>Support Team</p>
+                      </TooltipContent>
+                    </Tooltip>
+                  </TooltipProvider>
+                </a>
+              )}
+            </div>
             <Share />
           </div>
           <div className="w-full max-w-xl mx-auto mt-2">
@@ -2713,7 +2736,7 @@ const Game: React.FC = () => {
                                     : "bg-gray-900 "
                                 }`}
                               >
-                                <div className="flex gap-1 items-center">
+                                <div className="flex gap-1 col-span-1 items-center">
                                   <RandomAvatar />{" "}
                                   {bet.name
                                     ? bet.name.substring(0, 2) + "xxx"
@@ -3236,7 +3259,24 @@ const Game: React.FC = () => {
         <div className="bg-gray-800 p-2 rounded-lg shadow-lg space-y-6">
           <div className="w-full max-w-xl mx-auto mt-2">
             <div className="flex justify-between rounded-full p-1 mb-2">
-              <div></div>
+              <div>
+                {userID && (
+                  <a href={`/chat/TR658DYD6R6`}>
+                    <TooltipProvider>
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <button className="hover:bg-gray-700 bg-orange-600 text-white text-xs p-1 rounded-full shadow">
+                            <QuestionAnswerOutlinedIcon sx={{ fontSize: 18 }} />
+                          </button>
+                        </TooltipTrigger>
+                        <TooltipContent>
+                          <p>Support Team</p>
+                        </TooltipContent>
+                      </Tooltip>
+                    </TooltipProvider>
+                  </a>
+                )}
+              </div>
               <Share />
             </div>
             <div className="flex bg-gray-900 rounded-full p-1">
@@ -3507,7 +3547,7 @@ const Game: React.FC = () => {
                                     : "bg-gray-900 "
                                 }`}
                               >
-                                <div className="flex gap-1 items-center">
+                                <div className="flex gap-1 col-span-1 items-center">
                                   <RandomAvatar />{" "}
                                   {bet.name
                                     ? bet.name.substring(0, 2) + "xxx"
