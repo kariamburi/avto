@@ -96,7 +96,7 @@ const startBettingPhase = () => {
 const startGameLoop = () => {
   if (gameInProgress) return;
   gameInProgress = true;
-  console.log('Starting game loop');
+ // console.log('Starting game loop');
   crashPoint = generateCrashPoint();
 
   const interval = setInterval(() => {
@@ -106,7 +106,7 @@ const startGameLoop = () => {
       clients.forEach(client => {
         client.send(JSON.stringify({ type: 'crash', multiplier }));
       });
-      console.log('CRASHED: ' + multiplier);
+     // console.log('CRASHED: ' + multiplier);
       clearInterval(interval);
       gameInProgress = false;
       crashPoint = generateCrashPoint();
@@ -147,7 +147,7 @@ app.prepare().then(async () => {
     ws.on('message', (message) => {
       try {
         const data = JSON.parse(message);
-        console.log('Received:', data);
+       // console.log('Received:', data);
 
         if (data.type === 'bet') {
           if (!gameInProgress && bettingPhase) {

@@ -70,6 +70,9 @@ import Button from "@mui/material/Button";
 import Link from "next/link";
 import LoginOutlinedIcon from "@mui/icons-material/LoginOutlined";
 import AppRegistrationOutlinedIcon from "@mui/icons-material/AppRegistrationOutlined";
+import Share from "./Share";
+import { FaEye, FaEyeSlash } from "react-icons/fa";
+
 interface userData {
   name: string;
   phone: string;
@@ -164,7 +167,9 @@ const Game: React.FC = () => {
   const [phonenumber, setphonenumber] = useState("");
   const [password, setpassword] = useState("");
   const [passwordconfirm, setpasswordconfirm] = useState("");
+
   const placeBetSound = useRef<HTMLAudioElement | null>(null);
+  const CancelSound = useRef<HTMLAudioElement | null>(null);
   const cashOutSound = useRef<HTMLAudioElement | null>(null);
   const backgroundMusic = useRef<HTMLAudioElement | null>(null);
   const [isMusicPlaying, setIsMusicPlaying] = useState<boolean>(false);
@@ -245,6 +250,9 @@ const Game: React.FC = () => {
             setbetValue(0);
             setBetMode(true);
             removeBet(bet, 1);
+            if (CancelSound.current && isMusicPlaying1) {
+              CancelSound.current.play();
+            }
             //cancel bet
             try {
               const userQuery = query(
@@ -365,7 +373,7 @@ const Game: React.FC = () => {
       isOnCashout &&
       BetMode === false &&
       betValue > 0 &&
-      multiplier.toFixed(2) === parseFloat(autoCashoutMultipler).toFixed(2)
+      multiplier.toFixed(2) >= parseFloat(autoCashoutMultipler).toFixed(2)
     ) {
       setBalance(balance + bet * multiplier);
       sessionStorage.setItem(
@@ -377,7 +385,7 @@ const Game: React.FC = () => {
       setbetValue(0);
       setcashoutMultiplier(multiplier);
       cashOut(username, 1);
-      setBetMode(true);
+
       const bal = balance + bet * multiplier;
       const cashout = bet * multiplier;
       updateBalance(userID, bal);
@@ -399,7 +407,7 @@ const Game: React.FC = () => {
       isOnCashout2 &&
       BetMode2 === false &&
       betValue2 > 0 &&
-      multiplier.toFixed(2) === parseFloat(autoCashoutMultipler2).toFixed(2)
+      multiplier.toFixed(2) >= parseFloat(autoCashoutMultipler2).toFixed(2)
     ) {
       setBalance(balance + bet2 * multiplier);
       sessionStorage.setItem(
@@ -410,7 +418,6 @@ const Game: React.FC = () => {
       setbetValue2(0);
       setcashoutMultiplier2(multiplier);
       cashOut(username, 2);
-      setBetMode2(true);
       const bal = balance + bet2 * multiplier;
       const cashout = bet2 * multiplier;
       updateBalance(userID, bal);
@@ -474,6 +481,11 @@ const Game: React.FC = () => {
   useEffect(() => {
     if (gameStatus === "crashed" && betstatus === "updateserver") {
       setMultipliers((prevMultipliers) => [...prevMultipliers, multiplier]);
+
+      const scrollToBottom = () => {
+        messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+      };
+      scrollToBottom();
       if (userID !== "") {
         const loadbalance = async () => {
           const userQuery = query(
@@ -563,7 +575,6 @@ const Game: React.FC = () => {
           placebetServer();
           //update server
         }
-        setBetMode(false);
       }
     }
 
@@ -615,11 +626,11 @@ const Game: React.FC = () => {
           placebetServer();
           //update server
         }
-        setBetMode2(false);
+        // setBetMode2(false);
       }
     }
 
-    console.log(`Balance changed: ${balance}`);
+    // console.log(`Balance changed: ${balance}`);
     // Perform any other actions you want to take on balance change
 
     const user_id = sessionStorage.getItem("userID");
@@ -706,6 +717,9 @@ const Game: React.FC = () => {
             setbetValue2(0);
             setBetMode2(true);
             removeBet(bet2, 1);
+            if (CancelSound.current && isMusicPlaying1) {
+              CancelSound.current.play();
+            }
             //cancel bet
             try {
               const userQuery = query(
@@ -988,6 +1002,12 @@ const Game: React.FC = () => {
   const [errorpasswordL, seterrorpasswordL] = useState(""); // Default country code
   const [isChecked, setIsChecked] = useState(false);
   const [errorterms, seterrorterms] = useState(""); // Default country code
+
+  const [showPassword, setShowPassword] = useState(false);
+
+  const togglePasswordVisibility = () => {
+    setShowPassword(!showPassword);
+  };
 
   const handleRegister = async (e: any) => {
     e.preventDefault();
@@ -1399,10 +1419,32 @@ const Game: React.FC = () => {
                     setisPopover(true);
                   }}
                 >
-                  <div className="flex gap-1 p-1 w-[96px] cursor-pointer text-xs text-gray-900 bg-orange-400 items-center rounded-full hover:bg-orange-500">
-                    <div>How to play</div>
-                    <div>
-                      <HelpOutlineOutlinedIcon sx={{ fontSize: 16 }} />
+                  <div className="flex p-1 cursor-pointer text-xs text-gray-900 bg-orange-400 items-center rounded-full hover:bg-orange-500">
+                    <div className="hidden lg:inline">
+                      <div className="flex gap-1 items-center ">
+                        <div className="">How to play</div>
+                        <div>
+                          <HelpOutlineOutlinedIcon sx={{ fontSize: 16 }} />
+                        </div>
+                      </div>
+                    </div>
+                    <div className="flex gap-1 items-center lg:hidden">
+                      <TooltipProvider>
+                        <Tooltip>
+                          <TooltipTrigger asChild>
+                            <div className="flex gap-1 items-center">
+                              <div>
+                                <HelpOutlineOutlinedIcon
+                                  sx={{ fontSize: 16 }}
+                                />
+                              </div>
+                            </div>
+                          </TooltipTrigger>
+                          <TooltipContent>
+                            <p>How to play</p>
+                          </TooltipContent>
+                        </Tooltip>
+                      </TooltipProvider>
                     </div>
                   </div>
                 </PopoverTrigger>
@@ -2050,16 +2092,23 @@ const Game: React.FC = () => {
                                   </div>
                                 </div>
 
-                                <div className="flex flex-col gap-1 mb-5 w-full">
+                                <div className="flex flex-col gap-1 mb-5 w-full relative">
                                   <TextField
                                     id="outlined-password-input"
                                     label="Password"
-                                    type="text"
+                                    type={showPassword ? "text" : "password"}
                                     value={password}
                                     onChange={(e) =>
                                       setpassword(e.target.value)
                                     }
+                                    className="w-full"
                                   />
+                                  <div
+                                    onClick={togglePasswordVisibility}
+                                    className="absolute right-2 top-1/2 transform -translate-y-1/2 cursor-pointer text-gray-600"
+                                  >
+                                    {showPassword ? <FaEyeSlash /> : <FaEye />}
+                                  </div>
                                   <div className="text-red-400">
                                     {errorpasswordL}
                                   </div>
@@ -2372,7 +2421,11 @@ const Game: React.FC = () => {
       </section>
       <main className="flex-grow container mx-auto p-1 lg:p-4 grid grid-cols-1 md:grid-cols-3 gap-6">
         <div className="bg-gray-800 p-2 rounded-lg shadow-lg space-y-6 hidden lg:inline">
-          <div className="w-full max-w-xl mx-auto mt-10">
+          <div className="flex justify-between rounded-full p-1 mb-2">
+            <div></div>
+            <Share />
+          </div>
+          <div className="w-full max-w-xl mx-auto mt-2">
             <div className="flex bg-gray-900 rounded-full p-1">
               {tabs.map((tab, index) => (
                 <button
@@ -2436,7 +2489,7 @@ const Game: React.FC = () => {
                                 <div className="flex gap-1 items-center">
                                   <RandomAvatar /> {bet.username}
                                 </div>
-                                <div>${bet.bet}</div>
+                                <div>KES {bet.bet}</div>
                                 <div>
                                   {bet.cashoutStatus === false ? (
                                     <>{bet.multiplier.toFixed(2)}</>
@@ -2454,11 +2507,12 @@ const Game: React.FC = () => {
                                 <div>
                                   {bet.cashoutStatus === false ? (
                                     <>
-                                      ${(bet.bet * bet.multiplier).toFixed(2)}
+                                      KES{" "}
+                                      {(bet.bet * bet.multiplier).toFixed(2)}
                                     </>
                                   ) : (
                                     <>
-                                      $
+                                      KES
                                       {bet.betno === 1 &&
                                         (bet.bet * cashoutmultiplier).toFixed(
                                           2
@@ -2674,7 +2728,7 @@ const Game: React.FC = () => {
             <div className="relative">
               <button
                 onClick={toggleMenu2}
-                className="p-1 gap-1 text-xs text-gray-400 rounded-md ring-1 ring-gray-500"
+                className="p-1 gap-1 W-[100px] text-xs text-gray-400 rounded-md ring-1 ring-gray-500"
               >
                 <VolumeUpOutlinedIcon sx={{ fontSize: 14 }} />
                 Sound
@@ -3156,11 +3210,16 @@ const Game: React.FC = () => {
         </div>
         <audio ref={placeBetSound} src="/placeBet.mp3" />
         <audio ref={cashOutSound} src="/cashOut.mp3" />
+        <audio ref={CancelSound} src="/cancel.mp3" />
         <audio ref={backgroundMusic} src="/backgroundMusic.mp3" loop />
       </main>
       <section className="p-1 container mx-auto lg:hidden">
         <div className="bg-gray-800 p-2 rounded-lg shadow-lg space-y-6">
-          <div className="w-full max-w-xl mx-auto mt-10">
+          <div className="w-full max-w-xl mx-auto mt-2">
+            <div className="flex justify-between rounded-full p-1 mb-2">
+              <div></div>
+              <Share />
+            </div>
             <div className="flex bg-gray-900 rounded-full p-1">
               {tabs.map((tab, index) => (
                 <button
@@ -3224,7 +3283,7 @@ const Game: React.FC = () => {
                                 <div className="flex gap-1 items-center">
                                   <RandomAvatar /> {bet.username}
                                 </div>
-                                <div>${bet.bet}</div>
+                                <div>KES {bet.bet}</div>
                                 <div>
                                   {bet.cashoutStatus === false ? (
                                     <>{bet.multiplier.toFixed(2)}</>
@@ -3242,11 +3301,12 @@ const Game: React.FC = () => {
                                 <div>
                                   {bet.cashoutStatus === false ? (
                                     <>
-                                      ${(bet.bet * bet.multiplier).toFixed(2)}
+                                      KES{" "}
+                                      {(bet.bet * bet.multiplier).toFixed(2)}
                                     </>
                                   ) : (
                                     <>
-                                      $
+                                      KES
                                       {bet.betno === 1 &&
                                         (bet.bet * cashoutmultiplier).toFixed(
                                           2
