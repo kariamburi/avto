@@ -373,27 +373,36 @@ const Game: React.FC = () => {
       isOnCashout &&
       BetMode === false &&
       betValue > 0 &&
+      gameStatus === "running" &&
       multiplier.toFixed(2) >= parseFloat(autoCashoutMultipler).toFixed(2)
     ) {
-      setBalance(balance + bet * multiplier);
+      setBalance(balance + bet * parseFloat(autoCashoutMultipler));
       sessionStorage.setItem(
         "balance",
-        (balance + bet * multiplier).toString()
+        (balance + bet * parseFloat(autoCashoutMultipler)).toString()
       );
 
       setBetMode(true);
       setbetValue(0);
-      setcashoutMultiplier(multiplier);
+      setcashoutMultiplier(parseFloat(autoCashoutMultipler));
       cashOut(username, 1);
 
-      const bal = balance + bet * multiplier;
-      const cashout = bet * multiplier;
+      const bal = balance + bet * parseFloat(autoCashoutMultipler);
+      const cashout = bet * parseFloat(autoCashoutMultipler);
       updateBalance(userID, bal);
       const status = "Win";
-      updateBets(userID, bet, 1, multiplier, cashout, status);
+      updateBets(
+        userID,
+        bet,
+        1,
+        parseFloat(autoCashoutMultipler),
+        cashout,
+        status
+      );
       toast({
         title: "Win!",
-        description: "Cashout KES " + (bet * multiplier).toFixed(2),
+        description:
+          "Cashout KES " + (bet * parseFloat(autoCashoutMultipler)).toFixed(2),
         duration: 5000,
         className: "bg-green-600 text-white",
       });
@@ -407,25 +416,35 @@ const Game: React.FC = () => {
       isOnCashout2 &&
       BetMode2 === false &&
       betValue2 > 0 &&
+      gameStatus === "running" &&
       multiplier.toFixed(2) >= parseFloat(autoCashoutMultipler2).toFixed(2)
     ) {
-      setBalance(balance + bet2 * multiplier);
+      setBalance(balance + bet2 * parseFloat(autoCashoutMultipler2));
       sessionStorage.setItem(
         "balance",
-        (balance + bet2 * multiplier).toString()
+        (balance + bet2 * parseFloat(autoCashoutMultipler2)).toString()
       );
       setBetMode2(true);
       setbetValue2(0);
-      setcashoutMultiplier2(multiplier);
+      setcashoutMultiplier2(parseFloat(autoCashoutMultipler2));
       cashOut(username, 2);
-      const bal = balance + bet2 * multiplier;
-      const cashout = bet2 * multiplier;
+      const bal = balance + bet2 * parseFloat(autoCashoutMultipler2);
+      const cashout = bet2 * parseFloat(autoCashoutMultipler2);
       updateBalance(userID, bal);
       const status = "Win";
-      updateBets(userID, bet2, 2, multiplier, cashout, status);
+      updateBets(
+        userID,
+        bet2,
+        2,
+        parseFloat(autoCashoutMultipler2),
+        cashout,
+        status
+      );
       toast({
         title: "Win!",
-        description: "Cashout KES " + (bet2 * multiplier).toFixed(2),
+        description:
+          "Cashout KES " +
+          (bet2 * parseFloat(autoCashoutMultipler2)).toFixed(2),
         duration: 5000,
         className: "bg-green-600 text-white",
       });
