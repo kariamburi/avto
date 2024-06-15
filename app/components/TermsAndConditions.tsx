@@ -128,8 +128,7 @@ const TermsAndConditions: React.FC = () => {
       <h2 className="text-2xl font-semibold mt-6 mb-2">Governing Law</h2>
       <p className="mb-4">
         These Terms shall be governed by and construed in accordance with the
-        laws of [Jurisdiction], without regard to its conflict of law
-        principles.
+        laws of Kenya, without regard to its conflict of law principles.
       </p>
 
       <h2 className="text-2xl font-semibold mt-6 mb-2">Changes to Terms</h2>
