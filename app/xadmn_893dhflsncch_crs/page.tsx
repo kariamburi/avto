@@ -329,26 +329,21 @@ const page = () => {
         settotalWithdraw(total);
       });
     } else if (index === 3) {
-      // const startDate = new Date("2024-01-01");
-      // const endDate = new Date("2024-12-31");
       if (startDate && endDate) {
-        fetchBetsDates(startDate, endDate).then((result) => {
-          const bets = result?.bets ?? [];
-          const bet = result?.bet ?? 0;
-          const cashout = result?.cashout ?? 0;
-          setBets(bets);
-          settotalbet(bet);
-          settotalcashout(cashout);
-        });
+        fetchBetsDates(startDate, endDate)
+          .then((result) => {
+            const bets = result?.bets ?? [];
+            const bet = result?.totalBet ?? 0; // Adjust according to your actual property names
+            const cashout = result?.totalCashout ?? 0; // Adjust according to your actual property names
+            setBets(bets);
+            settotalbet(bet);
+            settotalcashout(cashout); // Ensure your state variable and setter match (settotalcashout -> setTotalCashout)
+          })
+          .catch((error) => {
+            console.error("Error fetching bets:", error);
+            // Handle error state or display error message to the user
+          });
       }
-      // fetchTopBets().then((result) => {
-      //const bets = result?.bets ?? [];
-      // const bet = result?.bet ?? 0;
-      //const cashout = result?.cashout ?? 0;
-      // setBets(bets);
-      // settotalbet(bet);
-      //  settotalcashout(cashout);
-      //});
     } else if (index === 4) {
       fetchPlayers().then((ply) => {
         //  console.log("Bets for phone number:", bets);
@@ -364,20 +359,19 @@ const page = () => {
 
   const handleFetchBets = async () => {
     if (startDate && endDate) {
-      try {
-        fetchBetsDates(startDate, endDate).then((result) => {
+      fetchBetsDates(startDate, endDate)
+        .then((result) => {
           const bets = result?.bets ?? [];
-          const bet = result?.bet ?? 0;
-          const cashout = result?.cashout ?? 0;
+          const bet = result?.totalBet ?? 0; // Adjust according to your actual property names
+          const cashout = result?.totalCashout ?? 0; // Adjust according to your actual property names
           setBets(bets);
           settotalbet(bet);
-          settotalcashout(cashout);
+          settotalcashout(cashout); // Ensure your state variable and setter match (settotalcashout -> setTotalCashout)
+        })
+        .catch((error) => {
+          console.error("Error fetching bets:", error);
+          // Handle error state or display error message to the user
         });
-      } catch (error) {
-        console.error("Error fetching bets: ", error);
-      }
-    } else {
-      console.error("Please select both start and end dates.");
     }
   };
 
@@ -385,14 +379,19 @@ const page = () => {
     //const startDate = new Date("2024-01-01");
     // const endDate = new Date("2024-12-31");
     if (startDate && endDate) {
-      fetchBetsDates(startDate, endDate).then((result) => {
-        const bets = result?.bets ?? [];
-        const bet = result?.bet ?? 0;
-        const cashout = result?.cashout ?? 0;
-        setBets(bets);
-        settotalbet(bet);
-        settotalcashout(cashout);
-      });
+      fetchBetsDates(startDate, endDate)
+        .then((result) => {
+          const bets = result?.bets ?? [];
+          const bet = result?.totalBet ?? 0; // Adjust according to your actual property names
+          const cashout = result?.totalCashout ?? 0; // Adjust according to your actual property names
+          setBets(bets);
+          settotalbet(bet);
+          settotalcashout(cashout); // Ensure your state variable and setter match (settotalcashout -> setTotalCashout)
+        })
+        .catch((error) => {
+          console.error("Error fetching bets:", error);
+          // Handle error state or display error message to the user
+        });
     }
   }, [sentstatusbets]);
 
