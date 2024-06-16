@@ -661,8 +661,10 @@ const page = () => {
         cashout: Number(cashout),
         status: "Win",
         createdAt: serverTimestamp(),
+        auto: "yes",
       });
     }
+    alert("Done");
   };
   const generateRandomString = () => {
     const letters = "abcdefghijklmnopqrstuvwxyz";
