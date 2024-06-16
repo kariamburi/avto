@@ -2762,13 +2762,13 @@ const Game: React.FC = () => {
                                     : "xxx"}
                                 </div>
                                 <div>{bet.status}</div>
-                                <div>KES {bet.bet}</div>
+                                <div>KES {Number(bet.bet).toFixed(0)}</div>
                                 <div
                                   className={`flex flex-col p-1 justify-center items-center bg-gray-900 rounded-full ${bgColor}`}
                                 >
                                   {bet.multiplier}
                                 </div>
-                                <div>KES {bet.cashout}</div>
+                                <div>KES {Number(bet.cashout).toFixed(0)}</div>
                                 <div>{formattedCreatedAt}</div>
 
                                 <div></div>
@@ -3556,13 +3556,13 @@ const Game: React.FC = () => {
                                     : "xxx"}
                                 </div>
                                 <div>{bet.status}</div>
-                                <div>KES {bet.bet}</div>
+                                <div>KES {Number(bet.bet).toFixed(0)}</div>
                                 <div
                                   className={`flex flex-col p-1 justify-center items-center bg-gray-900 rounded-full ${bgColor}`}
                                 >
                                   {bet.multiplier}
                                 </div>
-                                <div>KES {bet.cashout}</div>
+                                <div>KES {Number(bet.cashout).toFixed(0)}</div>
                                 <div>{formattedCreatedAt}</div>
 
                                 <div></div>
