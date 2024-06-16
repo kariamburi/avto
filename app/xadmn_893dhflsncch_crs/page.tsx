@@ -646,7 +646,7 @@ const page = () => {
       const maxBet = 4000;
 
       const randomBetAmount = (
-        Math.floor(Math.random() * ((maxBet - minBet) / 5 + 1)) * 5 +
+        Math.floor(Math.random() * ((maxBet - minBet) / 10 + 1)) * 10 +
         minBet
       ).toFixed(0);
 
@@ -657,6 +657,7 @@ const page = () => {
       const cashout = Number(randomBetNo.toFixed(2)) * Number(randomBetAmount);
       const randomTwoLetters = generateRandomString();
       const randomPhone = generateRandomPhone();
+      const randomTimestampToday = generateRandomTimestampToday();
       addDoc(collection(db, "bets"), {
         phone: randomPhone,
         name: randomTwoLetters,
@@ -665,7 +666,7 @@ const page = () => {
         multiplier: Number(randomBetNo.toFixed(2)),
         cashout: Number(cashout),
         status: "Win",
-        createdAt: serverTimestamp(),
+        createdAt: randomTimestampToday,
         auto: "yes",
       });
     }
@@ -684,6 +685,24 @@ const page = () => {
     const countryCode = "254";
     const randomNineDigits = Math.floor(Math.random() * 900000000) + 100000000; // Generates a 9-digit number
     return countryCode + randomNineDigits.toString();
+  };
+  const generateRandomTimestampToday = () => {
+    const now = new Date();
+
+    // Set the time to midnight to start from the beginning of the day
+    now.setHours(0, 0, 0, 0);
+
+    // Generate a random hour between 0 and 23
+    const randomHour = Math.floor(Math.random() * 24);
+
+    // Create a new date with the random hour
+    const randomDate = new Date(now);
+    randomDate.setHours(randomHour);
+
+    // Convert the random date to a Firestore Timestamp
+    const randomTimestamp = Timestamp.fromDate(randomDate);
+
+    return randomTimestamp;
   };
   return (
     <div className="bg-gray-900 text-white min-h-screen flex flex-col">

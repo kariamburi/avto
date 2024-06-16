@@ -32,8 +32,8 @@ const SendMessage = ({ uid, displayName, recipientUid }: sidebarProps) => {
       const imageUrl = "";
       const userQuery = query(
         collection(db, "messages"),
-        where("uid", "==", uid),
-        where("recipientUid", "==", recipientUid),
+        where("uid", "==", recipientUid),
+        where("recipientUid", "==", uid),
         where(
           "text",
           "==",
@@ -42,6 +42,7 @@ const SendMessage = ({ uid, displayName, recipientUid }: sidebarProps) => {
       );
       const userSnapshot = await getDocs(userQuery);
       if (userSnapshot.empty) {
+        setcheck(false);
         await addDoc(collection(db, "messages"), {
           text: "Hello! Thank you for reaching out to our support team. We're here to assist you. Please feel free to ask any questions or let us know how we can help you today.",
           name: "Support Team",
@@ -51,7 +52,6 @@ const SendMessage = ({ uid, displayName, recipientUid }: sidebarProps) => {
           imageUrl,
           read,
         });
-        setcheck(false);
       }
     };
     if (check) {
