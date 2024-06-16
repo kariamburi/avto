@@ -22,6 +22,7 @@ type sidebarProps = {
 const SendMessage = ({ uid, displayName, recipientUid }: sidebarProps) => {
   const [value, setValue] = useState<string>("");
   const [image, setImg] = useState<File | null>(null);
+  const [check, setcheck] = useState<boolean>(true);
   // const [recipientUid, setrecipientUid] = React.useState<string | null>(null);
   const { toast } = useToast();
 
@@ -45,14 +46,17 @@ const SendMessage = ({ uid, displayName, recipientUid }: sidebarProps) => {
           text: "Hello! Thank you for reaching out to our support team. We're here to assist you. Please feel free to ask any questions or let us know how we can help you today.",
           name: "Support Team",
           createdAt: serverTimestamp(),
-          uid,
-          recipientUid,
+          uid: recipientUid,
+          recipientUid: uid,
           imageUrl,
           read,
         });
+        setcheck(false);
       }
     };
-    welcome();
+    if (check) {
+      welcome();
+    }
   }, []);
   const handleSendMessage = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();

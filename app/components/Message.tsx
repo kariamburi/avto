@@ -61,8 +61,8 @@ const Message = ({
   return (
     <div className="">
       <div
-        className={`flex items-start justify-${
-          message.uid === uid ? "end" : "start"
+        className={`flex items-start ${
+          message.uid === uid ? "justify-end" : "justify-start"
         }`}
       >
         <div className="flex-shrink-0 mr-2">
@@ -99,7 +99,7 @@ const Message = ({
                     />
                   )}
                   <div
-                    className={`text-sm ${player === true ? "w-[200px]" : ""}`}
+                    className={`text-sm ${player === true ? "w-[150px]" : ""}`}
                   >
                     {message.text}
                   </div>
@@ -139,7 +139,7 @@ const Message = ({
                     />
                   )}
                   <div
-                    className={`text-sm ${player === true ? "w-[200px]" : ""}`}
+                    className={`text-sm ${player === true ? "w-[150px]" : ""}`}
                   >
                     {message.text}
                   </div>

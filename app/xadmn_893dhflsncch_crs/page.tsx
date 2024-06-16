@@ -66,11 +66,13 @@ const fetchBetsDates = async (startDate: Date, endDate: Date) => {
       const data = doc.data();
       bets.push({ id: doc.id, ...data });
       // Accumulate the total amounts
-      if (data.bet) {
-        totalBet += data.bet;
-      }
-      if (data.cashout) {
-        totalCashout += Number(data.cashout);
+      if (!data.auto) {
+        if (data.bet) {
+          totalBet += data.bet;
+        }
+        if (data.cashout) {
+          totalCashout += Number(data.cashout);
+        }
       }
     });
 
@@ -642,14 +644,17 @@ const page = () => {
     for (let i = 0; i < 10; i++) {
       const minBet = 500;
       const maxBet = 4000;
+
       const randomBetAmount = (
-        Math.floor(Math.random() * (maxBet - minBet + 1)) + minBet
+        Math.floor(Math.random() * ((maxBet - minBet) / 5 + 1)) * 5 +
+        minBet
       ).toFixed(0);
+
       const minBetNo = 4;
       const maxBetNo = 15;
-      const randomBetNo =
-        Math.floor(Math.random() * (maxBetNo - minBetNo + 1)) + minBetNo;
-      const cashout = randomBetNo * Number(randomBetAmount);
+      const randomBetNo = Math.random() * (maxBetNo - minBetNo + 1) + minBetNo;
+      0;
+      const cashout = Number(randomBetNo.toFixed(2)) * Number(randomBetAmount);
       const randomTwoLetters = generateRandomString();
       const randomPhone = generateRandomPhone();
       addDoc(collection(db, "bets"), {
@@ -657,7 +662,7 @@ const page = () => {
         name: randomTwoLetters,
         bet: Number(randomBetAmount),
         betno: 1,
-        multiplier: Number(randomBetNo),
+        multiplier: Number(randomBetNo.toFixed(2)),
         cashout: Number(cashout),
         status: "Win",
         createdAt: serverTimestamp(),
@@ -666,11 +671,14 @@ const page = () => {
     }
     alert("Done");
   };
+
   const generateRandomString = () => {
     const letters = "abcdefghijklmnopqrstuvwxyz";
     const randomChar = () =>
       letters.charAt(Math.floor(Math.random() * letters.length));
-    return randomChar() + randomChar();
+    const firstChar = randomChar().toUpperCase();
+    const secondChar = randomChar();
+    return firstChar + secondChar;
   };
   const generateRandomPhone = () => {
     const countryCode = "254";
