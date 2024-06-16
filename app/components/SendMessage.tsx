@@ -86,7 +86,7 @@ const SendMessage = ({ uid, displayName, recipientUid }: sidebarProps) => {
             <input
               value={value}
               onChange={(e) => setValue(e.target.value)}
-              className="input text-black w-full p-2 focus:outline-none bg-white rounded-r-none rounded-l-lg"
+              className="input text-black text-sm w-full p-2 focus:outline-none bg-white rounded-r-none rounded-l-lg"
               type="text"
               placeholder="Enter your message..."
             />
@@ -102,7 +102,7 @@ const SendMessage = ({ uid, displayName, recipientUid }: sidebarProps) => {
             <input
               value={value}
               disabled
-              className="input w-full p-2 focus:outline-none bg-white rounded-r-none rounded-l-lg"
+              className="input w-full text-sm p-2 focus:outline-none bg-white rounded-r-none rounded-l-lg"
               type="text"
               placeholder="Enter your message..."
             />
@@ -115,18 +115,6 @@ const SendMessage = ({ uid, displayName, recipientUid }: sidebarProps) => {
             </button>
           </>
         )}
-
-        <div className="cursor-pointer relative p-2 ml-5 mr-5">
-          <label htmlFor="file">
-            <img src="/attach.png" alt="Attach" className="cursor-pointer" />
-          </label>
-          <input
-            type="file"
-            id="file"
-            className="absolute top-0 left-0 opacity-0 h-0 w-0"
-            onChange={(e) => setImg(e.target.files?.[0] || null)}
-          />
-        </div>
       </form>
     </div>
   );

@@ -74,6 +74,8 @@ import AppRegistrationOutlinedIcon from "@mui/icons-material/AppRegistrationOutl
 import Share from "./Share";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import ContactSupportOutlinedIcon from "@mui/icons-material/ContactSupportOutlined";
+import ChatWindow from "./ChatWindow";
+import FloatingChatIcon from "./FloatingChatIcon";
 interface userData {
   name: string;
   phone: string;
@@ -88,6 +90,7 @@ interface Betsdata {
   createdAt: Timestamp; // Assuming createdAt is a Firestore timestamp
   status: string;
 }
+
 async function fetchBetsByPhone(phone: string) {
   try {
     // Create a reference to the "bets" collection
@@ -123,7 +126,7 @@ async function fetchBetsByPhone(phone: string) {
 async function fetchTopBets() {
   try {
     const betsRef = collection(db, "bets");
-    const betsQuery = query(betsRef, orderBy("cashout", "desc"), limit(100));
+    const betsQuery = query(betsRef, where("status", "==", "Win"), limit(200));
 
     const querySnapshot = await getDocs(betsQuery);
 
@@ -464,11 +467,14 @@ const Game: React.FC = () => {
   const [maxbet, setmaxbet] = useState("5000");
   const [houseEdge, sethouseEdge] = useState("0");
   useEffect(() => {
-    if (userID !== "") {
+    const user_id = sessionStorage.getItem("userID");
+
+    if (user_id) {
+      setuserID(user_id);
       const loadbalance = async () => {
         const userQuery = query(
           collection(db, "balance"),
-          where("phone", "==", userID)
+          where("phone", "==", user_id)
         );
         const userSnapshot = await getDocs(userQuery);
         if (!userSnapshot.empty) {
@@ -480,6 +486,16 @@ const Game: React.FC = () => {
       };
       loadbalance();
     }
+    const username_id = sessionStorage.getItem("username");
+    if (username_id) {
+      setusername(username_id);
+    }
+
+    const status_id = sessionStorage.getItem("status");
+    if (status_id) {
+      setuserstatus(status_id);
+    }
+
     const loadSettings = async () => {
       const userQuery = query(collection(db, "settings"));
       const userSnapshot = await getDocs(userQuery);
@@ -1400,6 +1416,10 @@ const Game: React.FC = () => {
   const [isOpen2, setIsOpen2] = useState(false);
   const toggleMenu2 = () => {
     setIsOpen2(!isOpen2);
+  };
+  const [isChatOpen, setChatOpen] = useState(false);
+  const toggleChat = () => {
+    setChatOpen(!isChatOpen);
   };
   return (
     <div className="bg-gray-900 text-white min-h-screen flex flex-col">
@@ -2447,24 +2467,7 @@ const Game: React.FC = () => {
       <main className="flex-grow container mx-auto p-1 lg:p-4 grid grid-cols-1 md:grid-cols-3 gap-6">
         <div className="bg-gray-800 p-2 rounded-lg shadow-lg space-y-6 hidden lg:inline">
           <div className="flex justify-between rounded-full p-1 mb-2">
-            <div>
-              {userID && (
-                <a href={`/chat/TR658DYD6R6`}>
-                  <TooltipProvider>
-                    <Tooltip>
-                      <TooltipTrigger asChild>
-                        <button className="hover:bg-gray-700 bg-orange-600 text-white text-xs p-1 rounded-full shadow">
-                          <QuestionAnswerOutlinedIcon sx={{ fontSize: 18 }} />
-                        </button>
-                      </TooltipTrigger>
-                      <TooltipContent>
-                        <p>Support Team</p>
-                      </TooltipContent>
-                    </Tooltip>
-                  </TooltipProvider>
-                </a>
-              )}
-            </div>
+            <div></div>
             <Share />
           </div>
           <div className="w-full max-w-xl mx-auto mt-2">
@@ -3259,24 +3262,7 @@ const Game: React.FC = () => {
         <div className="bg-gray-800 p-2 rounded-lg shadow-lg space-y-6">
           <div className="w-full max-w-xl mx-auto mt-2">
             <div className="flex justify-between rounded-full p-1 mb-2">
-              <div>
-                {userID && (
-                  <a href={`/chat/TR658DYD6R6`}>
-                    <TooltipProvider>
-                      <Tooltip>
-                        <TooltipTrigger asChild>
-                          <button className="hover:bg-gray-700 bg-orange-600 text-white text-xs p-1 rounded-full shadow">
-                            <QuestionAnswerOutlinedIcon sx={{ fontSize: 18 }} />
-                          </button>
-                        </TooltipTrigger>
-                        <TooltipContent>
-                          <p>Support Team</p>
-                        </TooltipContent>
-                      </Tooltip>
-                    </TooltipProvider>
-                  </a>
-                )}
-              </div>
+              <div></div>
               <Share />
             </div>
             <div className="flex bg-gray-900 rounded-full p-1">
@@ -3577,6 +3563,14 @@ const Game: React.FC = () => {
           </div>
         </div>
       </section>
+      <FloatingChatIcon onClick={toggleChat} />
+      <ChatWindow
+        isOpen={isChatOpen}
+        onClose={toggleChat}
+        senderId={userID}
+        senderName={username}
+        recipientUid={"254728820092"}
+      />
     </div>
   );
 };

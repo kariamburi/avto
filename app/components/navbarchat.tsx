@@ -2,7 +2,8 @@
 import { usePathname, useRouter } from "next/navigation";
 import MobileNav from "./MobileNav";
 import HomeOutlinedIcon from "@mui/icons-material/HomeOutlined";
-export default function Navbar() {
+import AdminPanelSettingsOutlinedIcon from "@mui/icons-material/AdminPanelSettingsOutlined";
+export default function Navbarchat() {
   // const [unreadCount, setUnreadCount] = useState<number>(0);
   const router = useRouter();
   // Get the params of the User
@@ -33,6 +34,13 @@ export default function Navbar() {
             />
           </div>
         </div>
+      </div>
+
+      <div
+        onClick={() => router.push("/xadmn_893dhflsncch_crs")}
+        className="p-[5px] rounded-full bg-white text-gray-900 tooltip tooltip-bottom hover:cursor-pointer mr-2"
+      >
+        <AdminPanelSettingsOutlinedIcon />
       </div>
 
       <div

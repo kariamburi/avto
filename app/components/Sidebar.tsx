@@ -114,19 +114,19 @@ const Sidebar = ({ userId }: sidebarProps) => {
               className={`${
                 isActive &&
                 "bg-gradient-to-b from-emerald-900 to-emerald-950 text-white rounded-sm"
-              } p-medium-16 whitespace-nowrap bg-emerald-50 rounded-sm`}
+              } rounded-sm`}
             >
               <Link href={"/chat/" + messages.uid}>
-                <div className="hover:bg-emerald-100 hover:rounded-sm hover:text-emerald-600 p-3 mb-1 hover:cursor-pointer">
+                <div className="bg-gray-700 rounded-lg text-gray-200  hover:bg-gray-400 hover:text-black p-3 mb-1 hover:cursor-pointer">
                   <div className="flex items-center gap-2">
                     <span className="text-right my-auto">
                       <img
                         className="w-8 h-8 rounded-full object-cover"
-                        src={messages.avatar}
+                        src="/sender.png"
                         alt="avatar"
                       />
                     </span>
-                    <div className="text-xs">{messages.name}</div>
+                    <div className="text-sm font-bold">{messages.name}</div>
                   </div>
                   <div className="text-xs flex w-full justify-between">
                     <div className="flex gap-1 font-normal">
@@ -136,7 +136,7 @@ const Sidebar = ({ userId }: sidebarProps) => {
                         recipientUid={userId}
                       />
                     </div>
-                    <div className="font-normal">{formattedCreatedAt}</div>
+                    <div className="text-xs">{formattedCreatedAt}</div>
                   </div>
                 </div>
               </Link>

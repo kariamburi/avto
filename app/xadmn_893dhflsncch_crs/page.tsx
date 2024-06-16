@@ -2,8 +2,10 @@
 import React, { useEffect, useState } from "react";
 import Navbar from "../components/navbar";
 import {
+  Timestamp,
   addDoc,
   collection,
+  deleteDoc,
   doc,
   getDocs,
   limit,
@@ -27,6 +29,9 @@ import { Label } from "@/components/ui/label";
 import { useToast } from "@/components/ui/use-toast";
 import { Toaster } from "@/components/ui/toaster";
 import useWebSocket from "../hooks/useWebSocket";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
+import Sidebar from "../components/Sidebar";
 interface Bet {
   id: string;
   phone: string;
@@ -38,6 +43,47 @@ interface Bet {
     seconds: number;
   };
 }
+const fetchBetsDates = async (startDate: Date, endDate: Date) => {
+  try {
+    const betsCollection = collection(db, "bets");
+
+    const startTimestamp = Timestamp.fromDate(startDate); // Convert Date to Firestore Timestamp
+    const endTimestamp = Timestamp.fromDate(endDate); // Convert Date to Firestore Timestamp
+
+    const betsQuery = query(
+      betsCollection,
+      where("createdAt", ">=", startTimestamp),
+      where("createdAt", "<=", endTimestamp)
+      //orderBy("cashout", "desc") // Uncomment if you need to order by cashout
+    );
+
+    const querySnapshot = await getDocs(betsQuery);
+
+    const bets: any[] = [];
+    let totalBet = 0;
+    let totalCashout = 0;
+    querySnapshot.forEach((doc) => {
+      const data = doc.data();
+      bets.push({ id: doc.id, ...data });
+      // Accumulate the total amounts
+      if (data.bet) {
+        totalBet += data.bet;
+      }
+      if (data.cashout) {
+        totalCashout += Number(data.cashout);
+      }
+    });
+
+    console.log("Total Bet Amount:", totalBet);
+    console.log("Total Cashout Amount:", totalCashout);
+    return { bets, totalBet, totalCashout };
+  } catch (error) {
+    console.error("Error fetching bets: ", error);
+    throw error;
+  }
+};
+
+// Example usage:
 
 async function fetchTopBets() {
   try {
@@ -238,10 +284,18 @@ const page = () => {
     { title: "Bets", content: "bets" },
     { title: "Players", content: "bets" },
     { title: "Settings", content: "setting" },
+    { title: "Chats", content: "chat" },
   ];
+
+  const [startDate, setStartDate] = useState<Date | null>(
+    new Date("2024-01-01")
+  );
+  const [endDate, setEndDate] = useState<Date | null>(new Date("2024-12-31"));
+
   const [allbalance, setallbalance] = useState<any[]>([]);
   const [totalbalance, settotalbalance] = useState<number>(0);
   const [sentstatus, setsentstatus] = useState<string>("");
+  const [sentstatusbets, setsentstatusbets] = useState<string>("");
   const [Deposit, setDeposit] = useState<any[]>([]);
   const [totalDeposit, settotalDeposit] = useState<number>(0);
   const [Withdraw, setWithdraw] = useState<any[]>([]);
@@ -275,14 +329,26 @@ const page = () => {
         settotalWithdraw(total);
       });
     } else if (index === 3) {
-      fetchTopBets().then((result) => {
-        const bets = result?.bets ?? [];
-        const bet = result?.bet ?? 0;
-        const cashout = result?.cashout ?? 0;
-        setBets(bets);
-        settotalbet(bet);
-        settotalcashout(cashout);
-      });
+      // const startDate = new Date("2024-01-01");
+      // const endDate = new Date("2024-12-31");
+      if (startDate && endDate) {
+        fetchBetsDates(startDate, endDate).then((result) => {
+          const bets = result?.bets ?? [];
+          const bet = result?.bet ?? 0;
+          const cashout = result?.cashout ?? 0;
+          setBets(bets);
+          settotalbet(bet);
+          settotalcashout(cashout);
+        });
+      }
+      // fetchTopBets().then((result) => {
+      //const bets = result?.bets ?? [];
+      // const bet = result?.bet ?? 0;
+      //const cashout = result?.cashout ?? 0;
+      // setBets(bets);
+      // settotalbet(bet);
+      //  settotalcashout(cashout);
+      //});
     } else if (index === 4) {
       fetchPlayers().then((ply) => {
         //  console.log("Bets for phone number:", bets);
@@ -295,6 +361,41 @@ const page = () => {
       });
     }
   };
+
+  const handleFetchBets = async () => {
+    if (startDate && endDate) {
+      try {
+        fetchBetsDates(startDate, endDate).then((result) => {
+          const bets = result?.bets ?? [];
+          const bet = result?.bet ?? 0;
+          const cashout = result?.cashout ?? 0;
+          setBets(bets);
+          settotalbet(bet);
+          settotalcashout(cashout);
+        });
+      } catch (error) {
+        console.error("Error fetching bets: ", error);
+      }
+    } else {
+      console.error("Please select both start and end dates.");
+    }
+  };
+
+  useEffect(() => {
+    //const startDate = new Date("2024-01-01");
+    // const endDate = new Date("2024-12-31");
+    if (startDate && endDate) {
+      fetchBetsDates(startDate, endDate).then((result) => {
+        const bets = result?.bets ?? [];
+        const bet = result?.bet ?? 0;
+        const cashout = result?.cashout ?? 0;
+        setBets(bets);
+        settotalbet(bet);
+        settotalcashout(cashout);
+      });
+    }
+  }, [sentstatusbets]);
+
   useEffect(() => {
     fetchWithdraw().then((result) => {
       const bets = result?.bets ?? [];
@@ -333,6 +434,8 @@ const page = () => {
   }, []);
   const [selectedItems, setSelectedItems] = useState<Bet[]>([]);
   const [payitems, setpayitems] = useState("");
+  const [betsitems, setbetsitems] = useState("");
+  const [selectedItemsbets, setSelectedItemsbets] = useState<Bet[]>([]);
   const { toast } = useToast();
   useEffect(() => {
     if (selectedItems.length > 0) {
@@ -347,7 +450,13 @@ const page = () => {
     } else {
       setpayitems("");
     }
-  }, [selectedItems]);
+
+    if (selectedItemsbets.length > 0) {
+      setbetsitems("(" + selectedItemsbets.length + ")");
+    } else {
+      setbetsitems("");
+    }
+  }, [selectedItems, selectedItemsbets]);
 
   const handleCheckboxChange = (event: any, bet: any) => {
     const { checked } = event.target;
@@ -356,6 +465,37 @@ const page = () => {
     } else {
       setSelectedItems(selectedItems.filter((item) => item !== bet));
     }
+  };
+
+  const handleCheckboxChangebets = (event: any, bet: any) => {
+    const { checked } = event.target;
+    if (checked) {
+      setSelectedItemsbets([...selectedItemsbets, bet]);
+    } else {
+      setSelectedItemsbets(selectedItemsbets.filter((item) => item !== bet));
+    }
+  };
+  const handleDeleteBet = async (e: any) => {
+    e.preventDefault();
+
+    if (selectedItemsbets.length === 0) {
+      console.log("No items selected for deletion.");
+      return;
+    }
+
+    for (let i = 0; i < selectedItemsbets.length; i++) {
+      const id = selectedItemsbets[i].id;
+      try {
+        await deleteDoc(doc(db, "bets", id));
+        console.log(`Document with ID ${id} successfully deleted!`);
+      } catch (error) {
+        console.error(`Error deleting document with ID ${id}: `, error);
+      }
+    }
+    setsentstatusbets("1");
+    setSelectedItemsbets([]);
+    setbetsitems("");
+    alert("Deleted");
   };
 
   const handlePay = async (e: any) => {
@@ -371,11 +511,16 @@ const page = () => {
 
         if (response === "success") {
           updateSent(selectedItems[i].id);
-          setsentstatus(selectedItems[i].id);
         }
       }
     }
+
+    setSelectedItems([]);
+    setpayitems("");
+    setsentstatus("1");
+    alert("Done");
   };
+
   const updateSent = async (id: string) => {
     try {
       // Get a reference to the message document
@@ -760,7 +905,6 @@ const page = () => {
                               className={`p-1 mt-1 rounded-sm grid grid-cols-8 gap-1 w-full items-center text-xs bg-gray-900`}
                             >
                               <div className="gap-1 flex items-center">
-                                {" "}
                                 <input
                                   type="checkbox"
                                   onChange={(e) => handleCheckboxChange(e, bet)}
@@ -833,10 +977,47 @@ const page = () => {
                           </div>
                         )}
                       </div>
+                      <div className="flex gap-2 items-center mt-2 mb-2">
+                        <div>
+                          <label htmlFor="start-date">Start Date: </label>
+                          <DatePicker
+                            id="start-date"
+                            className="text-black rounded-lg p-1"
+                            selected={startDate}
+                            onChange={(date: Date | null) => setStartDate(date)}
+                            dateFormat="yyyy-MM-dd"
+                          />
+                        </div>
+                        <div>
+                          <label htmlFor="end-date">End Date: </label>
+                          <DatePicker
+                            id="end-date"
+                            className="text-black rounded-lg p-1"
+                            selected={endDate}
+                            onChange={(date: Date | null) => setEndDate(date)}
+                            dateFormat="yyyy-MM-dd"
+                          />
+                        </div>
+                        <button
+                          className="w-[150px] bg-orange-600 text-white hover:orange-900 p-1 rounded-full"
+                          onClick={handleFetchBets}
+                        >
+                          Fetch Bets
+                        </button>
+                        <button
+                          onClick={handleDeleteBet}
+                          className="w-[150px] bg-emerald-600 text-white hover:emerald-900 p-1 rounded-full"
+                        >
+                          Delete {betsitems}
+                        </button>
+                      </div>
                     </div>
 
                     <div className="border-gray-900 border w-full mb-1"></div>
                     <div className="grid grid-cols-8 text-gray-400 text-xs">
+                      <div className="justify-center items-center flex flex-col">
+                        id
+                      </div>
                       <div className="justify-center items-center flex flex-col">
                         User
                       </div>
@@ -855,9 +1036,7 @@ const page = () => {
                       <div className="justify-center items-center flex flex-col">
                         Date
                       </div>
-                      <div className="justify-center items-center flex flex-col">
-                        id
-                      </div>
+
                       <div className="justify-center items-center flex flex-col">
                         Action
                       </div>
@@ -918,6 +1097,15 @@ const page = () => {
                                   : "bg-gray-900 "
                               }`}
                             >
+                              <div className="gap-1 flex items-center">
+                                <input
+                                  type="checkbox"
+                                  onChange={(e) =>
+                                    handleCheckboxChangebets(e, bet)
+                                  }
+                                />
+                                {bet.id}
+                              </div>
                               <div className="flex gap-1 items-center">
                                 <RandomAvatar />{" "}
                                 {bet.name
@@ -941,9 +1129,7 @@ const page = () => {
                               <div className="justify-center items-center flex flex-col">
                                 {formattedCreatedAt}
                               </div>
-                              <div className="justify-center items-center flex flex-col">
-                                {bet.id}
-                              </div>
+
                               <div className="justify-center items-center flex flex-col">
                                 <DeleteConfirmation
                                   id={bet.id}
@@ -1094,6 +1280,36 @@ const page = () => {
                           </button>
                         </div>
                       </div>
+                    </div>
+                  </div>
+                </>
+              )}
+              {activeTab === 6 && (
+                <>
+                  <div className="w-full">
+                    <div className="m-1 flex flex-col text-white text-sm">
+                      <div className="text-lg font-bold">Chats</div>
+                    </div>
+
+                    <div className="border-gray-900 border w-full mb-1"></div>
+                    <div className="items-center flex flex-col justify-center">
+                      <div className="space-y-2">
+                        <p className="text-sm text-muted-foreground p-2">
+                          Players Chats.
+                        </p>
+                      </div>
+
+                      <ScrollArea className="max-h-[400px] w-full bg-gray-900 rounded-md p-4">
+                        <div className="w-full items-center justify-center">
+                          <span className="logo font-bold text-orange-600">
+                            Messages
+                          </span>
+                          <p className=" text-center sm:text-left">
+                            Latest chats
+                          </p>
+                        </div>
+                        <Sidebar userId={"254728820092"} />
+                      </ScrollArea>
                     </div>
                   </div>
                 </>

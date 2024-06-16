@@ -21,11 +21,12 @@ type sidebarProps = {
   displayName: string;
   uid: string;
   recipientUid: string;
+  player: boolean;
 };
 type propmess = {
   messageId: string;
 };
-const ChatBox = ({ uid, displayName, recipientUid }: sidebarProps) => {
+const ChatBox = ({ uid, displayName, recipientUid, player }: sidebarProps) => {
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const [messages, setMessages] = useState<any[]>([]);
   //const [recipientUid, setrecipientUid] = React.useState<string | null>(null);
@@ -121,7 +122,7 @@ const ChatBox = ({ uid, displayName, recipientUid }: sidebarProps) => {
 
   return (
     <div className="">
-      <ScrollArea className="h-[400px] w-full  bg-white rounded-md border p-4">
+      <ScrollArea className="h-[350px] w-full bg-white rounded-md border p-1">
         {messages.map((message: any) => (
           <>
             <Message
@@ -131,6 +132,7 @@ const ChatBox = ({ uid, displayName, recipientUid }: sidebarProps) => {
               uid={uid}
               recipientUid={recipientUid}
               imageUrl={message.imageUrl}
+              player={player}
             />
 
             {message.uid !== uid &&

@@ -19,6 +19,7 @@ interface MessageProps {
   uid: string;
   imageUrl: string;
   recipientUid: string | null;
+  player: boolean;
 }
 
 const Message = ({
@@ -27,6 +28,7 @@ const Message = ({
   uid,
   recipientUid,
   imageUrl,
+  player,
 }: MessageProps) => {
   // Convert Timestamp to Date object
   let formattedCreatedAt = "";
@@ -74,7 +76,7 @@ const Message = ({
                   src="/receiver.png"
                   alt="avatar"
                 />
-                <div className="text-xs font-medium flex gap-5">
+                <div className="text-xs text-black font-medium flex gap-5">
                   {message.name}
                   <div className="text-xs text-gray-500">
                     {formattedCreatedAt}
@@ -96,7 +98,11 @@ const Message = ({
                       className="mb-2 object-cover"
                     />
                   )}
-                  <div>{message.text}</div>
+                  <div
+                    className={`text-sm ${player === true ? "w-[150px]" : ""}`}
+                  >
+                    {message.text}
+                  </div>
                 </div>
               </div>
             </>
@@ -110,7 +116,7 @@ const Message = ({
                   src="/sender.png"
                   alt="avatar"
                 />
-                <div className="text-xs font-medium flex gap-3">
+                <div className="text-xs text-black font-medium flex gap-3">
                   Support Team
                   <div className="text-xs text-gray-500">
                     {formattedCreatedAt}
@@ -132,7 +138,11 @@ const Message = ({
                       className="mb-2 object-cover"
                     />
                   )}
-                  <div>{message.text}</div>
+                  <div
+                    className={`text-sm ${player === true ? "w-[150px]" : ""}`}
+                  >
+                    {message.text}
+                  </div>
                 </div>
               </div>
             </>

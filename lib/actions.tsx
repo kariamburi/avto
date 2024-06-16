@@ -80,8 +80,8 @@ export async function updateBets(
 
     // Update the amount field
     updateDoc(docRef, {
-      cashout: cashout.toFixed(2),
-      multiplier: multiplier.toFixed(2),
+      cashout: Number(cashout.toFixed(2)),
+      multiplier: Number(multiplier.toFixed(2)),
       status: status,
     })
       .then(() => {
