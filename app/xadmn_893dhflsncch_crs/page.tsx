@@ -1200,14 +1200,14 @@ const page = () => {
                               <div className="flex gap-1 items-center">
                                 <RandomAvatar />{" "}
                                 {bet.name
-                                  ? bet.name.substring(0, 2) + "xxxx"
-                                  : "xxxx"}
+                                  ? bet.name.substring(0, 2) + "***"
+                                  : "***"}
                               </div>
                               <div className="justify-center items-center flex flex-col">
                                 {bet.status}
                               </div>
                               <div className="justify-center items-center flex flex-col">
-                                KES {bet.bet}
+                                KES {Number(bet.bet).toFixed(0)}
                               </div>
                               <div
                                 className={`flex flex-col p-1 justify-center items-center bg-gray-900 rounded-full ${bgColor}`}
@@ -1215,7 +1215,7 @@ const page = () => {
                                 {bet.multiplier}
                               </div>
                               <div className="justify-center items-center flex flex-col">
-                                KES {bet.cashout}
+                                KES {Number(bet.cashout).toFixed(0)}
                               </div>
                               <div className="justify-center items-center flex flex-col">
                                 {formattedCreatedAt}

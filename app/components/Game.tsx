@@ -307,7 +307,7 @@ const Game: React.FC = () => {
                 setBet(bet);
                 setbetValue(bet);
                 setBetMode(false);
-                placeBet(bet, username.substring(0, 2) + "xxx", 1);
+                placeBet(bet, username.substring(0, 2) + "***", 1);
                 //  alert("bety" + bet);
                 // setbetearns(bet);
                 if (placeBetSound.current && isMusicPlaying1) {
@@ -577,7 +577,7 @@ const Game: React.FC = () => {
         if (balance >= bet) {
           setBalance(balance - bet);
           sessionStorage.setItem("balance", (balance - bet).toString());
-          placeBet(bet, username.substring(0, 2) + "xxx", 1);
+          placeBet(bet, username.substring(0, 2) + "***", 1);
           setbetValue(bet);
           setBetMode(false);
           if (placeBetSound.current && isMusicPlaying1) {
@@ -628,7 +628,7 @@ const Game: React.FC = () => {
         if (balance >= bet2) {
           setBalance(balance - bet2);
           sessionStorage.setItem("balance", (balance - bet2).toString());
-          placeBet(bet2, username.substring(0, 2) + "xxx", 2);
+          placeBet(bet2, username.substring(0, 2) + "***", 2);
           setbetValue2(bet2);
           setBetMode2(false);
           if (placeBetSound.current && isMusicPlaying1) {
@@ -810,7 +810,7 @@ const Game: React.FC = () => {
                 setBet2(bet2);
                 setbetValue2(bet2);
                 setBetMode2(false);
-                placeBet(bet2, username.substring(0, 2) + "xxx", 2);
+                placeBet(bet2, username.substring(0, 2) + "***", 2);
                 //  alert("bety" + bet);
                 // setbetearns(bet);
                 if (placeBetSound.current && isMusicPlaying1) {
@@ -2758,8 +2758,8 @@ const Game: React.FC = () => {
                                 <div className="flex gap-1 col-span-1 items-center">
                                   <RandomAvatar />{" "}
                                   {bet.name
-                                    ? bet.name.substring(0, 2) + "xxx"
-                                    : "xxx"}
+                                    ? bet.name.substring(0, 2) + "***"
+                                    : "***"}
                                 </div>
                                 <div>{bet.status}</div>
                                 <div>KES {Number(bet.bet).toFixed(0)}</div>
@@ -3552,8 +3552,8 @@ const Game: React.FC = () => {
                                 <div className="flex gap-1 col-span-1 items-center">
                                   <RandomAvatar />{" "}
                                   {bet.name
-                                    ? bet.name.substring(0, 2) + "xxx"
-                                    : "xxx"}
+                                    ? bet.name.substring(0, 2) + "***"
+                                    : "***"}
                                 </div>
                                 <div>{bet.status}</div>
                                 <div>KES {Number(bet.bet).toFixed(0)}</div>
