@@ -3575,14 +3575,19 @@ const Game: React.FC = () => {
           </div>
         </div>
       </section>
-      <FloatingChatIcon onClick={toggleChat} />
-      <ChatWindow
-        isOpen={isChatOpen}
-        onClose={toggleChat}
-        senderId={userID}
-        senderName={username}
-        recipientUid={"254728820092"}
-      />
+      {userID !== "" && (
+        <>
+          <FloatingChatIcon onClick={toggleChat} />
+          <ChatWindow
+            isOpen={isChatOpen}
+            onClose={toggleChat}
+            senderId={userID}
+            senderName={username}
+            recipientUid={"254728820092"}
+          />
+        </>
+      )}
+      ;
     </div>
   );
 };
