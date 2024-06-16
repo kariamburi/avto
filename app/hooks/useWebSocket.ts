@@ -78,10 +78,10 @@ const useWebSocket = () => {
       socket.send(JSON.stringify({ type: 'cashout', username, betno})); // Send current multiplier
     }
   };
-  const houseEdgeValue = (value: number) => {
+  const houseEdgeValue = (value: number, levelA:number, levelB:number) => {
     if (socket && isConnected) {
   
-      socket.send(JSON.stringify({ type: 'houseEdge', value})); // Send current multiplier
+      socket.send(JSON.stringify({ type: 'houseEdge', value, levelA, levelB})); // Send current multiplier
     }
   };
 

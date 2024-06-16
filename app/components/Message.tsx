@@ -99,7 +99,7 @@ const Message = ({
                     />
                   )}
                   <div
-                    className={`text-sm ${player === true ? "w-[150px]" : ""}`}
+                    className={`text-sm ${player === true ? "w-[200px]" : ""}`}
                   >
                     {message.text}
                   </div>
@@ -139,7 +139,7 @@ const Message = ({
                     />
                   )}
                   <div
-                    className={`text-sm ${player === true ? "w-[150px]" : ""}`}
+                    className={`text-sm ${player === true ? "w-[200px]" : ""}`}
                   >
                     {message.text}
                   </div>

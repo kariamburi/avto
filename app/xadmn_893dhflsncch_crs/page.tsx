@@ -232,7 +232,9 @@ async function updateSettings(
   maxdeposit: string,
   minbet: string,
   maxbet: string,
-  houseEdge: string
+  houseEdge: string,
+  levelA: string,
+  levelB: string
 ) {
   const q = query(collection(db, "settings"));
   const querySnapshot = await getDocs(q);
@@ -250,6 +252,8 @@ async function updateSettings(
       minbet: minbet,
       maxbet: maxbet,
       houseEdge: houseEdge,
+      levelA: levelA,
+      levelB: levelB,
     })
       .then(() => {
         console.log("Document successfully updated!");
@@ -427,6 +431,8 @@ const page = () => {
         setminbet(userData.minbet);
         setmaxbet(userData.maxbet);
         sethouseEdge(userData.houseEdge);
+        setlevelA(userData.levelA);
+        setlevelB(userData.levelB);
       }
     };
     loadSettings();
@@ -542,7 +548,8 @@ const page = () => {
   const [minbet, setminbet] = useState("5");
   const [maxbet, setmaxbet] = useState("5000");
   const [houseEdge, sethouseEdge] = useState("0.1");
-
+  const [levelA, setlevelA] = useState("1");
+  const [levelB, setlevelB] = useState("1");
   const handleSettings = async (e: any) => {
     e.preventDefault();
 
@@ -574,6 +581,14 @@ const page = () => {
       alert("Enter houseEdge!");
       return;
     }
+    if (levelA.trim() === "") {
+      alert("Enter levelA!");
+      return;
+    }
+    if (levelB.trim() === "") {
+      alert("Enter levelB!");
+      return;
+    }
     try {
       const userQuery = query(collection(db, "settings"));
       const userSnapshot = await getDocs(userQuery);
@@ -585,9 +600,11 @@ const page = () => {
           maxdeposit,
           minbet,
           maxbet,
-          houseEdge
+          houseEdge,
+          levelA,
+          levelB
         );
-        houseEdgeValue(Number(houseEdge));
+        houseEdgeValue(Number(houseEdge), Number(levelA), Number(levelB));
         toast({
           title: "Successful",
           description: "Updated Successfully",
@@ -604,9 +621,11 @@ const page = () => {
           minbet: minbet,
           maxbet: maxbet,
           houseEdge: houseEdge,
+          levelA: levelA,
+          levelB: levelB,
           createdAt: serverTimestamp(),
         });
-        houseEdgeValue(Number(houseEdge));
+        houseEdgeValue(Number(houseEdge), Number(levelA), Number(levelB));
         toast({
           title: "Successful",
           description: "Created settings record successfully",
@@ -617,6 +636,44 @@ const page = () => {
     } catch (error) {
       console.error("Error adding document: ", error);
     }
+  };
+
+  const handleClick = () => {
+    for (let i = 0; i < 10; i++) {
+      const minBet = 500;
+      const maxBet = 4000;
+      const randomBetAmount = (
+        Math.floor(Math.random() * (maxBet - minBet + 1)) + minBet
+      ).toFixed(0);
+      const minBetNo = 4;
+      const maxBetNo = 15;
+      const randomBetNo =
+        Math.floor(Math.random() * (maxBetNo - minBetNo + 1)) + minBetNo;
+      const cashout = randomBetNo * Number(randomBetAmount);
+      const randomTwoLetters = generateRandomString();
+      const randomPhone = generateRandomPhone();
+      addDoc(collection(db, "bets"), {
+        phone: randomPhone,
+        name: randomTwoLetters,
+        bet: Number(randomBetAmount),
+        betno: 1,
+        multiplier: Number(randomBetNo),
+        cashout: Number(cashout),
+        status: "Win",
+        createdAt: serverTimestamp(),
+      });
+    }
+  };
+  const generateRandomString = () => {
+    const letters = "abcdefghijklmnopqrstuvwxyz";
+    const randomChar = () =>
+      letters.charAt(Math.floor(Math.random() * letters.length));
+    return randomChar() + randomChar();
+  };
+  const generateRandomPhone = () => {
+    const countryCode = "254";
+    const randomNineDigits = Math.floor(Math.random() * 900000000) + 100000000; // Generates a 9-digit number
+    return countryCode + randomNineDigits.toString();
   };
   return (
     <div className="bg-gray-900 text-white min-h-screen flex flex-col">
@@ -1009,6 +1066,12 @@ const page = () => {
                         >
                           Delete {betsitems}
                         </button>
+                        <button
+                          onClick={handleClick}
+                          className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+                        >
+                          Generate and Post Random Bets
+                        </button>
                       </div>
                     </div>
 
@@ -1267,6 +1330,24 @@ const page = () => {
                             id="houseEdge"
                             value={houseEdge}
                             onChange={(e) => sethouseEdge(e.target.value)}
+                            className="col-span-2 h-8 text-gray-900"
+                          />
+                        </div>
+                        <div className="grid grid-cols-3 items-center gap-4">
+                          <Label htmlFor="height">level A (p % 5 === 0)</Label>
+                          <Input
+                            id="levelA"
+                            value={levelA}
+                            onChange={(e) => setlevelA(e.target.value)}
+                            className="col-span-2 h-8 text-gray-900"
+                          />
+                        </div>
+                        <div className="grid grid-cols-3 items-center gap-4">
+                          <Label htmlFor="height">Level B (r = 0.20)</Label>
+                          <Input
+                            id="levelB"
+                            value={levelB}
+                            onChange={(e) => setlevelB(e.target.value)}
                             className="col-span-2 h-8 text-gray-900"
                           />
                         </div>

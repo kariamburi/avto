@@ -16,28 +16,21 @@ let gameInProgress = false;
 let multiplier = 1.0;
 let bettingPhase = false;
 let houseEdge = 0;
+let levelA = 1;
+let levelB = 1;
+
 let currentGameStatus = 'waiting';
 const clients = new Set();
-
-function getCrashPoint() {
-  const e = 2 ** 32;
-  const h = crypto.randomInt(e);
-  if (h % 25 === 0) {
-    return 1;
-  }
-  return Math.floor((100 * e - h) / (e - h)) / 100;
-}
 
 const generateCrashPoint = () => {
   const h = Math.random();
   const p = Math.floor(h * 10);
   const r = h * (1 - houseEdge);
 
-  if (p % 5 === 0) {
+  if (p % 5 === 0 && levelA ===1) {
     return 1 + 0.1 + (0.2 - 0.1) * Math.random();
   }
-
-  if (r <= 0.20) {
+  if (r <= 0.20 && levelB ===1) {
     return 1 + 0.1 + (0.3 - 0.1) * Math.random();
   } else if (r <= 0.60) {
     return 1 + Math.random();
@@ -175,6 +168,9 @@ app.prepare().then(async () => {
           broadcastCurrentBets();
         }else if(data.type === 'houseEdge'){
           houseEdge = Number(data.value);
+          levelB = Number(data.levelB);
+          levelA = Number(data.levelA);
+          console.error('houseEdge:'+houseEdge+" levelA: "+levelA+" levelB: "+levelB);
         }
       } catch (err) {
         console.error('Error processing message:', err);

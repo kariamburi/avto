@@ -466,6 +466,8 @@ const Game: React.FC = () => {
   const [minbet, setminbet] = useState("5");
   const [maxbet, setmaxbet] = useState("5000");
   const [houseEdge, sethouseEdge] = useState("0");
+  const [levelA, setlevelA] = useState("1");
+  const [levelB, setlevelB] = useState("1");
   useEffect(() => {
     const user_id = sessionStorage.getItem("userID");
 
@@ -508,6 +510,8 @@ const Game: React.FC = () => {
         setminbet(userData.minbet);
         setmaxbet(userData.maxbet);
         sethouseEdge(userData.houseEdge);
+        setlevelA(userData.levelA);
+        setlevelB(userData.levelB);
       }
     };
     loadSettings();
@@ -538,9 +542,9 @@ const Game: React.FC = () => {
         };
         loadbalance();
 
-        if (Number(house) !== Number(houseEdge) && Number(houseEdge) > 0) {
-          houseEdgeValue(Number(houseEdge));
-        }
+        //if (Number(house) !== Number(houseEdge) && Number(houseEdge) > 0) {
+        houseEdgeValue(Number(houseEdge), Number(levelA), Number(levelB));
+        //}
       }
     }
     if (
