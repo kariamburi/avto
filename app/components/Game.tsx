@@ -1421,6 +1421,7 @@ const Game: React.FC = () => {
   const toggleChat = () => {
     setChatOpen(!isChatOpen);
   };
+  const downloadUrl = "https://aviatorgm.com/download/aviator-game.apk";
   return (
     <div className="bg-gray-900 text-white min-h-screen flex flex-col">
       <section className="bg-gray-800 p-2 rounded-lg shadow-lg container mx-auto">
@@ -1665,6 +1666,11 @@ const Game: React.FC = () => {
                             </div>
                           </>
                         )}
+                        <a href={downloadUrl} download>
+                          <button className="bg-emerald-600 text-sm text-white hover:bg-emerald-900 p-2 w-full mt-2 rounded-full">
+                            Download App
+                          </button>
+                        </a>
                       </div>
                     )}
                   </div>
@@ -1951,6 +1957,12 @@ const Game: React.FC = () => {
                         >
                           <AppRegistrationOutlinedIcon /> Register
                         </div>
+
+                        <a href={downloadUrl} download>
+                          <button className="bg-emerald-600 text-sm text-white hover:bg-emerald-900 p-2 w-full mt-2 rounded-full">
+                            Download App
+                          </button>
+                        </a>
                       </div>
                     )}
                   </div>
