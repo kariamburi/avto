@@ -78,6 +78,7 @@ import ChatWindow from "./ChatWindow";
 import FloatingChatIcon from "./FloatingChatIcon";
 import Avatar from "./Avatar";
 import Termspopup from "./termspopup";
+import Account from "./Account";
 interface userData {
   name: string;
   phone: string;
@@ -1454,6 +1455,25 @@ const Game: React.FC = () => {
     setIsAlertDialog(false);
   };
 
+  const [isOpenAcc, setisOpenAcc] = useState(false);
+  const toggleAcc = () => {
+    setisOpenAcc(!isOpenAcc);
+    const loadbalance = async () => {
+      const userQuery = query(
+        collection(db, "balance"),
+        where("phone", "==", userID)
+      );
+      const userSnapshot = await getDocs(userQuery);
+      if (!userSnapshot.empty) {
+        const userData = userSnapshot.docs[0].data();
+
+        setBalance(Number(userData.amount));
+        sessionStorage.setItem("balance", userData.amount);
+      }
+    };
+    loadbalance();
+  };
+
   const [isOpen2, setIsOpen2] = useState(false);
   const toggleMenu2 = () => {
     setIsOpen2(!isOpen2);
@@ -1671,9 +1691,7 @@ const Game: React.FC = () => {
                 <div className="flex gap-2 items-center">
                   <div className="flex gap-1 items-center">
                     <div
-                      onClick={() => {
-                        setIsAlertDialogP(true);
-                      }}
+                      onClick={toggleAcc}
                       className="flex cursor-pointer bg-gray-700 pl-2 pr-2 rounded-full gap-1 items-center"
                     >
                       <div className="text-xs text-gray-400">KES:</div>{" "}
@@ -1706,9 +1724,7 @@ const Game: React.FC = () => {
                     {isOpen && (
                       <div className="absolute right-0 mt-2 p-2 w-48 bg-gray-200 rounded-md shadow-xl z-20">
                         <div
-                          onClick={() => {
-                            setIsAlertDialogP(true);
-                          }}
+                          onClick={toggleAcc}
                           className="flex text-lg cursor-pointer items-center gap-1 block px-4 py-2  text-gray-900 hover:bg-white hover:rounded-full"
                         >
                           <PersonOutlineOutlinedIcon /> Account
@@ -1740,423 +1756,24 @@ const Game: React.FC = () => {
                       </div>
                     )}
                   </div>
+
                   <div className="hidden lg:inline">
                     <div className="flex gap-2">
                       <div
                         className="p-[5px] rounded-full bg-white text-gray-900 tooltip tooltip-bottom hover:cursor-pointer"
                         data-tip="Profile"
+                        onClick={toggleAcc}
                       >
-                        <AlertDialog open={IsAlertDialogP}>
-                          <AlertDialogTrigger
-                            onClick={() => {
-                              setIsAlertDialogP(true);
-                            }}
-                          >
-                            <TooltipProvider>
-                              <Tooltip>
-                                <TooltipTrigger asChild>
-                                  <PersonOutlineOutlinedIcon />
-                                </TooltipTrigger>
-                                <TooltipContent>
-                                  <p>Account</p>
-                                </TooltipContent>
-                              </Tooltip>
-                            </TooltipProvider>
-                          </AlertDialogTrigger>
-                          <AlertDialogContent>
-                            <AlertDialogHeader>
-                              <AlertDialogTitle>
-                                <div className="flex justify-between items-center">
-                                  <div className="text-gray-900 font-bold">
-                                    ACCOUNT
-                                  </div>
-                                  <div
-                                    onClick={handleclickAlertDialogP}
-                                    className="cursor-pointer"
-                                  >
-                                    <CloseOutlinedIcon />
-                                  </div>
-                                </div>
-                              </AlertDialogTitle>
-                              <AlertDialogDescription>
-                                <div className="p-3 w-full items-center">
-                                  <div className="flex flex-col items-center rounded-t-lg w-full p-1 bg-grey-50">
-                                    <div className="flex justify-between w-full items-center">
-                                      <div className="flex gap-1 items-center">
-                                        {" "}
-                                        <div className="p-1">
-                                          <Avatar />
-                                        </div>
-                                        <div className="flex flex-col">
-                                          {" "}
-                                          <p className="text-sm font-bold text-gray-900">
-                                            {username}
-                                          </p>
-                                          <p className="text-sm font-bold text-gray-900">
-                                            {userID}
-                                          </p>
-                                        </div>
-                                      </div>
-                                      <div>
-                                        {" "}
-                                        <p className="text-3xl text-green-600 font-bold p-2">
-                                          KES {balance.toFixed(2)}
-                                        </p>
-                                      </div>
-                                    </div>
-
-                                    <div className="gap-1 h-[450px] items-center w-full border rounded-lg">
-                                      <div className="flex bg-gray-900 rounded-full p-1 w-full">
-                                        {tabss.map((tab, index) => (
-                                          <button
-                                            key={index}
-                                            className={`flex-1 text-sm py-1 px-0 rounded-full text-center ${
-                                              activeTabb === index
-                                                ? "text-gray-900 bg-white"
-                                                : "bg-gray-900 text-white"
-                                            }`}
-                                            onClick={() => setActiveTabb(index)}
-                                          >
-                                            {tab.title}
-                                          </button>
-                                        ))}
-                                      </div>
-                                      <div className="p-2">
-                                        {activeTabb === 0 && (
-                                          <>
-                                            <ScrollArea className="h-[450px]">
-                                              <div className="flex flex-col items-center">
-                                                <div className="flex flex-col rounded-lg bg-gray-100 p-1 mb-2 w-full">
-                                                  {" "}
-                                                  <div className="text-lg p-1 text-gray-900">
-                                                    1. Deposit via MPESA EXPRESS
-                                                  </div>
-                                                  <div className="flex flex-col gap-1 mb-4 w-full">
-                                                    <TextField
-                                                      id="outlined-password-input"
-                                                      label="M-pesa Phone Number"
-                                                      type="text"
-                                                      value={payphone}
-                                                      onChange={(e) =>
-                                                        setpayphone(
-                                                          formatPhoneNumber(
-                                                            e.target.value
-                                                          )
-                                                        )
-                                                      }
-                                                    />
-                                                    <div className="text-red-400">
-                                                      {errormpesaphone}
-                                                    </div>
-                                                  </div>
-                                                  <div className="flex flex-col gap-1 mb-4 w-full">
-                                                    <TextField
-                                                      id="outlined-password-input"
-                                                      label="Amount"
-                                                      type="text"
-                                                      value={deposit}
-                                                      onChange={(e) =>
-                                                        setdeposit(
-                                                          e.target.value
-                                                        )
-                                                      }
-                                                    />
-                                                    <div className="text-red-400">
-                                                      {errordeposit}
-                                                    </div>
-                                                  </div>
-                                                  <button
-                                                    onClick={handleTopup}
-                                                    disabled={isSubmitting}
-                                                    className="w-full bg-emerald-600 text-white hover:emerald-900 mt-2 p-2 rounded-lg shadow"
-                                                  >
-                                                    {isSubmitting
-                                                      ? "Sending request..."
-                                                      : `Deposit`}
-                                                  </button>
-                                                  {stkresponse && (
-                                                    <div className="mt-2 text-green-800 text-sm bg-green-100 rounded-lg w-full p-2 items-center">
-                                                      {stkresponse}
-                                                    </div>
-                                                  )}
-                                                  {errorstkresponse && (
-                                                    <div className="mt-1 text-red-800 text-sm bg-red-100 rounded-lg w-full p-2 items-center">
-                                                      {errorstkresponse}
-                                                    </div>
-                                                  )}
-                                                </div>
-                                                <div className="flex flex-col rounded-lg bg-gray-100 w-full p-1 mb-2">
-                                                  <div className="text-lg p-1 text-gray-900">
-                                                    2. Deposit Via Paybill No
-                                                  </div>
-                                                  <div className="text-sm p-1 font-bold text-gray-900">
-                                                    <ul className="w-full text-sm">
-                                                      <li className="flex gap-2">
-                                                        <div className="text-2xl text-gray-600">
-                                                          Paybill:
-                                                        </div>{" "}
-                                                        <div className="font-bold text-2xl text-green-600">
-                                                          {paybill}
-                                                        </div>
-                                                      </li>
-                                                      <li className="flex gap-2">
-                                                        <div className="text-2xl text-gray-600">
-                                                          Account:
-                                                        </div>{" "}
-                                                        <div className="font-bold text-2xl text-green-600">
-                                                          {userID}
-                                                        </div>
-                                                      </li>
-                                                    </ul>
-                                                  </div>
-                                                </div>
-                                              </div>
-                                            </ScrollArea>
-                                          </>
-                                        )}
-                                        {activeTabb === 1 && (
-                                          <>
-                                            <div className="flex flex-col items-center">
-                                              <div className="flex bg-gray-600 w-full rounded-sm p-1">
-                                                {tabW.map((tab, index) => (
-                                                  <button
-                                                    key={index}
-                                                    className={`flex-1 text-sm py-1 px-0 rounded-sm text-center ${
-                                                      activeTabW === index
-                                                        ? "bg-gray-200 text-black"
-                                                        : "bg-gray-600 text-white"
-                                                    }`}
-                                                    onClick={() =>
-                                                      handleWH(index)
-                                                    }
-                                                  >
-                                                    {tab.title}
-                                                  </button>
-                                                ))}
-                                              </div>
-                                              {activeTabW === 0 && (
-                                                <>
-                                                  {" "}
-                                                  <div className="text-lg p-1 font-bold text-gray-900">
-                                                    Withdraw via M-Pesa
-                                                  </div>
-                                                  <div className="flex flex-col gap-1 mb-5 w-full">
-                                                    <TextField
-                                                      id="outlined-password-input"
-                                                      label="Send to Phone Number"
-                                                      type="text"
-                                                      value={sendphone}
-                                                      onChange={(e) =>
-                                                        setsendphone(
-                                                          formatPhoneNumber(
-                                                            e.target.value
-                                                          )
-                                                        )
-                                                      }
-                                                    />
-                                                    <div className="text-red-400">
-                                                      {errorwithdrawphone}
-                                                    </div>
-                                                  </div>
-                                                  <div className="flex flex-col gap-1 mb-5 w-full">
-                                                    <TextField
-                                                      id="outlined-password-input"
-                                                      label="Amount to withdraw"
-                                                      type="text"
-                                                      value={withdraw}
-                                                      onChange={(e) =>
-                                                        setwithdraw(
-                                                          e.target.value
-                                                        )
-                                                      }
-                                                    />
-                                                    <div className="text-red-400">
-                                                      {errorwithdraw}
-                                                    </div>
-                                                  </div>
-                                                  <button
-                                                    onClick={handleWithdraw}
-                                                    disabled={isSubmitting}
-                                                    className="w-full bg-emerald-600 text-white hover:emerald-900 mt-2 p-2 rounded-lg shadow"
-                                                  >
-                                                    {isSubmitting
-                                                      ? "Sending request..."
-                                                      : `Withdraw`}
-                                                  </button>
-                                                </>
-                                              )}
-                                              {activeTabW === 1 && (
-                                                <>
-                                                  <div>
-                                                    <div className="m-1 flex gap-2 text-sm justify-between items-center">
-                                                      <div className="flex flex-col">
-                                                        <div className="text-lg font-bold">
-                                                          Withdraw
-                                                        </div>
-
-                                                        <div className="text-gray-400 font-bold">
-                                                          KES.{" "}
-                                                          {totalWithdraw.toFixed(
-                                                            2
-                                                          )}
-                                                        </div>
-                                                      </div>
-                                                      <div></div>
-                                                    </div>
-
-                                                    <div className="border-gray-900 border w-full mb-1"></div>
-                                                    <div className="grid grid-cols-4 text-gray-400 text-xs">
-                                                      <div className="justify-center items-center flex flex-col">
-                                                        Status
-                                                      </div>
-
-                                                      <div className="justify-center items-center flex flex-col">
-                                                        Send to
-                                                      </div>
-                                                      <div className="justify-center items-center flex flex-col">
-                                                        Amount KES
-                                                      </div>
-                                                      <div className="justify-center items-center flex flex-col">
-                                                        Date
-                                                      </div>
-                                                      <div></div>
-                                                    </div>
-                                                    <ScrollArea className="h-[300px]">
-                                                      <ul className="w-full">
-                                                        {Withdraw.map(
-                                                          (bet: any, index) => {
-                                                            let formattedCreatedAt =
-                                                              "";
-                                                            try {
-                                                              const createdAtDate =
-                                                                new Date(
-                                                                  bet.createdAt
-                                                                    .seconds *
-                                                                    1000
-                                                                ); // Convert seconds to milliseconds
-
-                                                              // Get today's date
-                                                              const today =
-                                                                new Date();
-
-                                                              // Check if the message was sent today
-                                                              if (
-                                                                isToday(
-                                                                  createdAtDate
-                                                                )
-                                                              ) {
-                                                                formattedCreatedAt =
-                                                                  "Today " +
-                                                                  format(
-                                                                    createdAtDate,
-                                                                    "HH:mm"
-                                                                  ); // Set as "Today"
-                                                              } else if (
-                                                                isYesterday(
-                                                                  createdAtDate
-                                                                )
-                                                              ) {
-                                                                // Check if the message was sent yesterday
-                                                                formattedCreatedAt =
-                                                                  "Yesterday " +
-                                                                  format(
-                                                                    createdAtDate,
-                                                                    "HH:mm"
-                                                                  ); // Set as "Yesterday"
-                                                              } else {
-                                                                // Format the createdAt date with day, month, and year
-                                                                formattedCreatedAt =
-                                                                  format(
-                                                                    createdAtDate,
-                                                                    "dd-MM-yyyy"
-                                                                  ); // Format as 'day/month/year'
-                                                              }
-
-                                                              // Append hours and minutes if the message is not from today or yesterday
-                                                              if (
-                                                                !isToday(
-                                                                  createdAtDate
-                                                                ) &&
-                                                                !isYesterday(
-                                                                  createdAtDate
-                                                                )
-                                                              ) {
-                                                                formattedCreatedAt +=
-                                                                  " " +
-                                                                  format(
-                                                                    createdAtDate,
-                                                                    "HH:mm"
-                                                                  ); // Append hours and minutes
-                                                              }
-                                                            } catch {
-                                                              // Handle error when formatting date
-                                                            }
-
-                                                            return (
-                                                              <li
-                                                                className="w-full"
-                                                                key={index}
-                                                              >
-                                                                <div
-                                                                  className={`p-1 mt-1 rounded-sm grid grid-cols-4 gap-1 w-full items-center text-xs`}
-                                                                >
-                                                                  <div className="justify-center items-center flex flex-col">
-                                                                    <div
-                                                                      className={`flex flex-col p-1 justify-center items-center w-[70px] rounded-full ${
-                                                                        bet.status ===
-                                                                        "pending"
-                                                                          ? "text-yellow-600"
-                                                                          : bet.status ===
-                                                                            "failed"
-                                                                          ? "text-red-600 "
-                                                                          : "text-green-600"
-                                                                      }`}
-                                                                    >
-                                                                      {
-                                                                        bet.status
-                                                                      }
-                                                                    </div>
-                                                                  </div>
-
-                                                                  <div className="justify-center items-center flex flex-col">
-                                                                    {
-                                                                      bet.sendphone
-                                                                    }
-                                                                  </div>
-
-                                                                  <div className="justify-center items-center flex flex-col">
-                                                                    KES{" "}
-                                                                    {bet.amount.toFixed(
-                                                                      2
-                                                                    )}
-                                                                  </div>
-                                                                  <div className="justify-center items-center flex flex-col">
-                                                                    {
-                                                                      formattedCreatedAt
-                                                                    }
-                                                                  </div>
-                                                                </div>
-                                                              </li>
-                                                            );
-                                                          }
-                                                        )}
-                                                      </ul>
-                                                    </ScrollArea>
-                                                  </div>
-                                                </>
-                                              )}
-                                            </div>
-                                          </>
-                                        )}
-                                      </div>
-                                    </div>
-                                  </div>
-                                </div>
-                              </AlertDialogDescription>
-                            </AlertDialogHeader>
-                            <AlertDialogFooter></AlertDialogFooter>
-                          </AlertDialogContent>
-                        </AlertDialog>
+                        <TooltipProvider>
+                          <Tooltip>
+                            <TooltipTrigger asChild>
+                              <PersonOutlineOutlinedIcon />
+                            </TooltipTrigger>
+                            <TooltipContent>
+                              <p>Account</p>
+                            </TooltipContent>
+                          </Tooltip>
+                        </TooltipProvider>
                       </div>
                       {/*ACCOUNT*/}
 
@@ -3877,6 +3494,13 @@ const Game: React.FC = () => {
       )}
       ;
       <Termspopup isOpen={isOpenAccount} onClose={toggleAccount} />
+      <Account
+        isOpen={isOpenAcc}
+        userID={userID}
+        username={username}
+        onClose={toggleAcc}
+        balance={balance}
+      />
     </div>
   );
 };
