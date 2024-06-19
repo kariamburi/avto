@@ -10,7 +10,7 @@ return [
           ]
      }
     ]
-  }
+ }
   };
   
   export default nextConfig;

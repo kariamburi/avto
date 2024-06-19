@@ -76,6 +76,8 @@ import { FaEye, FaEyeSlash } from "react-icons/fa";
 import ContactSupportOutlinedIcon from "@mui/icons-material/ContactSupportOutlined";
 import ChatWindow from "./ChatWindow";
 import FloatingChatIcon from "./FloatingChatIcon";
+import Avatar from "./Avatar";
+import Termspopup from "./termspopup";
 interface userData {
   name: string;
   phone: string;
@@ -495,6 +497,7 @@ const Game: React.FC = () => {
   const [houseEdge, sethouseEdge] = useState("0");
   const [levelA, setlevelA] = useState("1");
   const [levelB, setlevelB] = useState("1");
+  const [paybill, setpaybill] = useState("155276");
   useEffect(() => {
     const user_id = sessionStorage.getItem("userID");
 
@@ -539,6 +542,7 @@ const Game: React.FC = () => {
         sethouseEdge(userData.houseEdge);
         setlevelA(userData.levelA);
         setlevelB(userData.levelB);
+        setpaybill(userData.paybill);
       }
     };
     loadSettings();
@@ -1396,7 +1400,7 @@ const Game: React.FC = () => {
       if (response === "success") {
         // console.log("RESPONSE    " + response);
         setstkresponse(
-          "You will receive Mpesa prompt, Enter your pin to complete deposit"
+          "STK PUSH sent to your phone, Check Mpesa prompt, Enter your pin to complete deposit"
         );
         setdeposit("");
         setpayphone("");
@@ -1447,6 +1451,7 @@ const Game: React.FC = () => {
   const [isOpenAccount, setisOpenAccount] = useState(false);
   const toggleAccount = () => {
     setisOpenAccount(!isOpenAccount);
+    setIsAlertDialog(false);
   };
 
   const [isOpen2, setIsOpen2] = useState(false);
@@ -1776,27 +1781,31 @@ const Game: React.FC = () => {
                               <AlertDialogDescription>
                                 <div className="p-3 w-full items-center">
                                   <div className="flex flex-col items-center rounded-t-lg w-full p-1 bg-grey-50">
-                                    <div className="w-36 p-1">
-                                      <img
-                                        className="w-full h-full rounded-full object-cover"
-                                        src="/logo1.png"
-                                        alt="Profile Image"
-                                      />
+                                    <div className="flex justify-between w-full items-center">
+                                      <div className="flex gap-1 items-center">
+                                        {" "}
+                                        <div className="p-1">
+                                          <Avatar />
+                                        </div>
+                                        <div className="flex flex-col">
+                                          {" "}
+                                          <p className="text-sm font-bold text-gray-900">
+                                            {username}
+                                          </p>
+                                          <p className="text-sm font-bold text-gray-900">
+                                            {userID}
+                                          </p>
+                                        </div>
+                                      </div>
+                                      <div>
+                                        {" "}
+                                        <p className="text-3xl text-green-600 font-bold p-2">
+                                          KES {balance.toFixed(2)}
+                                        </p>
+                                      </div>
                                     </div>
 
-                                    <p className="text-lg font-bold text-gray-900">
-                                      {username}
-                                    </p>
-
-                                    <p className="text-lg font-bold text-gray-900">
-                                      {userID}
-                                    </p>
-
-                                    <p className="text-3xl text-green-600 font-bold p-2">
-                                      KES {balance.toFixed(2)}
-                                    </p>
-
-                                    <div className="gap-1 h-[350px] items-center w-full border rounded-lg">
+                                    <div className="gap-1 h-[450px] items-center w-full border rounded-lg">
                                       <div className="flex bg-gray-900 rounded-full p-1 w-full">
                                         {tabss.map((tab, index) => (
                                           <button
@@ -1815,62 +1824,94 @@ const Game: React.FC = () => {
                                       <div className="p-2">
                                         {activeTabb === 0 && (
                                           <>
-                                            <div className="flex flex-col items-center">
-                                              <div className="text-lg p-1 font-bold text-gray-900">
-                                                Deposit via M-Pesa
-                                              </div>
-                                              <div className="flex flex-col gap-1 mb-5 w-full">
-                                                <TextField
-                                                  id="outlined-password-input"
-                                                  label="M-pesa Phone Number"
-                                                  type="text"
-                                                  value={payphone}
-                                                  onChange={(e) =>
-                                                    setpayphone(
-                                                      formatPhoneNumber(
-                                                        e.target.value
-                                                      )
-                                                    )
-                                                  }
-                                                />
-                                                <div className="text-red-400">
-                                                  {errormpesaphone}
+                                            <ScrollArea className="h-[450px]">
+                                              <div className="flex flex-col items-center">
+                                                <div className="flex flex-col rounded-lg bg-gray-100 p-1 mb-2 w-full">
+                                                  {" "}
+                                                  <div className="text-lg p-1 text-gray-900">
+                                                    1. Deposit via MPESA EXPRESS
+                                                  </div>
+                                                  <div className="flex flex-col gap-1 mb-4 w-full">
+                                                    <TextField
+                                                      id="outlined-password-input"
+                                                      label="M-pesa Phone Number"
+                                                      type="text"
+                                                      value={payphone}
+                                                      onChange={(e) =>
+                                                        setpayphone(
+                                                          formatPhoneNumber(
+                                                            e.target.value
+                                                          )
+                                                        )
+                                                      }
+                                                    />
+                                                    <div className="text-red-400">
+                                                      {errormpesaphone}
+                                                    </div>
+                                                  </div>
+                                                  <div className="flex flex-col gap-1 mb-4 w-full">
+                                                    <TextField
+                                                      id="outlined-password-input"
+                                                      label="Amount"
+                                                      type="text"
+                                                      value={deposit}
+                                                      onChange={(e) =>
+                                                        setdeposit(
+                                                          e.target.value
+                                                        )
+                                                      }
+                                                    />
+                                                    <div className="text-red-400">
+                                                      {errordeposit}
+                                                    </div>
+                                                  </div>
+                                                  <button
+                                                    onClick={handleTopup}
+                                                    disabled={isSubmitting}
+                                                    className="w-full bg-emerald-600 text-white hover:emerald-900 mt-2 p-2 rounded-lg shadow"
+                                                  >
+                                                    {isSubmitting
+                                                      ? "Sending request..."
+                                                      : `Deposit`}
+                                                  </button>
+                                                  {stkresponse && (
+                                                    <div className="mt-2 text-green-800 text-sm bg-green-100 rounded-lg w-full p-2 items-center">
+                                                      {stkresponse}
+                                                    </div>
+                                                  )}
+                                                  {errorstkresponse && (
+                                                    <div className="mt-1 text-red-800 text-sm bg-red-100 rounded-lg w-full p-2 items-center">
+                                                      {errorstkresponse}
+                                                    </div>
+                                                  )}
+                                                </div>
+                                                <div className="flex flex-col rounded-lg bg-gray-100 w-full p-1 mb-2">
+                                                  <div className="text-lg p-1 text-gray-900">
+                                                    2. Deposit Via Paybill No
+                                                  </div>
+                                                  <div className="text-sm p-1 font-bold text-gray-900">
+                                                    <ul className="w-full text-sm">
+                                                      <li className="flex gap-2">
+                                                        <div className="text-2xl text-gray-600">
+                                                          Paybill:
+                                                        </div>{" "}
+                                                        <div className="font-bold text-2xl text-green-600">
+                                                          {paybill}
+                                                        </div>
+                                                      </li>
+                                                      <li className="flex gap-2">
+                                                        <div className="text-2xl text-gray-600">
+                                                          Account:
+                                                        </div>{" "}
+                                                        <div className="font-bold text-2xl text-green-600">
+                                                          {userID}
+                                                        </div>
+                                                      </li>
+                                                    </ul>
+                                                  </div>
                                                 </div>
                                               </div>
-                                              <div className="flex flex-col gap-1 mb-5 w-full">
-                                                <TextField
-                                                  id="outlined-password-input"
-                                                  label="Amount"
-                                                  type="text"
-                                                  value={deposit}
-                                                  onChange={(e) =>
-                                                    setdeposit(e.target.value)
-                                                  }
-                                                />
-                                                <div className="text-red-400">
-                                                  {errordeposit}
-                                                </div>
-                                              </div>
-                                              <button
-                                                onClick={handleTopup}
-                                                disabled={isSubmitting}
-                                                className="w-full bg-emerald-600 text-white hover:emerald-900 mt-2 p-2 rounded-lg shadow"
-                                              >
-                                                {isSubmitting
-                                                  ? "Sending request..."
-                                                  : `Deposit`}
-                                              </button>
-                                              {stkresponse && (
-                                                <div className="mt-2 text-green-800 text-sm bg-green-100 rounded-lg w-full p-2 items-center">
-                                                  {stkresponse}
-                                                </div>
-                                              )}
-                                              {errorstkresponse && (
-                                                <div className="mt-1 text-red-800 text-sm bg-red-100 rounded-lg w-full p-2 items-center">
-                                                  {errorstkresponse}
-                                                </div>
-                                              )}
-                                            </div>
+                                            </ScrollArea>
                                           </>
                                         )}
                                         {activeTabb === 1 && (
@@ -2663,32 +2704,34 @@ const Game: React.FC = () => {
                                     {errorpasswordconfirm}
                                   </div>
                                 </div>
-
-                                <div className="flex items-center mb-5 w-full gap-1 text-gray-900">
-                                  <div>
-                                    {" "}
-                                    <input
-                                      type="checkbox"
-                                      id="terms"
-                                      checked={isChecked}
-                                      onChange={() => setIsChecked(!isChecked)}
-                                      className="mr-2"
-                                    />
+                                <div className="flex flex-col">
+                                  <div className="flex items-center mb-5 w-full gap-1 text-gray-900">
+                                    <div>
+                                      {" "}
+                                      <input
+                                        type="checkbox"
+                                        id="terms"
+                                        checked={isChecked}
+                                        onChange={() =>
+                                          setIsChecked(!isChecked)
+                                        }
+                                        className="mr-2"
+                                      />
+                                    </div>
+                                    <div>
+                                      <label
+                                        htmlFor="terms"
+                                        className="text-gray-900"
+                                      ></label>
+                                    </div>
+                                    <div> I accept the</div>
+                                    <div
+                                      className="cursor-pointer hover:text-green-600"
+                                      onClick={toggleAccount}
+                                    >
+                                      terms and conditions
+                                    </div>
                                   </div>
-                                  <div>
-                                    <label
-                                      htmlFor="terms"
-                                      className="text-gray-900"
-                                    ></label>
-                                  </div>
-                                  <div> I accept the</div>
-                                  <div
-                                    className="cursor-pointer hover:text-green-400"
-                                    onClick={() => router.push("/terms")}
-                                  >
-                                    terms and conditions
-                                  </div>
-
                                   <div className="text-red-400">
                                     {errorterms}
                                   </div>
@@ -3833,211 +3876,7 @@ const Game: React.FC = () => {
         </>
       )}
       ;
-      {isOpenAccount && (
-        <>
-          <div className="fixed bg-gray-900 rounded-lg shadow-lg w-full z-30">
-            <div className="flex justify-between bg-gray-900 text-white p-2 rounded-t-lg">
-              <div className="flex items-center gap-2">
-                <img
-                  className="w-8 h-8 rounded-full object-cover"
-                  src="/sender.png"
-                  alt="avatar"
-                />
-                <div className="text-xs text-gray-400 font-medium flex gap-5">
-                  <h3 className="font-bold text-lg">ACCOUNT</h3>
-                </div>
-              </div>
-              <div
-                onClick={() => setisOpenAccount(false)}
-                className="cursor-pointer text-white"
-              >
-                <CloseOutlinedIcon />
-              </div>
-            </div>
-            <div className="p-1">
-              <div className="bg-gray-900 text-white flex flex-col">
-                <div className="w-full bg-gray-800 flex p-1">
-                  <div className="flex-1">
-                    <div className="rounded-lg bg-gray-800 max-w-6xl mx-auto flex flex-col p-2 mt-0">
-                      <div className="p-0 ml-0 mr-0">
-                        <div className="p-3 w-full items-center">
-                          <div className="flex flex-col items-center rounded-t-lg w-full p-1 bg-grey-50">
-                            <div className="w-36 p-1">
-                              <img
-                                className="w-full h-full rounded-full object-cover"
-                                src="/logo1.png"
-                                alt="Profile Image"
-                              />
-                            </div>
-
-                            <p className="text-lg font-bold text-gray-400">
-                              {username}
-                            </p>
-
-                            <p className="text-lg font-bold text-gray-400">
-                              {userID}
-                            </p>
-
-                            <p className="text-3xl text-green-600 font-bold p-2">
-                              KES {balance.toFixed(2)}
-                            </p>
-
-                            <div className="gap-1 h-[350px] items-center w-full lg:w-[800px] rounded-lg">
-                              <div className="flex bg-gray-900 rounded-full p-1 w-full">
-                                {tabss.map((tab, index) => (
-                                  <button
-                                    key={index}
-                                    className={`flex-1 text-sm py-1 px-0 rounded-full text-center ${
-                                      activeTabb === index
-                                        ? "text-white bg-gray-700"
-                                        : "bg-gray-900 text-gray-400"
-                                    }`}
-                                    onClick={() => setActiveTabb(index)}
-                                  >
-                                    {tab.title}
-                                  </button>
-                                ))}
-                              </div>
-                              <div className="p-2 mt-1 bg-gray-900 items-center w-full rounded-lg">
-                                {activeTabb === 0 && (
-                                  <>
-                                    <div className="flex flex-col items-center">
-                                      <div className="text-lg p-1 font-bold text-gray-900">
-                                        Deposit via M-Pesa
-                                      </div>
-                                      <div className="flex flex-col gap-1 mb-5 w-full">
-                                        <TextField
-                                          id="outlined-password-input"
-                                          label="M-pesa Phone Number"
-                                          type="text"
-                                          value={payphone}
-                                          onChange={(e) =>
-                                            setpayphone(
-                                              formatPhoneNumber(e.target.value)
-                                            )
-                                          }
-                                        />
-                                        <div className="text-red-400">
-                                          {errormpesaphone}
-                                        </div>
-                                      </div>
-                                      <div className="flex flex-col gap-1 mb-5 w-full">
-                                        <TextField
-                                          id="outlined-password-input"
-                                          label="Amount"
-                                          type="text"
-                                          value={deposit}
-                                          onChange={(e) =>
-                                            setdeposit(e.target.value)
-                                          }
-                                        />
-                                        <div className="text-red-400">
-                                          {errordeposit}
-                                        </div>
-                                      </div>
-                                      <button
-                                        onClick={handleTopup}
-                                        disabled={isSubmitting}
-                                        className="w-full bg-emerald-600 text-white hover:emerald-900 mt-2 p-2 rounded-lg shadow"
-                                      >
-                                        {isSubmitting
-                                          ? "Sending request..."
-                                          : `Deposit`}
-                                      </button>
-                                      {stkresponse && (
-                                        <div className="mt-2 text-green-800 text-sm bg-green-100 rounded-lg w-full p-2 items-center">
-                                          {stkresponse}
-                                        </div>
-                                      )}
-                                      {errorstkresponse && (
-                                        <div className="mt-1 text-red-800 text-sm bg-red-100 rounded-lg w-full p-2 items-center">
-                                          {errorstkresponse}
-                                        </div>
-                                      )}
-                                    </div>
-                                  </>
-                                )}
-                                {activeTabb === 1 && (
-                                  <>
-                                    <div className="flex flex-col items-center">
-                                      <Tabs
-                                        defaultValue="account"
-                                        className="w-[400px]"
-                                      >
-                                        <TabsList defaultValue={"withdraw"}>
-                                          <TabsTrigger value="withdraw">
-                                            Withdraw
-                                          </TabsTrigger>
-                                          <TabsTrigger value="history">
-                                            History
-                                          </TabsTrigger>
-                                        </TabsList>
-                                        <TabsContent value="withdraw">
-                                          <div className="text-lg p-1 font-bold text-gray-900">
-                                            Withdraw via M-Pesa
-                                          </div>
-                                          <div className="flex flex-col gap-1 mb-5 w-full">
-                                            <TextField
-                                              id="outlined-password-input"
-                                              label="Send to Phone Number"
-                                              type="text"
-                                              value={sendphone}
-                                              onChange={(e) =>
-                                                setsendphone(
-                                                  formatPhoneNumber(
-                                                    e.target.value
-                                                  )
-                                                )
-                                              }
-                                            />
-                                            <div className="text-red-400">
-                                              {errorwithdrawphone}
-                                            </div>
-                                          </div>
-                                          <div className="flex flex-col gap-1 mb-5 w-full">
-                                            <TextField
-                                              id="outlined-password-input"
-                                              label="Amount to withdraw"
-                                              type="text"
-                                              value={withdraw}
-                                              onChange={(e) =>
-                                                setwithdraw(e.target.value)
-                                              }
-                                            />
-                                            <div className="text-red-400">
-                                              {errorwithdraw}
-                                            </div>
-                                          </div>
-                                          <button
-                                            onClick={handleWithdraw}
-                                            disabled={isSubmitting}
-                                            className="w-full bg-emerald-600 text-white hover:emerald-900 mt-2 p-2 rounded-lg shadow"
-                                          >
-                                            {isSubmitting
-                                              ? "Sending request..."
-                                              : `Withdraw`}
-                                          </button>
-                                        </TabsContent>
-                                        <TabsContent value="password">
-                                          Change your password here.
-                                        </TabsContent>
-                                      </Tabs>
-                                    </div>
-                                  </>
-                                )}
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </>
-      )}
+      <Termspopup isOpen={isOpenAccount} onClose={toggleAccount} />
     </div>
   );
 };

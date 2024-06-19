@@ -88,39 +88,6 @@ const fetchBetsDates = async (startDate: Date, endDate: Date) => {
 
 // Example usage:
 
-async function fetchTopBets() {
-  try {
-    const betsRef = collection(db, "bets");
-    const betsQuery = query(
-      betsRef,
-      orderBy("cashout", "desc")
-      // limit(100)
-    );
-
-    const querySnapshot = await getDocs(betsQuery);
-
-    const bets: any = [];
-    let bet = 0;
-    let cashout = 0;
-    querySnapshot.forEach((doc) => {
-      const data = doc.data();
-      bets.push({ id: doc.id, ...doc.data() });
-      // Accumulate the total amount
-      if (data.bet) {
-        bet += data.bet;
-      }
-      if (data.cashout) {
-        cashout += Number(data.cashout);
-      }
-    });
-
-    //console.log("Total Amount:", total);
-    return { bets, bet, cashout };
-  } catch (error) {
-    console.error("Error fetching bets: ");
-  }
-}
-
 async function fetchDeposit() {
   try {
     const betsRef = collection(db, "deposit");
@@ -237,7 +204,8 @@ async function updateSettings(
   maxbet: string,
   houseEdge: string,
   levelA: string,
-  levelB: string
+  levelB: string,
+  paybill: string
 ) {
   const q = query(collection(db, "settings"));
   const querySnapshot = await getDocs(q);
@@ -257,6 +225,7 @@ async function updateSettings(
       houseEdge: houseEdge,
       levelA: levelA,
       levelB: levelB,
+      paybill: paybill,
     })
       .then(() => {
         console.log("Document successfully updated!");
@@ -572,6 +541,7 @@ const page = () => {
   const [houseEdge, sethouseEdge] = useState("0.1");
   const [levelA, setlevelA] = useState("1");
   const [levelB, setlevelB] = useState("1");
+  const [paybill, setpaybill] = useState("155276");
   const handleSettings = async (e: any) => {
     e.preventDefault();
 
@@ -611,6 +581,10 @@ const page = () => {
       alert("Enter levelB!");
       return;
     }
+    if (paybill.trim() === "") {
+      alert("Enter Paybill!");
+      return;
+    }
     try {
       const userQuery = query(collection(db, "settings"));
       const userSnapshot = await getDocs(userQuery);
@@ -624,7 +598,8 @@ const page = () => {
           maxbet,
           houseEdge,
           levelA,
-          levelB
+          levelB,
+          paybill
         );
         houseEdgeValue(Number(houseEdge), Number(levelA), Number(levelB));
         toast({
@@ -645,6 +620,7 @@ const page = () => {
           houseEdge: houseEdge,
           levelA: levelA,
           levelB: levelB,
+          paybill: paybill,
           createdAt: serverTimestamp(),
         });
         houseEdgeValue(Number(houseEdge), Number(levelA), Number(levelB));
@@ -1401,6 +1377,15 @@ const page = () => {
                             id="levelB"
                             value={levelB}
                             onChange={(e) => setlevelB(e.target.value)}
+                            className="col-span-2 h-8 text-gray-900"
+                          />
+                        </div>
+                        <div className="grid grid-cols-3 items-center gap-4">
+                          <Label htmlFor="height">Paybill</Label>
+                          <Input
+                            id="paybill"
+                            value={paybill}
+                            onChange={(e) => setpaybill(e.target.value)}
                             className="col-span-2 h-8 text-gray-900"
                           />
                         </div>
