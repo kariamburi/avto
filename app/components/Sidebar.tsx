@@ -7,12 +7,13 @@ import { collection, getDocs, orderBy, query } from "firebase/firestore";
 import { db } from "@/firebase";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
-
+import SupportChat from "./supportChat";
 type sidebarProps = {
-  userId: string;
+  senderName: string;
+  senderId: string;
 };
 
-const Sidebar = ({ userId }: sidebarProps) => {
+const Sidebar = ({ senderName, senderId }: sidebarProps) => {
   const [messages, setMessages] = useState<any[]>([]);
 
   useEffect(() => {
@@ -37,13 +38,14 @@ const Sidebar = ({ userId }: sidebarProps) => {
 
           // If the recipientUid is not already in the lastMessages object or the message is newer than the current last message,
           // update the last message for that recipientUid
-          if (message.recipientUid === userId) {
+
+          if (message.recipientUid === senderId) {
             if (
-              !lastMessages[message.recipientUid] ||
+              !lastMessages[message.uid] ||
               message.createdAt.seconds >
-                lastMessages[message.recipientUid].createdAt.seconds
+                lastMessages[message.uid].createdAt.seconds
             ) {
-              lastMessages[message.recipientUid] = message;
+              lastMessages[message.uid] = message;
             }
           }
         });
@@ -65,7 +67,7 @@ const Sidebar = ({ userId }: sidebarProps) => {
       .catch((error) => {
         console.error("Error:", error);
       });
-  }, [userId]);
+  }, [senderId]);
 
   const pathname = usePathname();
   const truncateTitle = (title: string, maxLength: number) => {
@@ -73,6 +75,10 @@ const Sidebar = ({ userId }: sidebarProps) => {
       return title.substring(0, maxLength) + "...";
     }
     return title;
+  };
+  const [isChatOpen, setChatOpen] = useState(false);
+  const toggleChat = () => {
+    setChatOpen(!isChatOpen);
   };
 
   return (
@@ -109,15 +115,18 @@ const Sidebar = ({ userId }: sidebarProps) => {
           }
 
           return (
-            <li
-              key={"/chat/" + messages.uid}
-              className={`${
-                isActive &&
-                "bg-gradient-to-b from-emerald-900 to-emerald-950 text-white rounded-sm"
-              } rounded-sm`}
-            >
-              <Link href={"/chat/" + messages.uid}>
-                <div className="bg-gray-700 rounded-lg text-gray-200  hover:bg-gray-400 hover:text-black p-3 mb-1 hover:cursor-pointer">
+            <div>
+              <li
+                key={messages.uid}
+                className={`${
+                  isActive &&
+                  "bg-gradient-to-b from-emerald-900 to-emerald-950 text-white rounded-sm"
+                } rounded-sm`}
+              >
+                <div
+                  onClick={toggleChat}
+                  className="bg-green-700 rounded-lg text-gray-200  hover:bg-gray-400 hover:text-black p-3 mb-1 hover:cursor-pointer"
+                >
                   <div className="flex items-center gap-2">
                     <span className="text-right my-auto">
                       <img
@@ -133,14 +142,22 @@ const Sidebar = ({ userId }: sidebarProps) => {
                       {truncateTitle(messages.text, 15)}
                       <UnreadmessagesPeruser
                         uid={messages.uid}
-                        recipientUid={userId}
+                        recipientUid={senderId}
                       />
                     </div>
                     <div className="text-xs">{formattedCreatedAt}</div>
+                    <SupportChat
+                      isOpen={isChatOpen}
+                      onClose={toggleChat}
+                      senderId={senderId}
+                      senderName={senderName}
+                      recipientUid={messages.uid}
+                      recipientUidName={messages.name}
+                    />
                   </div>
                 </div>
-              </Link>
-            </li>
+              </li>
+            </div>
           );
         })}
     </ul>

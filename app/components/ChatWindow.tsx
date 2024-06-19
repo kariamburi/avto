@@ -44,6 +44,7 @@ const ChatWindow: React.FC<ChatWindowProps> = ({
               displayName={senderName}
               uid={senderId}
               recipientUid={recipientUid}
+              player={true}
             />
           </div>
         </div>

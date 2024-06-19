@@ -4,7 +4,7 @@ const nextConfig = {
 return [
        {
         // matching all API routes
-         source: "/api/:path*",
+        source: "/api/:path*",
         headers: [
             { key: "X-Forwarded-Proto", value: "https" }
           ]

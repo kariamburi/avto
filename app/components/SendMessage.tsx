@@ -9,7 +9,7 @@ import {
   where,
 } from "firebase/firestore";
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
-import React from "react";
+import React, { useCallback } from "react";
 import { useEffect, useState } from "react";
 import CloseIcon from "@mui/icons-material/Close";
 import { useToast } from "@/components/ui/use-toast";
@@ -18,33 +18,41 @@ type sidebarProps = {
   displayName: string;
   uid: string;
   recipientUid: string;
+  player: boolean;
 };
-const SendMessage = ({ uid, displayName, recipientUid }: sidebarProps) => {
+const SendMessage = ({
+  uid,
+  displayName,
+  recipientUid,
+  player,
+}: sidebarProps) => {
   const [value, setValue] = useState<string>("");
   const [image, setImg] = useState<File | null>(null);
-  const [check, setcheck] = useState<boolean>(true);
+
   // const [recipientUid, setrecipientUid] = React.useState<string | null>(null);
   const { toast } = useToast();
 
-  useEffect(() => {
-    const welcome = async () => {
-      const read = "1";
-      const imageUrl = "";
+  const [check, setCheck] = useState(false);
+
+  const sendWelcomeMessage = useCallback(async () => {
+    const read = "1";
+    const imageUrl = "";
+    const welcomeText =
+      "Hello! Thank you for reaching out to our support team. We're here to assist you. Please feel free to ask any questions or let us know how we can help you today.";
+
+    try {
       const userQuery = query(
         collection(db, "messages"),
         where("uid", "==", recipientUid),
         where("recipientUid", "==", uid),
-        where(
-          "text",
-          "==",
-          "Hello! Thank you for reaching out to our support team. We're here to assist you. Please feel free to ask any questions or let us know how we can help you today."
-        )
+        where("text", "==", welcomeText)
       );
+
       const userSnapshot = await getDocs(userQuery);
+
       if (userSnapshot.empty) {
-        setcheck(false);
         await addDoc(collection(db, "messages"), {
-          text: "Hello! Thank you for reaching out to our support team. We're here to assist you. Please feel free to ask any questions or let us know how we can help you today.",
+          text: welcomeText,
           name: "Support Team",
           createdAt: serverTimestamp(),
           uid: recipientUid,
@@ -53,11 +61,18 @@ const SendMessage = ({ uid, displayName, recipientUid }: sidebarProps) => {
           read,
         });
       }
-    };
-    if (check) {
-      welcome();
+    } catch (error) {
+      console.error("Error sending welcome message: ", error);
     }
-  }, []);
+  }, [recipientUid, uid]);
+
+  useEffect(() => {
+    if (player && recipientUid && uid && !check) {
+      sendWelcomeMessage();
+      setCheck(true); // Mark the check as done after sending the message
+    }
+  }, [player, recipientUid, uid, check, sendWelcomeMessage]);
+
   const handleSendMessage = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 

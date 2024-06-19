@@ -140,7 +140,34 @@ async function fetchTopBets() {
     console.error("Error fetching bets: ");
   }
 }
+async function fetchWithdraw(phone: string) {
+  try {
+    const betsRef = collection(db, "withdraw");
+    const betsQuery = query(
+      betsRef,
+      where("phone", "==", phone)
+      // limit(100)
+    );
 
+    const querySnapshot = await getDocs(betsQuery);
+
+    const bets: any = [];
+    let total = 0;
+    querySnapshot.forEach((doc) => {
+      const data = doc.data();
+      bets.push({ id: doc.id, ...doc.data() });
+      // Accumulate the total amount
+      if (data.amount) {
+        total += data.amount;
+      }
+    });
+
+    //console.log("Total Amount:", total);
+    return { bets, total };
+  } catch (error) {
+    console.error("Error fetching bets: ");
+  }
+}
 const Game: React.FC = () => {
   const {
     house,
@@ -1417,6 +1444,11 @@ const Game: React.FC = () => {
     setIsOpen1(!isOpen1);
   };
 
+  const [isOpenAccount, setisOpenAccount] = useState(false);
+  const toggleAccount = () => {
+    setisOpenAccount(!isOpenAccount);
+  };
+
   const [isOpen2, setIsOpen2] = useState(false);
   const toggleMenu2 = () => {
     setIsOpen2(!isOpen2);
@@ -1426,6 +1458,26 @@ const Game: React.FC = () => {
     setChatOpen(!isChatOpen);
   };
   const downloadUrl = "https://aviatorgm.com/download/aviator-game.apk";
+  const [Withdraw, setWithdraw] = useState<any[]>([]);
+  const [totalWithdraw, settotalWithdraw] = useState<number>(0);
+  const [activeTabW, setActiveTabW] = useState(0);
+  const tabW = [
+    { title: "Withdraw", content: "withdraw" },
+    { title: "History", content: "history" },
+  ];
+  const handleWH = async (index: number) => {
+    setActiveTabW(index);
+
+    if (index === 1) {
+      fetchWithdraw(userID).then((result) => {
+        const bets = result?.bets ?? [];
+        const total = result?.total ?? 0;
+
+        setWithdraw(bets);
+        settotalWithdraw(total);
+      });
+    }
+  };
   return (
     <div className="bg-gray-900 text-white min-h-screen flex flex-col">
       <section className="bg-gray-800 p-2 rounded-lg shadow-lg container mx-auto">
@@ -1613,7 +1665,12 @@ const Game: React.FC = () => {
               {userID !== "" ? (
                 <div className="flex gap-2 items-center">
                   <div className="flex gap-1 items-center">
-                    <div className="flex rounded-lg gap-1 items-center">
+                    <div
+                      onClick={() => {
+                        setIsAlertDialogP(true);
+                      }}
+                      className="flex cursor-pointer bg-gray-700 pl-2 pr-2 rounded-full gap-1 items-center"
+                    >
                       <div className="text-xs text-gray-400">KES:</div>{" "}
                       <div className="text-lg font-bold text-green-600">
                         {balance.toFixed(2)}
@@ -1740,11 +1797,11 @@ const Game: React.FC = () => {
                                     </p>
 
                                     <div className="gap-1 h-[350px] items-center w-full border rounded-lg">
-                                      <div className="flex bg-gray-900 rounded-lg p-1 w-full">
+                                      <div className="flex bg-gray-900 rounded-full p-1 w-full">
                                         {tabss.map((tab, index) => (
                                           <button
                                             key={index}
-                                            className={`flex-1 text-sm py-1 px-0 rounded-lg text-center ${
+                                            className={`flex-1 text-sm py-1 px-0 rounded-full text-center ${
                                               activeTabb === index
                                                 ? "text-gray-900 bg-white"
                                                 : "bg-gray-900 text-white"
@@ -1819,50 +1876,234 @@ const Game: React.FC = () => {
                                         {activeTabb === 1 && (
                                           <>
                                             <div className="flex flex-col items-center">
-                                              <div className="text-lg p-1 font-bold text-gray-900">
-                                                Withdraw via M-Pesa
+                                              <div className="flex bg-gray-600 w-full rounded-sm p-1">
+                                                {tabW.map((tab, index) => (
+                                                  <button
+                                                    key={index}
+                                                    className={`flex-1 text-sm py-1 px-0 rounded-sm text-center ${
+                                                      activeTabW === index
+                                                        ? "bg-gray-200 text-black"
+                                                        : "bg-gray-600 text-white"
+                                                    }`}
+                                                    onClick={() =>
+                                                      handleWH(index)
+                                                    }
+                                                  >
+                                                    {tab.title}
+                                                  </button>
+                                                ))}
                                               </div>
-                                              <div className="flex flex-col gap-1 mb-5 w-full">
-                                                <TextField
-                                                  id="outlined-password-input"
-                                                  label="Send to Phone Number"
-                                                  type="text"
-                                                  value={sendphone}
-                                                  onChange={(e) =>
-                                                    setsendphone(
-                                                      formatPhoneNumber(
-                                                        e.target.value
-                                                      )
-                                                    )
-                                                  }
-                                                />
-                                                <div className="text-red-400">
-                                                  {errorwithdrawphone}
-                                                </div>
-                                              </div>
-                                              <div className="flex flex-col gap-1 mb-5 w-full">
-                                                <TextField
-                                                  id="outlined-password-input"
-                                                  label="Amount to withdraw"
-                                                  type="text"
-                                                  value={withdraw}
-                                                  onChange={(e) =>
-                                                    setwithdraw(e.target.value)
-                                                  }
-                                                />
-                                                <div className="text-red-400">
-                                                  {errorwithdraw}
-                                                </div>
-                                              </div>
-                                              <button
-                                                onClick={handleWithdraw}
-                                                disabled={isSubmitting}
-                                                className="w-full bg-emerald-600 text-white hover:emerald-900 mt-2 p-2 rounded-lg shadow"
-                                              >
-                                                {isSubmitting
-                                                  ? "Sending request..."
-                                                  : `Withdraw`}
-                                              </button>
+                                              {activeTabW === 0 && (
+                                                <>
+                                                  {" "}
+                                                  <div className="text-lg p-1 font-bold text-gray-900">
+                                                    Withdraw via M-Pesa
+                                                  </div>
+                                                  <div className="flex flex-col gap-1 mb-5 w-full">
+                                                    <TextField
+                                                      id="outlined-password-input"
+                                                      label="Send to Phone Number"
+                                                      type="text"
+                                                      value={sendphone}
+                                                      onChange={(e) =>
+                                                        setsendphone(
+                                                          formatPhoneNumber(
+                                                            e.target.value
+                                                          )
+                                                        )
+                                                      }
+                                                    />
+                                                    <div className="text-red-400">
+                                                      {errorwithdrawphone}
+                                                    </div>
+                                                  </div>
+                                                  <div className="flex flex-col gap-1 mb-5 w-full">
+                                                    <TextField
+                                                      id="outlined-password-input"
+                                                      label="Amount to withdraw"
+                                                      type="text"
+                                                      value={withdraw}
+                                                      onChange={(e) =>
+                                                        setwithdraw(
+                                                          e.target.value
+                                                        )
+                                                      }
+                                                    />
+                                                    <div className="text-red-400">
+                                                      {errorwithdraw}
+                                                    </div>
+                                                  </div>
+                                                  <button
+                                                    onClick={handleWithdraw}
+                                                    disabled={isSubmitting}
+                                                    className="w-full bg-emerald-600 text-white hover:emerald-900 mt-2 p-2 rounded-lg shadow"
+                                                  >
+                                                    {isSubmitting
+                                                      ? "Sending request..."
+                                                      : `Withdraw`}
+                                                  </button>
+                                                </>
+                                              )}
+                                              {activeTabW === 1 && (
+                                                <>
+                                                  <div>
+                                                    <div className="m-1 flex gap-2 text-sm justify-between items-center">
+                                                      <div className="flex flex-col">
+                                                        <div className="text-lg font-bold">
+                                                          Withdraw
+                                                        </div>
+
+                                                        <div className="text-gray-400 font-bold">
+                                                          KES.{" "}
+                                                          {totalWithdraw.toFixed(
+                                                            2
+                                                          )}
+                                                        </div>
+                                                      </div>
+                                                      <div></div>
+                                                    </div>
+
+                                                    <div className="border-gray-900 border w-full mb-1"></div>
+                                                    <div className="grid grid-cols-4 text-gray-400 text-xs">
+                                                      <div className="justify-center items-center flex flex-col">
+                                                        Status
+                                                      </div>
+
+                                                      <div className="justify-center items-center flex flex-col">
+                                                        Send to
+                                                      </div>
+                                                      <div className="justify-center items-center flex flex-col">
+                                                        Amount KES
+                                                      </div>
+                                                      <div className="justify-center items-center flex flex-col">
+                                                        Date
+                                                      </div>
+                                                      <div></div>
+                                                    </div>
+                                                    <ScrollArea className="h-[300px]">
+                                                      <ul className="w-full">
+                                                        {Withdraw.map(
+                                                          (bet: any, index) => {
+                                                            let formattedCreatedAt =
+                                                              "";
+                                                            try {
+                                                              const createdAtDate =
+                                                                new Date(
+                                                                  bet.createdAt
+                                                                    .seconds *
+                                                                    1000
+                                                                ); // Convert seconds to milliseconds
+
+                                                              // Get today's date
+                                                              const today =
+                                                                new Date();
+
+                                                              // Check if the message was sent today
+                                                              if (
+                                                                isToday(
+                                                                  createdAtDate
+                                                                )
+                                                              ) {
+                                                                formattedCreatedAt =
+                                                                  "Today " +
+                                                                  format(
+                                                                    createdAtDate,
+                                                                    "HH:mm"
+                                                                  ); // Set as "Today"
+                                                              } else if (
+                                                                isYesterday(
+                                                                  createdAtDate
+                                                                )
+                                                              ) {
+                                                                // Check if the message was sent yesterday
+                                                                formattedCreatedAt =
+                                                                  "Yesterday " +
+                                                                  format(
+                                                                    createdAtDate,
+                                                                    "HH:mm"
+                                                                  ); // Set as "Yesterday"
+                                                              } else {
+                                                                // Format the createdAt date with day, month, and year
+                                                                formattedCreatedAt =
+                                                                  format(
+                                                                    createdAtDate,
+                                                                    "dd-MM-yyyy"
+                                                                  ); // Format as 'day/month/year'
+                                                              }
+
+                                                              // Append hours and minutes if the message is not from today or yesterday
+                                                              if (
+                                                                !isToday(
+                                                                  createdAtDate
+                                                                ) &&
+                                                                !isYesterday(
+                                                                  createdAtDate
+                                                                )
+                                                              ) {
+                                                                formattedCreatedAt +=
+                                                                  " " +
+                                                                  format(
+                                                                    createdAtDate,
+                                                                    "HH:mm"
+                                                                  ); // Append hours and minutes
+                                                              }
+                                                            } catch {
+                                                              // Handle error when formatting date
+                                                            }
+
+                                                            return (
+                                                              <li
+                                                                className="w-full"
+                                                                key={index}
+                                                              >
+                                                                <div
+                                                                  className={`p-1 mt-1 rounded-sm grid grid-cols-4 gap-1 w-full items-center text-xs`}
+                                                                >
+                                                                  <div className="justify-center items-center flex flex-col">
+                                                                    <div
+                                                                      className={`flex flex-col p-1 justify-center items-center w-[70px] rounded-full ${
+                                                                        bet.status ===
+                                                                        "pending"
+                                                                          ? "text-yellow-600"
+                                                                          : bet.status ===
+                                                                            "failed"
+                                                                          ? "text-red-600 "
+                                                                          : "text-green-600"
+                                                                      }`}
+                                                                    >
+                                                                      {
+                                                                        bet.status
+                                                                      }
+                                                                    </div>
+                                                                  </div>
+
+                                                                  <div className="justify-center items-center flex flex-col">
+                                                                    {
+                                                                      bet.sendphone
+                                                                    }
+                                                                  </div>
+
+                                                                  <div className="justify-center items-center flex flex-col">
+                                                                    KES{" "}
+                                                                    {bet.amount.toFixed(
+                                                                      2
+                                                                    )}
+                                                                  </div>
+                                                                  <div className="justify-center items-center flex flex-col">
+                                                                    {
+                                                                      formattedCreatedAt
+                                                                    }
+                                                                  </div>
+                                                                </div>
+                                                              </li>
+                                                            );
+                                                          }
+                                                        )}
+                                                      </ul>
+                                                    </ScrollArea>
+                                                  </div>
+                                                </>
+                                              )}
                                             </div>
                                           </>
                                         )}
@@ -3592,6 +3833,211 @@ const Game: React.FC = () => {
         </>
       )}
       ;
+      {isOpenAccount && (
+        <>
+          <div className="fixed bg-gray-900 rounded-lg shadow-lg w-full z-30">
+            <div className="flex justify-between bg-gray-900 text-white p-2 rounded-t-lg">
+              <div className="flex items-center gap-2">
+                <img
+                  className="w-8 h-8 rounded-full object-cover"
+                  src="/sender.png"
+                  alt="avatar"
+                />
+                <div className="text-xs text-gray-400 font-medium flex gap-5">
+                  <h3 className="font-bold text-lg">ACCOUNT</h3>
+                </div>
+              </div>
+              <div
+                onClick={() => setisOpenAccount(false)}
+                className="cursor-pointer text-white"
+              >
+                <CloseOutlinedIcon />
+              </div>
+            </div>
+            <div className="p-1">
+              <div className="bg-gray-900 text-white flex flex-col">
+                <div className="w-full bg-gray-800 flex p-1">
+                  <div className="flex-1">
+                    <div className="rounded-lg bg-gray-800 max-w-6xl mx-auto flex flex-col p-2 mt-0">
+                      <div className="p-0 ml-0 mr-0">
+                        <div className="p-3 w-full items-center">
+                          <div className="flex flex-col items-center rounded-t-lg w-full p-1 bg-grey-50">
+                            <div className="w-36 p-1">
+                              <img
+                                className="w-full h-full rounded-full object-cover"
+                                src="/logo1.png"
+                                alt="Profile Image"
+                              />
+                            </div>
+
+                            <p className="text-lg font-bold text-gray-400">
+                              {username}
+                            </p>
+
+                            <p className="text-lg font-bold text-gray-400">
+                              {userID}
+                            </p>
+
+                            <p className="text-3xl text-green-600 font-bold p-2">
+                              KES {balance.toFixed(2)}
+                            </p>
+
+                            <div className="gap-1 h-[350px] items-center w-full lg:w-[800px] rounded-lg">
+                              <div className="flex bg-gray-900 rounded-full p-1 w-full">
+                                {tabss.map((tab, index) => (
+                                  <button
+                                    key={index}
+                                    className={`flex-1 text-sm py-1 px-0 rounded-full text-center ${
+                                      activeTabb === index
+                                        ? "text-white bg-gray-700"
+                                        : "bg-gray-900 text-gray-400"
+                                    }`}
+                                    onClick={() => setActiveTabb(index)}
+                                  >
+                                    {tab.title}
+                                  </button>
+                                ))}
+                              </div>
+                              <div className="p-2 mt-1 bg-gray-900 items-center w-full rounded-lg">
+                                {activeTabb === 0 && (
+                                  <>
+                                    <div className="flex flex-col items-center">
+                                      <div className="text-lg p-1 font-bold text-gray-900">
+                                        Deposit via M-Pesa
+                                      </div>
+                                      <div className="flex flex-col gap-1 mb-5 w-full">
+                                        <TextField
+                                          id="outlined-password-input"
+                                          label="M-pesa Phone Number"
+                                          type="text"
+                                          value={payphone}
+                                          onChange={(e) =>
+                                            setpayphone(
+                                              formatPhoneNumber(e.target.value)
+                                            )
+                                          }
+                                        />
+                                        <div className="text-red-400">
+                                          {errormpesaphone}
+                                        </div>
+                                      </div>
+                                      <div className="flex flex-col gap-1 mb-5 w-full">
+                                        <TextField
+                                          id="outlined-password-input"
+                                          label="Amount"
+                                          type="text"
+                                          value={deposit}
+                                          onChange={(e) =>
+                                            setdeposit(e.target.value)
+                                          }
+                                        />
+                                        <div className="text-red-400">
+                                          {errordeposit}
+                                        </div>
+                                      </div>
+                                      <button
+                                        onClick={handleTopup}
+                                        disabled={isSubmitting}
+                                        className="w-full bg-emerald-600 text-white hover:emerald-900 mt-2 p-2 rounded-lg shadow"
+                                      >
+                                        {isSubmitting
+                                          ? "Sending request..."
+                                          : `Deposit`}
+                                      </button>
+                                      {stkresponse && (
+                                        <div className="mt-2 text-green-800 text-sm bg-green-100 rounded-lg w-full p-2 items-center">
+                                          {stkresponse}
+                                        </div>
+                                      )}
+                                      {errorstkresponse && (
+                                        <div className="mt-1 text-red-800 text-sm bg-red-100 rounded-lg w-full p-2 items-center">
+                                          {errorstkresponse}
+                                        </div>
+                                      )}
+                                    </div>
+                                  </>
+                                )}
+                                {activeTabb === 1 && (
+                                  <>
+                                    <div className="flex flex-col items-center">
+                                      <Tabs
+                                        defaultValue="account"
+                                        className="w-[400px]"
+                                      >
+                                        <TabsList defaultValue={"withdraw"}>
+                                          <TabsTrigger value="withdraw">
+                                            Withdraw
+                                          </TabsTrigger>
+                                          <TabsTrigger value="history">
+                                            History
+                                          </TabsTrigger>
+                                        </TabsList>
+                                        <TabsContent value="withdraw">
+                                          <div className="text-lg p-1 font-bold text-gray-900">
+                                            Withdraw via M-Pesa
+                                          </div>
+                                          <div className="flex flex-col gap-1 mb-5 w-full">
+                                            <TextField
+                                              id="outlined-password-input"
+                                              label="Send to Phone Number"
+                                              type="text"
+                                              value={sendphone}
+                                              onChange={(e) =>
+                                                setsendphone(
+                                                  formatPhoneNumber(
+                                                    e.target.value
+                                                  )
+                                                )
+                                              }
+                                            />
+                                            <div className="text-red-400">
+                                              {errorwithdrawphone}
+                                            </div>
+                                          </div>
+                                          <div className="flex flex-col gap-1 mb-5 w-full">
+                                            <TextField
+                                              id="outlined-password-input"
+                                              label="Amount to withdraw"
+                                              type="text"
+                                              value={withdraw}
+                                              onChange={(e) =>
+                                                setwithdraw(e.target.value)
+                                              }
+                                            />
+                                            <div className="text-red-400">
+                                              {errorwithdraw}
+                                            </div>
+                                          </div>
+                                          <button
+                                            onClick={handleWithdraw}
+                                            disabled={isSubmitting}
+                                            className="w-full bg-emerald-600 text-white hover:emerald-900 mt-2 p-2 rounded-lg shadow"
+                                          >
+                                            {isSubmitting
+                                              ? "Sending request..."
+                                              : `Withdraw`}
+                                          </button>
+                                        </TabsContent>
+                                        <TabsContent value="password">
+                                          Change your password here.
+                                        </TabsContent>
+                                      </Tabs>
+                                    </div>
+                                  </>
+                                )}
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </>
+      )}
     </div>
   );
 };

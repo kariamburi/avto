@@ -117,7 +117,7 @@ const Message = ({
                   alt="avatar"
                 />
                 <div className="text-xs text-black font-medium flex gap-3">
-                  Support Team
+                  {message.name}
                   <div className="text-xs text-gray-500">
                     {formattedCreatedAt}
                   </div>

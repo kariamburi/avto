@@ -32,6 +32,7 @@ import useWebSocket from "../hooks/useWebSocket";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import Sidebar from "../components/Sidebar";
+import Chat from "../components/Chat";
 interface Bet {
   id: string;
   phone: string;
@@ -380,6 +381,25 @@ const page = () => {
         });
     }
   };
+  const [senderId, setsenderId] = useState("");
+  const [senderName, setsenderName] = useState("");
+  const [status, setstatus] = useState("");
+  useEffect(() => {
+    const user_id = sessionStorage.getItem("userID");
+    if (user_id) {
+      setsenderId(user_id);
+    } else {
+      router.push(`/`);
+    }
+    const username_id = sessionStorage.getItem("username");
+    if (username_id) {
+      setsenderName(username_id);
+    }
+    const status_id = sessionStorage.getItem("status");
+    if (status_id) {
+      setstatus(status_id);
+    }
+  }, []);
 
   useEffect(() => {
     //const startDate = new Date("2024-01-01");
@@ -703,6 +723,10 @@ const page = () => {
     const randomTimestamp = Timestamp.fromDate(randomDate);
 
     return randomTimestamp;
+  };
+  const [isChatOpenPlayer, setChatOpenPlay] = useState("");
+  const toggleChatPlayer = (id: string) => {
+    setChatOpenPlay(id);
   };
   return (
     <div className="bg-gray-900 text-white min-h-screen flex flex-col">
@@ -1396,29 +1420,9 @@ const page = () => {
               {activeTab === 6 && (
                 <>
                   <div className="w-full">
-                    <div className="m-1 flex flex-col text-white text-sm">
-                      <div className="text-lg font-bold">Chats</div>
-                    </div>
-
                     <div className="border-gray-900 border w-full mb-1"></div>
                     <div className="items-center flex flex-col justify-center">
-                      <div className="space-y-2">
-                        <p className="text-sm text-muted-foreground p-2">
-                          Players Chats.
-                        </p>
-                      </div>
-
-                      <ScrollArea className="max-h-[400px] w-full bg-gray-900 rounded-md p-4">
-                        <div className="w-full items-center justify-center">
-                          <span className="logo font-bold text-orange-600">
-                            Messages
-                          </span>
-                          <p className=" text-center sm:text-left">
-                            Latest chats
-                          </p>
-                        </div>
-                        <Sidebar userId={"254728820092"} />
-                      </ScrollArea>
+                      <Chat senderId={senderId} senderName={senderName} />
                     </div>
                   </div>
                 </>
