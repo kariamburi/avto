@@ -29,17 +29,14 @@ type propmess = {
 const ChatBox = ({ uid, displayName, recipientUid, player }: sidebarProps) => {
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const [messages, setMessages] = useState<any[]>([]);
-  //const [recipientUid, setrecipientUid] = React.useState<string | null>(null);
+
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   };
 
   useEffect(scrollToBottom, [messages]);
 
-  // const [messages, setMessages] = useState<any[]>([]);
-
   useEffect(() => {
-    // console.log("chatbox:" + recipientUid);
     const fetchMessages = () => {
       const senderMessagesQuery = query(
         collection(db, "messages"),
@@ -89,16 +86,9 @@ const ChatBox = ({ uid, displayName, recipientUid, player }: sidebarProps) => {
         unsubscribeRecipient();
       };
     };
-
+    setMessages([]);
     fetchMessages();
   }, [uid, recipientUid]);
-
-  useEffect(() => {
-    const scrollToBottom = () => {
-      messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-    };
-    scrollToBottom();
-  }, [messages]);
 
   // Function to update the read status of a message
 
@@ -134,7 +124,6 @@ const ChatBox = ({ uid, displayName, recipientUid, player }: sidebarProps) => {
               imageUrl={message.imageUrl}
               player={player}
             />
-
             {message.uid !== uid &&
               message.read == 1 &&
               updateMessageReadStatus({ messageId: message.id })}

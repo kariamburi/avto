@@ -88,13 +88,18 @@ const fetchBetsDates = async (startDate: Date, endDate: Date) => {
 
 // Example usage:
 
-async function fetchDeposit() {
+const fetchDeposit = async (startDateDep: Date, endDateDep: Date) => {
   try {
-    const betsRef = collection(db, "deposit");
+    const betsCollection = collection(db, "deposit");
+
+    const startTimestamp = Timestamp.fromDate(startDateDep); // Convert Date to Firestore Timestamp
+    const endTimestamp = Timestamp.fromDate(endDateDep); // Convert Date to Firestore Timestamp
+
     const betsQuery = query(
-      betsRef,
-      orderBy("createdAt", "desc")
-      // limit(100)
+      betsCollection,
+      where("createdAt", ">=", startTimestamp),
+      where("createdAt", "<=", endTimestamp)
+      //orderBy("cashout", "desc") // Uncomment if you need to order by cashout
     );
 
     const querySnapshot = await getDocs(betsQuery);
@@ -103,26 +108,33 @@ async function fetchDeposit() {
     let total = 0;
     querySnapshot.forEach((doc) => {
       const data = doc.data();
-      bets.push({ id: doc.id, ...doc.data() });
-      // Accumulate the total amount
+      bets.push({ id: doc.id, ...data });
+      // Accumulate the total amounts
       if (data.amount) {
         total += data.amount;
       }
     });
 
-    //console.log("Total Amount:", total);
     return { bets, total };
   } catch (error) {
-    console.error("Error fetching bets: ");
+    console.error("Error fetching bets: ", error);
+    throw error;
   }
-}
-async function fetchWithdraw() {
+};
+
+const fetchWithdraw = async (startDateWith: Date, endDateWith: Date) => {
   try {
-    const betsRef = collection(db, "withdraw");
+    //  alert("startDateWith: " + startDateWith + " endDateWith: " + endDateWith);
+    const betsCollection = collection(db, "withdraw");
+
+    const startTimestamp = Timestamp.fromDate(startDateWith); // Convert Date to Firestore Timestamp
+    const endTimestamp = Timestamp.fromDate(endDateWith); // Convert Date to Firestore Timestamp
+
     const betsQuery = query(
-      betsRef,
-      orderBy("createdAt", "desc")
-      // limit(100)
+      betsCollection,
+      where("createdAt", ">=", startTimestamp),
+      where("createdAt", "<=", endTimestamp)
+      // orderBy("cashout", "desc") // Uncomment if you need to order by cashout
     );
 
     const querySnapshot = await getDocs(betsQuery);
@@ -131,19 +143,19 @@ async function fetchWithdraw() {
     let total = 0;
     querySnapshot.forEach((doc) => {
       const data = doc.data();
-      bets.push({ id: doc.id, ...doc.data() });
-      // Accumulate the total amount
+      bets.push({ id: doc.id, ...data });
+      // Accumulate the total amounts
       if (data.amount) {
         total += data.amount;
       }
     });
 
-    //console.log("Total Amount:", total);
     return { bets, total };
   } catch (error) {
-    console.error("Error fetching bets: ");
+    console.error("Error fetching bets: ", error);
+    throw error;
   }
-}
+};
 async function fetchPlayers() {
   try {
     const betsRef = collection(db, "aviator_users");
@@ -179,15 +191,42 @@ async function fetchBalance() {
     const bets: any = [];
     let total = 0; // Use let instead of const to allow re-assignment
 
-    querySnapshot.forEach((doc) => {
-      const data = doc.data();
-      bets.push({ id: doc.id, ...data });
+    const fetchName = async (phone: string): Promise<string> => {
+      try {
+        const betsRef_ = collection(db, "aviator_users");
+        const betsQuery_ = query(
+          betsRef_,
+          where("phone", "==", phone)
+          // limit(100)
+        );
 
-      // Accumulate the total amount
+        const querySnapshot_ = await getDocs(betsQuery_);
+
+        let name = "";
+        querySnapshot_.forEach((doc) => {
+          const data_ = doc.data();
+          name = data_.name;
+        });
+        return name;
+      } catch (error) {
+        console.error("Error fetching name for phone:", phone, error);
+        return ""; // Return an empty string if there's an error
+      }
+    };
+
+    // Create an array of promises to fetch names
+    const fetchPromises = querySnapshot.docs.map(async (doc) => {
+      const data = doc.data();
       if (data.amount) {
         total += data.amount;
       }
+      const name = await fetchName(data.phone);
+      return { id: doc.id, ...data, name };
     });
+
+    // Wait for all promises to resolve
+    const betsWithNames = await Promise.all(fetchPromises);
+    bets.push(...betsWithNames);
 
     //console.log("Total Amount:", total);
     return { bets, total };
@@ -195,6 +234,7 @@ async function fetchBalance() {
     console.error("Error fetching bets:", error);
   }
 }
+
 async function updateSettings(
   minwithdraw: string,
   maxwithdraw: string,
@@ -267,7 +307,18 @@ const page = () => {
     new Date("2024-01-01")
   );
   const [endDate, setEndDate] = useState<Date | null>(new Date("2024-12-31"));
-
+  const [startDateDep, setStartDateDep] = useState<Date | null>(
+    new Date("2024-01-01")
+  );
+  const [endDateDep, setEndDateDep] = useState<Date | null>(
+    new Date("2024-12-31")
+  );
+  const [startDateWith, setStartDateWith] = useState<Date | null>(
+    new Date("2024-01-01")
+  );
+  const [endDateWith, setEndDateWith] = useState<Date | null>(
+    new Date("2024-12-31")
+  );
   const [allbalance, setallbalance] = useState<any[]>([]);
   const [totalbalance, settotalbalance] = useState<number>(0);
   const [sentstatus, setsentstatus] = useState<string>("");
@@ -291,19 +342,33 @@ const page = () => {
         settotalbalance(total);
       });
     } else if (index === 1) {
-      fetchDeposit().then((result) => {
-        const bets = result?.bets ?? [];
-        const total = result?.total ?? 0;
-        setDeposit(bets);
-        settotalDeposit(total);
-      });
+      if (startDateDep && endDateDep) {
+        fetchDeposit(startDateDep, endDateDep)
+          .then((result) => {
+            const bets = result?.bets ?? [];
+            const total = result?.total ?? 0;
+            setDeposit(bets);
+            settotalDeposit(total); // Ensure your state variable and setter match (settotalcashout -> setTotalCashout)
+          })
+          .catch((error) => {
+            console.error("Error fetching bets:", error);
+            // Handle error state or display error message to the user
+          });
+      }
     } else if (index === 2) {
-      fetchWithdraw().then((result) => {
-        const bets = result?.bets ?? [];
-        const total = result?.total ?? 0;
-        setWithdraw(bets);
-        settotalWithdraw(total);
-      });
+      if (startDateWith && endDateWith) {
+        fetchWithdraw(startDateWith, endDateWith)
+          .then((result) => {
+            const bets = result?.bets ?? [];
+            const total = result?.total ?? 0;
+            setWithdraw(bets);
+            settotalWithdraw(total); // Ensure your state variable and setter match (settotalcashout -> setTotalCashout)
+          })
+          .catch((error) => {
+            console.error("Error fetching bets:", error);
+            // Handle error state or display error message to the user
+          });
+      }
     } else if (index === 3) {
       if (startDate && endDate) {
         fetchBetsDates(startDate, endDate)
@@ -332,7 +397,36 @@ const page = () => {
       });
     }
   };
-
+  const handleFetchDep = async () => {
+    if (startDateDep && endDateDep) {
+      fetchDeposit(startDateDep, endDateDep)
+        .then((result) => {
+          const bets = result?.bets ?? [];
+          const total = result?.total ?? 0;
+          setDeposit(bets);
+          settotalDeposit(total); // Ensure your state variable and setter match (settotalcashout -> setTotalCashout)
+        })
+        .catch((error) => {
+          console.error("Error fetching bets:", error);
+          // Handle error state or display error message to the user
+        });
+    }
+  };
+  const handleFetchWith = async () => {
+    if (startDateWith && endDateWith) {
+      fetchWithdraw(startDateWith, endDateWith)
+        .then((result) => {
+          const bets = result?.bets ?? [];
+          const total = result?.total ?? 0;
+          setWithdraw(bets);
+          settotalWithdraw(total); // Ensure your state variable and setter match (settotalcashout -> setTotalCashout)
+        })
+        .catch((error) => {
+          console.error("Error fetching bets:", error);
+          // Handle error state or display error message to the user
+        });
+    }
+  };
   const handleFetchBets = async () => {
     if (startDate && endDate) {
       fetchBetsDates(startDate, endDate)
@@ -391,12 +485,19 @@ const page = () => {
   }, [sentstatusbets]);
 
   useEffect(() => {
-    fetchWithdraw().then((result) => {
-      const bets = result?.bets ?? [];
-      const total = result?.total ?? 0;
-      setWithdraw(bets);
-      settotalWithdraw(total);
-    });
+    if (startDateWith && endDateWith) {
+      fetchWithdraw(startDateWith, endDateWith)
+        .then((result) => {
+          const bets = result?.bets ?? [];
+          const total = result?.total ?? 0;
+          setWithdraw(bets);
+          settotalWithdraw(total); // Ensure your state variable and setter match (settotalcashout -> setTotalCashout)
+        })
+        .catch((error) => {
+          console.error("Error fetching bets:", error);
+          // Handle error state or display error message to the user
+        });
+    }
   }, [sentstatus]);
 
   useEffect(() => {
@@ -740,9 +841,12 @@ const page = () => {
                     </div>
 
                     <div className="border-gray-900 border w-full mb-1"></div>
-                    <div className="grid grid-cols-3 text-gray-400 text-xs">
+                    <div className="grid grid-cols-4 text-gray-400 text-xs">
                       <div className="justify-center items-center flex flex-col">
                         Account
+                      </div>
+                      <div className="justify-center items-center flex flex-col">
+                        Name
                       </div>
                       <div className="justify-center items-center flex flex-col">
                         Balance KES
@@ -757,10 +861,13 @@ const page = () => {
                         return (
                           <li className="w-full" key={index}>
                             <div
-                              className={`p-1 mt-1 rounded-sm grid grid-cols-3 gap-1 w-full items-center text-xs bg-gray-900`}
+                              className={`p-1 mt-1 rounded-sm grid grid-cols-4 gap-1 w-full items-center text-xs bg-gray-900`}
                             >
                               <div className="gap-1 justify-center items-center flex">
                                 <RandomAvatar /> {bet.phone}
+                              </div>
+                              <div className="gap-1 justify-center items-center flex">
+                                {bet.name}
                               </div>
                               <div className="justify-center items-center flex flex-col">
                                 KES {bet.amount.toFixed(2)}
@@ -784,6 +891,38 @@ const page = () => {
                       <div className="text-gray-400">No. {Deposit.length}</div>
                       <div className="text-gray-400 font-bold">
                         KES. {totalDeposit.toFixed(2)}
+                      </div>
+                      <div className="flex gap-2 items-center mt-2 mb-2">
+                        <div>
+                          <label htmlFor="start-date">Start Date: </label>
+                          <DatePicker
+                            id="start-date"
+                            className="text-black rounded-lg p-1"
+                            selected={startDateDep}
+                            onChange={(date: Date | null) =>
+                              setStartDateDep(date)
+                            }
+                            dateFormat="yyyy-MM-dd"
+                          />
+                        </div>
+                        <div>
+                          <label htmlFor="end-date">End Date: </label>
+                          <DatePicker
+                            id="end-date"
+                            className="text-black rounded-lg p-1"
+                            selected={endDateDep}
+                            onChange={(date: Date | null) =>
+                              setEndDateDep(date)
+                            }
+                            dateFormat="yyyy-MM-dd"
+                          />
+                        </div>
+                        <button
+                          className="w-[150px] bg-orange-600 text-white hover:orange-900 p-1 rounded-full"
+                          onClick={handleFetchDep}
+                        >
+                          Fetch Deposits
+                        </button>
                       </div>
                     </div>
 
@@ -907,6 +1046,38 @@ const page = () => {
                         <div className="text-gray-400">{Withdraw.length}</div>
                         <div className="text-gray-400 font-bold">
                           KES. {totalWithdraw.toFixed(2)}
+                        </div>
+                        <div className="flex gap-2 items-center mt-2 mb-2">
+                          <div>
+                            <label htmlFor="start-date">Start Date: </label>
+                            <DatePicker
+                              id="start-date"
+                              className="text-black rounded-lg p-1"
+                              selected={startDateWith}
+                              onChange={(date: Date | null) =>
+                                setStartDateWith(date)
+                              }
+                              dateFormat="yyyy-MM-dd"
+                            />
+                          </div>
+                          <div>
+                            <label htmlFor="end-date">End Date: </label>
+                            <DatePicker
+                              id="end-date"
+                              className="text-black rounded-lg p-1"
+                              selected={endDateWith}
+                              onChange={(date: Date | null) =>
+                                setEndDateWith(date)
+                              }
+                              dateFormat="yyyy-MM-dd"
+                            />
+                          </div>
+                          <button
+                            className="w-[150px] bg-orange-600 text-white hover:orange-900 p-1 rounded-full"
+                            onClick={handleFetchWith}
+                          >
+                            Fetch Withdraws
+                          </button>
                         </div>
                       </div>
                       <div>

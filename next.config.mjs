@@ -2,11 +2,11 @@
 const nextConfig = {
   async headers() {
 return [
-      {
+     {
         // matching all API routes
-        source: "/api/:path*",
+       source: "/api/:path*",
        headers: [
-            { key: "X-Forwarded-Proto", value: "https" }
+           { key: "X-Forwarded-Proto", value: "https" }
          ]
      }
     ]
