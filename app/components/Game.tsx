@@ -129,13 +129,16 @@ async function fetchBetsByPhone(phone: string) {
 async function fetchTopBets() {
   try {
     const betsRef = collection(db, "bets");
-    const betsQuery = query(betsRef, where("status", "==", "Win"), limit(200));
+    const betsQuery = query(betsRef, orderBy("cashout", "desc"), limit(200));
 
     const querySnapshot = await getDocs(betsQuery);
 
     const bets: any = [];
     querySnapshot.forEach((doc) => {
-      bets.push({ id: doc.id, ...doc.data() });
+      const data = doc.data();
+      if (data.status === "Win" && data.cashout > 500) {
+        bets.push({ id: doc.id, ...doc.data() });
+      }
     });
 
     return bets;

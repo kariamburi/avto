@@ -53,6 +53,7 @@ const fetchBetsDates = async (startDate: Date, endDate: Date) => {
 
     const betsQuery = query(
       betsCollection,
+      orderBy("createdAt", "desc"),
       where("createdAt", ">=", startTimestamp),
       where("createdAt", "<=", endTimestamp)
       //orderBy("cashout", "desc") // Uncomment if you need to order by cashout
@@ -97,6 +98,7 @@ const fetchDeposit = async (startDateDep: Date, endDateDep: Date) => {
 
     const betsQuery = query(
       betsCollection,
+      orderBy("createdAt", "desc"),
       where("createdAt", ">=", startTimestamp),
       where("createdAt", "<=", endTimestamp)
       //orderBy("cashout", "desc") // Uncomment if you need to order by cashout
@@ -132,6 +134,7 @@ const fetchWithdraw = async (startDateWith: Date, endDateWith: Date) => {
 
     const betsQuery = query(
       betsCollection,
+      orderBy("createdAt", "desc"),
       where("createdAt", ">=", startTimestamp),
       where("createdAt", "<=", endTimestamp)
       // orderBy("cashout", "desc") // Uncomment if you need to order by cashout
