@@ -501,6 +501,7 @@ const Game: React.FC = () => {
   const [houseEdge, sethouseEdge] = useState("0");
   const [levelA, setlevelA] = useState("1");
   const [levelB, setlevelB] = useState("1");
+  const [point, setpoint] = useState("1");
   const [paybill, setpaybill] = useState("155276");
   useEffect(() => {
     const user_id = sessionStorage.getItem("userID");
