@@ -1558,7 +1558,9 @@ const page = () => {
                           />
                         </div>
                         <div className="grid grid-cols-3 items-center gap-4">
-                          <Label htmlFor="height">level A (p % 5 === 0)</Label>
+                          <Label htmlFor="height">
+                            level A (p % 5 === 0) (crashpoint 1)
+                          </Label>
                           <Input
                             id="levelA"
                             value={levelA}
@@ -1567,7 +1569,9 @@ const page = () => {
                           />
                         </div>
                         <div className="grid grid-cols-3 items-center gap-4">
-                          <Label htmlFor="height">Level B (r = 0.20)</Label>
+                          <Label htmlFor="height">
+                            Level B (r = 0.20) (crashpoint 1)
+                          </Label>
                           <Input
                             id="levelB"
                             value={levelB}
