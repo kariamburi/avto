@@ -19,16 +19,17 @@ let houseEdge = 0;
 let levelA = 1;
 let levelB = 1;
 let point = 1;
+let range = 100;
 
 let currentGameStatus = 'waiting';
 const clients = new Set();
 function getCrashPoint() {
   const e = 2 ** 32;
   const h = crypto.randomInt(e);
-  if (h % 5 === 0) {
+  if (h % (range/4) === 0) {
     return 1;
   }
-  return Math.floor((20 * e - h) / (e - h)) / 20;
+  return Math.floor((range * e - h) / (e - h)) / range;
 }
 const generateCrashPoint = () => {
   const h = Math.random();
@@ -188,7 +189,8 @@ app.prepare().then(async () => {
           levelB = Number(data.levelB);
           levelA = Number(data.levelA);
           point = Number(data.point);
-          console.error('houseEdge:'+houseEdge+" levelA: "+levelA+" levelB: "+levelB+" Point: "+point);
+          range = Number(data.range);
+          console.error('houseEdge:'+houseEdge+" levelA: "+levelA+" levelB: "+levelB+" Point: "+point+" range: "+range);
         }
       } catch (err) {
         console.error('Error processing message:', err);

@@ -249,6 +249,7 @@ async function updateSettings(
   levelA: string,
   levelB: string,
   point: string,
+  range: string,
   paybill: string
 ) {
   const q = query(collection(db, "settings"));
@@ -270,6 +271,7 @@ async function updateSettings(
       levelA: levelA,
       levelB: levelB,
       point: point,
+      range: range,
       paybill: paybill,
     })
       .then(() => {
@@ -531,6 +533,7 @@ const page = () => {
         setlevelA(userData.levelA);
         setlevelB(userData.levelB);
         setpoint(userData.point);
+        setrange(userData.range);
         setpaybill(userData.paybill);
       }
     };
@@ -650,6 +653,7 @@ const page = () => {
   const [levelA, setlevelA] = useState("1");
   const [levelB, setlevelB] = useState("1");
   const [point, setpoint] = useState("1");
+  const [range, setrange] = useState("100");
   const [paybill, setpaybill] = useState("155276");
   const handleSettings = async (e: any) => {
     e.preventDefault();
@@ -698,6 +702,10 @@ const page = () => {
       alert("Enter Paybill!");
       return;
     }
+    if (range.trim() === "") {
+      alert("Enter Range!");
+      return;
+    }
     try {
       const userQuery = query(collection(db, "settings"));
       const userSnapshot = await getDocs(userQuery);
@@ -713,13 +721,15 @@ const page = () => {
           levelA,
           levelB,
           point,
+          range,
           paybill
         );
         houseEdgeValue(
           Number(houseEdge),
           Number(levelA),
           Number(levelB),
-          Number(point)
+          Number(point),
+          Number(range)
         );
         toast({
           title: "Successful",
@@ -740,6 +750,7 @@ const page = () => {
           levelA: levelA,
           levelB: levelB,
           point: point,
+          range: range,
           paybill: paybill,
           createdAt: serverTimestamp(),
         });
@@ -747,7 +758,8 @@ const page = () => {
           Number(houseEdge),
           Number(levelA),
           Number(levelB),
-          Number(point)
+          Number(point),
+          Number(range)
         );
         toast({
           title: "Successful",
@@ -1587,6 +1599,17 @@ const page = () => {
                             id="point"
                             value={point}
                             onChange={(e) => setpoint(e.target.value)}
+                            className="col-span-2 h-8 text-gray-900"
+                          />
+                        </div>
+                        <div className="grid grid-cols-3 items-center gap-4">
+                          <Label htmlFor="height">
+                            Range (0-100) (Crash Point Level 0)
+                          </Label>
+                          <Input
+                            id="range"
+                            value={range}
+                            onChange={(e) => setrange(e.target.value)}
                             className="col-span-2 h-8 text-gray-900"
                           />
                         </div>
