@@ -18,10 +18,18 @@ let bettingPhase = false;
 let houseEdge = 0;
 let levelA = 1;
 let levelB = 1;
+let point = 1;
 
 let currentGameStatus = 'waiting';
 const clients = new Set();
-
+function getCrashPoint() {
+  const e = 2 ** 32;
+  const h = crypto.randomInt(e);
+  if (h % 5 === 0) {
+    return 1;
+  }
+  return Math.floor((20 * e - h) / (e - h)) / 20;
+}
 const generateCrashPoint = () => {
   const h = Math.random();
   const p = Math.floor(h * 10);
@@ -90,7 +98,12 @@ const startGameLoop = () => {
   if (gameInProgress) return;
   gameInProgress = true;
  // console.log('Starting game loop');
+ if(point === 1){
   crashPoint = generateCrashPoint();
+ }else{
+  crashPoint = getCrashPoint();
+ }
+  
 
   const interval = setInterval(() => {
     multiplier += 0.01;
@@ -102,7 +115,11 @@ const startGameLoop = () => {
      // console.log('CRASHED: ' + multiplier);
       clearInterval(interval);
       gameInProgress = false;
-      crashPoint = generateCrashPoint();
+      if(point === 1){
+        crashPoint = generateCrashPoint();
+       }else{
+        crashPoint = getCrashPoint();
+       }
       multiplier = 1.0;
       players = [];
       startupdateserverPhase();
@@ -170,7 +187,8 @@ app.prepare().then(async () => {
           houseEdge = Number(data.value);
           levelB = Number(data.levelB);
           levelA = Number(data.levelA);
-          console.error('houseEdge:'+houseEdge+" levelA: "+levelA+" levelB: "+levelB);
+          point = Number(data.point);
+          console.error('houseEdge:'+houseEdge+" levelA: "+levelA+" levelB: "+levelB+" Point: "+point);
         }
       } catch (err) {
         console.error('Error processing message:', err);

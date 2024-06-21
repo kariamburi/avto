@@ -546,6 +546,7 @@ const Game: React.FC = () => {
         sethouseEdge(userData.houseEdge);
         setlevelA(userData.levelA);
         setlevelB(userData.levelB);
+        setpoint(userData.point);
         setpaybill(userData.paybill);
       }
     };
@@ -578,7 +579,12 @@ const Game: React.FC = () => {
         loadbalance();
 
         //if (Number(house) !== Number(houseEdge) && Number(houseEdge) > 0) {
-        houseEdgeValue(Number(houseEdge), Number(levelA), Number(levelB));
+        houseEdgeValue(
+          Number(houseEdge),
+          Number(levelA),
+          Number(levelB),
+          Number(point)
+        );
         //}
       }
     }

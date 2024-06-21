@@ -248,6 +248,7 @@ async function updateSettings(
   houseEdge: string,
   levelA: string,
   levelB: string,
+  point: string,
   paybill: string
 ) {
   const q = query(collection(db, "settings"));
@@ -268,6 +269,7 @@ async function updateSettings(
       houseEdge: houseEdge,
       levelA: levelA,
       levelB: levelB,
+      point: point,
       paybill: paybill,
     })
       .then(() => {
@@ -528,6 +530,8 @@ const page = () => {
         sethouseEdge(userData.houseEdge);
         setlevelA(userData.levelA);
         setlevelB(userData.levelB);
+        setpoint(userData.point);
+        setpaybill(userData.paybill);
       }
     };
     loadSettings();
@@ -645,6 +649,7 @@ const page = () => {
   const [houseEdge, sethouseEdge] = useState("0.1");
   const [levelA, setlevelA] = useState("1");
   const [levelB, setlevelB] = useState("1");
+  const [point, setpoint] = useState("1");
   const [paybill, setpaybill] = useState("155276");
   const handleSettings = async (e: any) => {
     e.preventDefault();
@@ -685,6 +690,10 @@ const page = () => {
       alert("Enter levelB!");
       return;
     }
+    if (point.trim() === "") {
+      alert("Enter Point!");
+      return;
+    }
     if (paybill.trim() === "") {
       alert("Enter Paybill!");
       return;
@@ -703,9 +712,15 @@ const page = () => {
           houseEdge,
           levelA,
           levelB,
+          point,
           paybill
         );
-        houseEdgeValue(Number(houseEdge), Number(levelA), Number(levelB));
+        houseEdgeValue(
+          Number(houseEdge),
+          Number(levelA),
+          Number(levelB),
+          Number(point)
+        );
         toast({
           title: "Successful",
           description: "Updated Successfully",
@@ -724,10 +739,16 @@ const page = () => {
           houseEdge: houseEdge,
           levelA: levelA,
           levelB: levelB,
+          point: point,
           paybill: paybill,
           createdAt: serverTimestamp(),
         });
-        houseEdgeValue(Number(houseEdge), Number(levelA), Number(levelB));
+        houseEdgeValue(
+          Number(houseEdge),
+          Number(levelA),
+          Number(levelB),
+          Number(point)
+        );
         toast({
           title: "Successful",
           description: "Created settings record successfully",
@@ -1551,6 +1572,17 @@ const page = () => {
                             id="levelB"
                             value={levelB}
                             onChange={(e) => setlevelB(e.target.value)}
+                            className="col-span-2 h-8 text-gray-900"
+                          />
+                        </div>
+                        <div className="grid grid-cols-3 items-center gap-4">
+                          <Label htmlFor="height">
+                            Crash Point Level (0 or 1)
+                          </Label>
+                          <Input
+                            id="point"
+                            value={point}
+                            onChange={(e) => setpoint(e.target.value)}
                             className="col-span-2 h-8 text-gray-900"
                           />
                         </div>
