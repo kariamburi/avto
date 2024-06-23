@@ -831,7 +831,7 @@ const Game: React.FC = () => {
             // setBalance(balance + bet2);
             setbetValue2(0);
             setBetMode2(true);
-            removeBet(bet2, 1);
+            removeBet(bet2, 2);
             setisbetOn2(true);
             if (CancelSound.current && isMusicPlaying1) {
               CancelSound.current.play();
@@ -848,7 +848,7 @@ const Game: React.FC = () => {
                 if (Number(userData.amount) >= Number(bet2)) {
                   const bal = Number(userData.amount) + Number(bet2);
                   updateBalance(userID, bal);
-                  deleteBet(userID, bet2, 1, "placed");
+                  deleteBet(userID, bet2, 2, "placed");
                 }
               }
             } catch (error) {
