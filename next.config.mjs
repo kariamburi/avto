@@ -2,7 +2,7 @@
 const nextConfig = {
   async headers() {
 return [
-     {
+    {
         // matching all API routes
       source: "/api/:path*",
        headers: [

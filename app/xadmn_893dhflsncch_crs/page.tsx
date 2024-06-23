@@ -1422,7 +1422,7 @@ const page = () => {
                                 {bet.multiplier}
                               </div>
                               <div className="justify-center items-center flex flex-col">
-                                KES {Number(bet.cashout).toFixed(0)}
+                                KES {Number(bet.cashout).toFixed(2)}
                               </div>
                               <div className="justify-center items-center flex flex-col">
                                 {formattedCreatedAt}

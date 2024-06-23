@@ -225,15 +225,17 @@ const Game: React.FC = () => {
   const handleBet = async () => {
     if (gameStatus === "running" && betValue > 0 && BetMode === false) {
       //setBalance(balance + bet * multiplier);
+      const bl = sessionStorage.getItem("balance") ?? "0";
       sessionStorage.setItem(
         "balance",
-        (balance + bet * multiplier).toString()
+        (Number(bl) + bet * multiplier).toString()
       );
-      setBalance(balance + bet * multiplier);
+      // setBalance(balance + bet * multiplier);
       setBetMode(true);
       setbetValue(0);
       setcashoutMultiplier(multiplier);
       cashOut(username, 1);
+      setisbetOn(true);
       if (cashOutSound.current && isMusicPlaying1) {
         cashOutSound.current.play();
       }
@@ -282,11 +284,13 @@ const Game: React.FC = () => {
             betValue > 0 &&
             betstatus === "bettingphase"
           ) {
-            sessionStorage.setItem("balance", (balance + bet).toString());
-            setBalance(balance + bet);
+            const bl = sessionStorage.getItem("balance") ?? "0";
+            sessionStorage.setItem("balance", (Number(bl) + bet).toString());
+            //  setBalance(balance + bet);
             setbetValue(0);
             setBetMode(true);
             removeBet(bet, 1);
+            setisbetOn(true);
             if (CancelSound.current && isMusicPlaying1) {
               CancelSound.current.play();
             }
@@ -310,7 +314,8 @@ const Game: React.FC = () => {
             }
             //cancel bet
           } else {
-            if (balance > bet) {
+            const bl = sessionStorage.getItem("balance") ?? "0";
+            if (Number(bl) > bet) {
               if (
                 gameStatus === "crashed" &&
                 BetMode === true &&
@@ -335,12 +340,17 @@ const Game: React.FC = () => {
                   });
                   return;
                 }
-                sessionStorage.setItem("balance", (balance - bet).toString());
-                setBalance(balance - bet);
+                const bl = sessionStorage.getItem("balance") ?? "0";
+                sessionStorage.setItem(
+                  "balance",
+                  (Number(bl) - bet).toString()
+                );
+                //setBalance(balance - bet);
                 setBet(bet);
                 setbetValue(bet);
                 setBetMode(false);
                 placeBet(bet, username.substring(0, 2) + "***", 1);
+                setisbetOn(false);
                 //  alert("bety" + bet);
                 // setbetearns(bet);
                 if (placeBetSound.current && isMusicPlaying1) {
@@ -413,18 +423,21 @@ const Game: React.FC = () => {
       gameStatus === "running" &&
       multiplier.toFixed(2) >= parseFloat(autoCashoutMultipler).toFixed(2)
     ) {
-      setBalance(balance + bet * parseFloat(autoCashoutMultipler));
+      // alert("isOnCashout");
+      const bl = sessionStorage.getItem("balance") ?? "0";
+      //  setBalance(balance + bet * parseFloat(autoCashoutMultipler));
       sessionStorage.setItem(
         "balance",
-        (balance + bet * parseFloat(autoCashoutMultipler)).toString()
+        (Number(bl) + bet * parseFloat(autoCashoutMultipler)).toString()
       );
 
       setBetMode(true);
       setbetValue(0);
       setcashoutMultiplier(parseFloat(autoCashoutMultipler));
       cashOut(username, 1);
+      setisbetOn(true);
 
-      const bal = balance + bet * parseFloat(autoCashoutMultipler);
+      const bal = Number(bl) + bet * parseFloat(autoCashoutMultipler);
       const cashout = bet * parseFloat(autoCashoutMultipler);
       updateBalance(userID, bal);
       const status = "Win";
@@ -456,16 +469,19 @@ const Game: React.FC = () => {
       gameStatus === "running" &&
       multiplier.toFixed(2) >= parseFloat(autoCashoutMultipler2).toFixed(2)
     ) {
-      setBalance(balance + bet2 * parseFloat(autoCashoutMultipler2));
+      // alert("isOnCashout2");
+      // setBalance(balance + bet2 * parseFloat(autoCashoutMultipler2));
+      const bl = sessionStorage.getItem("balance") ?? "0";
       sessionStorage.setItem(
         "balance",
-        (balance + bet2 * parseFloat(autoCashoutMultipler2)).toString()
+        (Number(bl) + bet2 * parseFloat(autoCashoutMultipler2)).toString()
       );
       setBetMode2(true);
       setbetValue2(0);
       setcashoutMultiplier2(parseFloat(autoCashoutMultipler2));
       cashOut(username, 2);
-      const bal = balance + bet2 * parseFloat(autoCashoutMultipler2);
+      setisbetOn2(true);
+      const bal = Number(bl) + bet2 * parseFloat(autoCashoutMultipler2);
       const cashout = bet2 * parseFloat(autoCashoutMultipler2);
       updateBalance(userID, bal);
       const status = "Win";
@@ -518,7 +534,7 @@ const Game: React.FC = () => {
         if (!userSnapshot.empty) {
           const userData = userSnapshot.docs[0].data();
 
-          setBalance(Number(userData.amount));
+          //setBalance(Number(userData.amount));
           sessionStorage.setItem("balance", userData.amount);
         }
       };
@@ -560,7 +576,8 @@ const Game: React.FC = () => {
   useEffect(() => {
     if (gameStatus === "crashed" && betstatus === "updateserver") {
       setMultipliers((prevMultipliers) => [...prevMultipliers, multiplier]);
-
+      setisbetOn(true);
+      setisbetOn2(true);
       const scrollToBottom = () => {
         messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
       };
@@ -575,7 +592,7 @@ const Game: React.FC = () => {
           if (!userSnapshot.empty) {
             const userData = userSnapshot.docs[0].data();
 
-            setBalance(Number(userData.amount));
+            // setBalance(Number(userData.amount));
             sessionStorage.setItem("balance", userData.amount);
           }
         };
@@ -619,12 +636,17 @@ const Game: React.FC = () => {
       betstatus === "bettingphase"
     ) {
       if (bet > 0) {
-        if (balance >= bet) {
-          setBalance(balance - bet);
-          sessionStorage.setItem("balance", (balance - bet).toString());
+        const bl = sessionStorage.getItem("balance") ?? "0";
+        if (Number(bl) >= bet) {
+          const bal = Number(bl) - bet;
+          // alert(bet + "-" + bal);
+          // setBalance(bal);
+          sessionStorage.setItem("balance", bal.toString());
           placeBet(bet, username.substring(0, 2) + "***", 1);
           setbetValue(bet);
           setBetMode(false);
+          setisbetOn(false);
+
           if (placeBetSound.current && isMusicPlaying1) {
             placeBetSound.current.play();
           }
@@ -670,12 +692,17 @@ const Game: React.FC = () => {
       betstatus === "bettingphase"
     ) {
       if (bet2 > 0) {
-        if (balance >= bet2) {
-          setBalance(balance - bet2);
-          sessionStorage.setItem("balance", (balance - bet2).toString());
+        const bl = sessionStorage.getItem("balance") ?? "0";
+        if (Number(bl) >= bet2) {
+          const bal = Number(bl) - bet2;
+          // alert(bet2 + "-" + bal);
+          // setBalance(bal);
+          sessionStorage.setItem("balance", bal.toString());
           placeBet(bet2, username.substring(0, 2) + "***", 2);
           setbetValue2(bet2);
           setBetMode2(false);
+          setisbetOn2(false);
+
           if (placeBetSound.current && isMusicPlaying1) {
             placeBetSound.current.play();
           }
@@ -740,15 +767,17 @@ const Game: React.FC = () => {
   const handleBet2 = async () => {
     if (gameStatus === "running" && betValue2 > 0 && BetMode2 === false) {
       //setBalance(balance + bet * multiplier);
+      const bl = sessionStorage.getItem("balance") ?? "0";
       sessionStorage.setItem(
         "balance",
-        (balance + bet2 * multiplier).toString()
+        (Number(bl) + bet2 * multiplier).toString()
       );
-      setBalance(balance + bet2 * multiplier);
+      // setBalance(balance + bet2 * multiplier);
       setBetMode2(true);
       setbetValue2(0);
       setcashoutMultiplier2(multiplier);
       cashOut(username, 2);
+      setisbetOn2(true);
       if (cashOutSound.current && isMusicPlaying1) {
         cashOutSound.current.play();
       }
@@ -797,11 +826,13 @@ const Game: React.FC = () => {
             betValue2 > 0 &&
             betstatus === "bettingphase"
           ) {
-            sessionStorage.setItem("balance", (balance + bet2).toString());
-            setBalance(balance + bet2);
+            const bl = sessionStorage.getItem("balance") ?? "0";
+            sessionStorage.setItem("balance", (Number(bl) + bet2).toString());
+            // setBalance(balance + bet2);
             setbetValue2(0);
             setBetMode2(true);
             removeBet(bet2, 1);
+            setisbetOn2(true);
             if (CancelSound.current && isMusicPlaying1) {
               CancelSound.current.play();
             }
@@ -825,7 +856,8 @@ const Game: React.FC = () => {
             }
             //cancel bet
           } else {
-            if (balance > bet2) {
+            const bl = sessionStorage.getItem("balance") ?? "0";
+            if (Number(bl) > bet2) {
               if (
                 gameStatus === "crashed" &&
                 BetMode2 === true &&
@@ -850,11 +882,16 @@ const Game: React.FC = () => {
                   });
                   return;
                 }
-                sessionStorage.setItem("balance", (balance - bet2).toString());
-                setBalance(balance - bet2);
+                const bl = sessionStorage.getItem("balance") ?? "0";
+                sessionStorage.setItem(
+                  "balance",
+                  (Number(bl) - bet2).toString()
+                );
+                //setBalance(balance - bet2);
                 setBet2(bet2);
                 setbetValue2(bet2);
                 setBetMode2(false);
+                setisbetOn2(false);
                 placeBet(bet2, username.substring(0, 2) + "***", 2);
                 //  alert("bety" + bet);
                 // setbetearns(bet);
@@ -922,6 +959,10 @@ const Game: React.FC = () => {
   const [isBet, setIsBet] = useState(true);
   const toggleSwitch = () => {
     setIsBet(!isBet);
+    if (isBet === false) {
+      setIsOnCashout(false);
+      setIsOnBet(false);
+    }
   };
   const [isOnCashout, setIsOnCashout] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -944,6 +985,8 @@ const Game: React.FC = () => {
         duration: 5000,
       });
       setIsOnBet(false);
+      setBetMode(true);
+      setbetValue(0);
     }
     if (bet > Number(maxbet)) {
       toast({
@@ -953,12 +996,22 @@ const Game: React.FC = () => {
         duration: 5000,
       });
       setIsOnBet(false);
+      setBetMode(true);
+      setbetValue(0);
+    }
+    if (isBet === false) {
+      setBetMode(true);
+      setbetValue(0);
     }
   };
 
   const [isBet2, setIsBet2] = useState(true);
   const toggleSwitch2 = () => {
     setIsBet2(!isBet2);
+    if (isBet2 === false) {
+      setIsOnCashout2(false);
+      setIsOnBet2(false);
+    }
   };
   const [isOnCashout2, setIsOnCashout2] = useState(false);
   const toggleSwitchcashout2 = () => {
@@ -980,6 +1033,8 @@ const Game: React.FC = () => {
         duration: 5000,
       });
       setIsOnBet2(false);
+      setBetMode2(true);
+      setbetValue2(0);
     }
     if (bet2 > Number(maxbet)) {
       toast({
@@ -989,6 +1044,12 @@ const Game: React.FC = () => {
         duration: 5000,
       });
       setIsOnBet2(false);
+      setBetMode2(true);
+      setbetValue2(0);
+    }
+    if (isBet2 === false) {
+      setBetMode2(true);
+      setbetValue2(0);
     }
   };
 
@@ -1158,7 +1219,7 @@ const Game: React.FC = () => {
         );
         sessionStorage.setItem("status", "user");
         sessionStorage.setItem("balance", "0");
-        setBalance(0);
+        //setBalance(0);
         toast({
           title: "Successful",
           description: "You have registered successfully",
@@ -1243,7 +1304,7 @@ const Game: React.FC = () => {
         if (!balSnapshot.empty) {
           const balData = balSnapshot.docs[0].data();
           sessionStorage.setItem("balance", balData.amount);
-          setBalance(Number(balData.amount));
+          //  setBalance(Number(balData.amount));
         }
         //balance
         // setuserID(countryCode + removeLeadingZero(phonenumber));
@@ -1342,7 +1403,7 @@ const Game: React.FC = () => {
             status: "pending",
             createdAt: serverTimestamp(),
           });
-          setBalance(newAmount);
+          // setBalance(newAmount);
           sessionStorage.setItem("balance", newAmount.toString());
           setwithdraw("");
           setsendphone("");
@@ -1495,6 +1556,9 @@ const Game: React.FC = () => {
   const toggleChat = () => {
     setChatOpen(!isChatOpen);
   };
+  const [isbetOn, setisbetOn] = useState(true);
+  const [isbetOn2, setisbetOn2] = useState(true);
+
   const downloadUrl = "https://aviatorgm.com/download/aviator-game.apk";
   const [Withdraw, setWithdraw] = useState<any[]>([]);
   const [totalWithdraw, settotalWithdraw] = useState<number>(0);
@@ -1709,7 +1773,9 @@ const Game: React.FC = () => {
                     >
                       <div className="text-xs text-gray-400">KES:</div>{" "}
                       <div className="text-lg font-bold text-green-600">
-                        {balance.toFixed(2)}
+                        {(
+                          Number(sessionStorage.getItem("balance")) ?? 0
+                        ).toFixed(2)}
                       </div>
                     </div>
                   </div>
@@ -2821,24 +2887,38 @@ const Game: React.FC = () => {
                   <div className="flex mb-1 bg-gray-800 rounded-full p-1 h-[30px] justify-between items-center text-white gap-1">
                     <RemoveCircleOutlineOutlinedIcon
                       className="cursor-pointer"
-                      onClick={(e) => setBet(bet > 0 ? bet - 1 : 0)}
+                      onClick={
+                        isbetOn === false
+                          ? (e) => null
+                          : (e) => setBet(bet > 0 ? bet - 1 : 0)
+                      }
+                      // onClick={(e) => setBet(bet > 0 ? bet - 1 : 0)}
                     />
                     <input
                       type="text"
                       className="w-[100px] bg-gray-800 text-sm p-1 focus:outline-none text-center"
                       value={bet}
+                      disabled={!isbetOn}
                       onChange={(e) => setBet(Number(e.target.value))}
                       placeholder="Enter bet amount"
                       // disabled={gameStatus === "running"}
                     />
                     <AddCircleOutlineOutlinedIcon
                       className="cursor-pointer"
-                      onClick={(e) => setBet(bet + 1)}
+                      onClick={
+                        isbetOn === false ? (e) => null : (e) => setBet(bet + 1)
+                      }
+                      //  onClick={(e) => setBet(bet + 1)}
                     />
                   </div>
                   <div className="grid grid-cols-2">
                     <div
-                      onClick={(e) => setBet(bet + 100)}
+                      //  onClick={(e) => setBet(bet + 100)}
+                      onClick={
+                        isbetOn === false
+                          ? (e) => null
+                          : (e) => setBet(bet + 100)
+                      }
                       className="mt-2 mr-1 cursor-pointer w-[60px] h-[25px] bg-gray-800 rounded-full flex items-center justify-center"
                     >
                       <span className="text-xs font-bold text-gray-400">
@@ -2846,7 +2926,12 @@ const Game: React.FC = () => {
                       </span>
                     </div>
                     <div
-                      onClick={(e) => setBet(bet + 200)}
+                      // onClick={(e) => setBet(bet + 200)}
+                      onClick={
+                        isbetOn === false
+                          ? (e) => null
+                          : (e) => setBet(bet + 200)
+                      }
                       className="mt-2 cursor-pointer w-[60px] h-[25px] bg-gray-800 rounded-full flex items-center justify-center"
                     >
                       <span className="text-xs font-bold text-gray-400">
@@ -2854,7 +2939,12 @@ const Game: React.FC = () => {
                       </span>
                     </div>
                     <div
-                      onClick={(e) => setBet(bet + 500)}
+                      //  onClick={(e) => setBet(bet + 500)}
+                      onClick={
+                        isbetOn === false
+                          ? (e) => null
+                          : (e) => setBet(bet + 500)
+                      }
                       className="mt-1 mr-1 cursor-pointer w-[60px] h-[25px] bg-gray-800 rounded-full flex items-center justify-center"
                     >
                       <span className="text-xs font-bold text-gray-400">
@@ -2862,7 +2952,12 @@ const Game: React.FC = () => {
                       </span>
                     </div>
                     <div
-                      onClick={(e) => setBet(bet + 1000)}
+                      //onClick={(e) => setBet(bet + 1000)}
+                      onClick={
+                        isbetOn === false
+                          ? (e) => null
+                          : (e) => setBet(bet + 1000)
+                      }
                       className="mt-1 cursor-pointer w-[60px] h-[25px] bg-gray-800 rounded-full flex items-center justify-center"
                     >
                       <span className="text-xs font-bold text-gray-400">
@@ -3019,24 +3114,40 @@ const Game: React.FC = () => {
                   <div className="flex mb-1 bg-gray-800 rounded-full p-1 h-[30px] justify-between items-center text-white gap-1">
                     <RemoveCircleOutlineOutlinedIcon
                       className="cursor-pointer"
-                      onClick={(e) => setBet2(bet2 > 0 ? bet2 - 1 : 0)}
+                      onClick={
+                        isbetOn2 === false
+                          ? (e) => null
+                          : (e) => setBet2(bet2 > 0 ? bet2 - 1 : 0)
+                      }
+                      //onClick={(e) => setBet2(bet2 > 0 ? bet2 - 1 : 0)}
                     />
                     <input
                       type="text"
                       className="w-[100px] bg-gray-800 text-sm p-1 focus:outline-none text-center"
                       value={bet2}
+                      disabled={!isbetOn2}
                       onChange={(e) => setBet2(Number(e.target.value))}
                       placeholder="Enter bet 2 amount"
                       // disabled={gameStatus === "running"}
                     />
                     <AddCircleOutlineOutlinedIcon
                       className="cursor-pointer"
-                      onClick={(e) => setBet2(bet2 + 1)}
+                      onClick={
+                        isbetOn2 === false
+                          ? (e) => null
+                          : (e) => setBet2(bet2 + 1)
+                      }
+                      //onClick={(e) => setBet2(bet2 + 1)}
                     />
                   </div>
                   <div className="grid grid-cols-2">
                     <div
-                      onClick={(e) => setBet2(bet2 + 100)}
+                      // onClick={(e) => setBet2(bet2 + 100)}
+                      onClick={
+                        isbetOn2 === false
+                          ? (e) => null
+                          : (e) => setBet2(bet2 + 100)
+                      }
                       className="mt-2 mr-1 cursor-pointer w-[60px] h-[25px] bg-gray-800 rounded-full flex items-center justify-center"
                     >
                       <span className="text-xs font-bold text-gray-400">
@@ -3044,7 +3155,12 @@ const Game: React.FC = () => {
                       </span>
                     </div>
                     <div
-                      onClick={(e) => setBet2(bet2 + 200)}
+                      //onClick={(e) => setBet2(bet2 + 200)}
+                      onClick={
+                        isbetOn2 === false
+                          ? (e) => null
+                          : (e) => setBet2(bet2 + 200)
+                      }
                       className="mt-2 cursor-pointer w-[60px] h-[25px] bg-gray-800 rounded-full flex items-center justify-center"
                     >
                       <span className="text-xs font-bold text-gray-400">
@@ -3052,7 +3168,12 @@ const Game: React.FC = () => {
                       </span>
                     </div>
                     <div
-                      onClick={(e) => setBet2(bet2 + 500)}
+                      // onClick={(e) => setBet2(bet2 + 500)}
+                      onClick={
+                        isbetOn2 === false
+                          ? (e) => null
+                          : (e) => setBet2(bet2 + 500)
+                      }
                       className="mt-1 mr-1 cursor-pointer w-[60px] h-[25px] bg-gray-800 rounded-full flex items-center justify-center"
                     >
                       <span className="text-xs font-bold text-gray-400">
@@ -3060,7 +3181,13 @@ const Game: React.FC = () => {
                       </span>
                     </div>
                     <div
-                      onClick={(e) => setBet2(bet2 + 1000)}
+                      //onClick={(e) => setBet2(bet2 + 1000)}
+                      // disabled={!isbetOn}
+                      onClick={
+                        isbetOn2 === false
+                          ? (e) => null
+                          : (e) => setBet2(bet2 + 1000)
+                      }
                       className="mt-1 cursor-pointer w-[60px] h-[25px] bg-gray-800 rounded-full flex items-center justify-center"
                     >
                       <span className="text-xs font-bold text-gray-400">
@@ -3512,7 +3639,7 @@ const Game: React.FC = () => {
         userID={userID}
         username={username}
         onClose={toggleAcc}
-        balance={balance}
+        balance={Number(sessionStorage.getItem("balance")) ?? 0}
       />
     </div>
   );
