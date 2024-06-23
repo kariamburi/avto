@@ -225,12 +225,11 @@ const Game: React.FC = () => {
   const handleBet = async () => {
     if (gameStatus === "running" && betValue > 0 && BetMode === false) {
       //setBalance(balance + bet * multiplier);
-      const bl = sessionStorage.getItem("balance") ?? "0";
       sessionStorage.setItem(
         "balance",
-        (Number(bl) + bet * multiplier).toString()
+        (balance + bet * multiplier).toString()
       );
-      // setBalance(balance + bet * multiplier);
+      setBalance(balance + bet * multiplier);
       setBetMode(true);
       setbetValue(0);
       setcashoutMultiplier(multiplier);
@@ -284,9 +283,8 @@ const Game: React.FC = () => {
             betValue > 0 &&
             betstatus === "bettingphase"
           ) {
-            const bl = sessionStorage.getItem("balance") ?? "0";
-            sessionStorage.setItem("balance", (Number(bl) + bet).toString());
-            //  setBalance(balance + bet);
+            sessionStorage.setItem("balance", (balance + bet).toString());
+            setBalance(balance + bet);
             setbetValue(0);
             setBetMode(true);
             removeBet(bet, 1);
@@ -314,8 +312,7 @@ const Game: React.FC = () => {
             }
             //cancel bet
           } else {
-            const bl = sessionStorage.getItem("balance") ?? "0";
-            if (Number(bl) > bet) {
+            if (balance > bet) {
               if (
                 gameStatus === "crashed" &&
                 BetMode === true &&
@@ -340,12 +337,8 @@ const Game: React.FC = () => {
                   });
                   return;
                 }
-                const bl = sessionStorage.getItem("balance") ?? "0";
-                sessionStorage.setItem(
-                  "balance",
-                  (Number(bl) - bet).toString()
-                );
-                //setBalance(balance - bet);
+                sessionStorage.setItem("balance", (balance - bet).toString());
+                setBalance(balance - bet);
                 setBet(bet);
                 setbetValue(bet);
                 setBetMode(false);
@@ -423,12 +416,11 @@ const Game: React.FC = () => {
       gameStatus === "running" &&
       multiplier.toFixed(2) >= parseFloat(autoCashoutMultipler).toFixed(2)
     ) {
-      // alert("isOnCashout");
-      const bl = sessionStorage.getItem("balance") ?? "0";
-      //  setBalance(balance + bet * parseFloat(autoCashoutMultipler));
+      alert("isOnCashout");
+      setBalance(balance + bet * parseFloat(autoCashoutMultipler));
       sessionStorage.setItem(
         "balance",
-        (Number(bl) + bet * parseFloat(autoCashoutMultipler)).toString()
+        (balance + bet * parseFloat(autoCashoutMultipler)).toString()
       );
 
       setBetMode(true);
@@ -437,7 +429,7 @@ const Game: React.FC = () => {
       cashOut(username, 1);
       setisbetOn(true);
 
-      const bal = Number(bl) + bet * parseFloat(autoCashoutMultipler);
+      const bal = balance + bet * parseFloat(autoCashoutMultipler);
       const cashout = bet * parseFloat(autoCashoutMultipler);
       updateBalance(userID, bal);
       const status = "Win";
@@ -469,19 +461,17 @@ const Game: React.FC = () => {
       gameStatus === "running" &&
       multiplier.toFixed(2) >= parseFloat(autoCashoutMultipler2).toFixed(2)
     ) {
-      // alert("isOnCashout2");
-      // setBalance(balance + bet2 * parseFloat(autoCashoutMultipler2));
-      const bl = sessionStorage.getItem("balance") ?? "0";
+      setBalance(balance + bet2 * parseFloat(autoCashoutMultipler2));
       sessionStorage.setItem(
         "balance",
-        (Number(bl) + bet2 * parseFloat(autoCashoutMultipler2)).toString()
+        (balance + bet2 * parseFloat(autoCashoutMultipler2)).toString()
       );
       setBetMode2(true);
       setbetValue2(0);
       setcashoutMultiplier2(parseFloat(autoCashoutMultipler2));
       cashOut(username, 2);
       setisbetOn2(true);
-      const bal = Number(bl) + bet2 * parseFloat(autoCashoutMultipler2);
+      const bal = balance + bet2 * parseFloat(autoCashoutMultipler2);
       const cashout = bet2 * parseFloat(autoCashoutMultipler2);
       updateBalance(userID, bal);
       const status = "Win";
@@ -534,7 +524,7 @@ const Game: React.FC = () => {
         if (!userSnapshot.empty) {
           const userData = userSnapshot.docs[0].data();
 
-          //setBalance(Number(userData.amount));
+          setBalance(Number(userData.amount));
           sessionStorage.setItem("balance", userData.amount);
         }
       };
@@ -592,7 +582,7 @@ const Game: React.FC = () => {
           if (!userSnapshot.empty) {
             const userData = userSnapshot.docs[0].data();
 
-            // setBalance(Number(userData.amount));
+            setBalance(Number(userData.amount));
             sessionStorage.setItem("balance", userData.amount);
           }
         };
@@ -636,11 +626,11 @@ const Game: React.FC = () => {
       betstatus === "bettingphase"
     ) {
       if (bet > 0) {
-        const bl = sessionStorage.getItem("balance") ?? "0";
+        const bl = sessionStorage.getItem("balance");
         if (Number(bl) >= bet) {
           const bal = Number(bl) - bet;
           // alert(bet + "-" + bal);
-          // setBalance(bal);
+          setBalance(bal);
           sessionStorage.setItem("balance", bal.toString());
           placeBet(bet, username.substring(0, 2) + "***", 1);
           setbetValue(bet);
@@ -692,11 +682,11 @@ const Game: React.FC = () => {
       betstatus === "bettingphase"
     ) {
       if (bet2 > 0) {
-        const bl = sessionStorage.getItem("balance") ?? "0";
+        const bl = sessionStorage.getItem("balance");
         if (Number(bl) >= bet2) {
           const bal = Number(bl) - bet2;
           // alert(bet2 + "-" + bal);
-          // setBalance(bal);
+          setBalance(bal);
           sessionStorage.setItem("balance", bal.toString());
           placeBet(bet2, username.substring(0, 2) + "***", 2);
           setbetValue2(bet2);
@@ -767,12 +757,11 @@ const Game: React.FC = () => {
   const handleBet2 = async () => {
     if (gameStatus === "running" && betValue2 > 0 && BetMode2 === false) {
       //setBalance(balance + bet * multiplier);
-      const bl = sessionStorage.getItem("balance") ?? "0";
       sessionStorage.setItem(
         "balance",
-        (Number(bl) + bet2 * multiplier).toString()
+        (balance + bet2 * multiplier).toString()
       );
-      // setBalance(balance + bet2 * multiplier);
+      setBalance(balance + bet2 * multiplier);
       setBetMode2(true);
       setbetValue2(0);
       setcashoutMultiplier2(multiplier);
@@ -826,9 +815,8 @@ const Game: React.FC = () => {
             betValue2 > 0 &&
             betstatus === "bettingphase"
           ) {
-            const bl = sessionStorage.getItem("balance") ?? "0";
-            sessionStorage.setItem("balance", (Number(bl) + bet2).toString());
-            // setBalance(balance + bet2);
+            sessionStorage.setItem("balance", (balance + bet2).toString());
+            setBalance(balance + bet2);
             setbetValue2(0);
             setBetMode2(true);
             removeBet(bet2, 2);
@@ -856,8 +844,7 @@ const Game: React.FC = () => {
             }
             //cancel bet
           } else {
-            const bl = sessionStorage.getItem("balance") ?? "0";
-            if (Number(bl) > bet2) {
+            if (balance > bet2) {
               if (
                 gameStatus === "crashed" &&
                 BetMode2 === true &&
@@ -882,12 +869,8 @@ const Game: React.FC = () => {
                   });
                   return;
                 }
-                const bl = sessionStorage.getItem("balance") ?? "0";
-                sessionStorage.setItem(
-                  "balance",
-                  (Number(bl) - bet2).toString()
-                );
-                //setBalance(balance - bet2);
+                sessionStorage.setItem("balance", (balance - bet2).toString());
+                setBalance(balance - bet2);
                 setBet2(bet2);
                 setbetValue2(bet2);
                 setBetMode2(false);
@@ -985,8 +968,6 @@ const Game: React.FC = () => {
         duration: 5000,
       });
       setIsOnBet(false);
-      setBetMode(true);
-      setbetValue(0);
     }
     if (bet > Number(maxbet)) {
       toast({
@@ -996,8 +977,6 @@ const Game: React.FC = () => {
         duration: 5000,
       });
       setIsOnBet(false);
-      setBetMode(true);
-      setbetValue(0);
     }
     if (isBet === false) {
       setBetMode(true);
@@ -1033,8 +1012,6 @@ const Game: React.FC = () => {
         duration: 5000,
       });
       setIsOnBet2(false);
-      setBetMode2(true);
-      setbetValue2(0);
     }
     if (bet2 > Number(maxbet)) {
       toast({
@@ -1044,8 +1021,6 @@ const Game: React.FC = () => {
         duration: 5000,
       });
       setIsOnBet2(false);
-      setBetMode2(true);
-      setbetValue2(0);
     }
     if (isBet2 === false) {
       setBetMode2(true);
@@ -1219,7 +1194,7 @@ const Game: React.FC = () => {
         );
         sessionStorage.setItem("status", "user");
         sessionStorage.setItem("balance", "0");
-        //setBalance(0);
+        setBalance(0);
         toast({
           title: "Successful",
           description: "You have registered successfully",
@@ -1304,7 +1279,7 @@ const Game: React.FC = () => {
         if (!balSnapshot.empty) {
           const balData = balSnapshot.docs[0].data();
           sessionStorage.setItem("balance", balData.amount);
-          //  setBalance(Number(balData.amount));
+          setBalance(Number(balData.amount));
         }
         //balance
         // setuserID(countryCode + removeLeadingZero(phonenumber));
@@ -1403,7 +1378,7 @@ const Game: React.FC = () => {
             status: "pending",
             createdAt: serverTimestamp(),
           });
-          // setBalance(newAmount);
+          setBalance(newAmount);
           sessionStorage.setItem("balance", newAmount.toString());
           setwithdraw("");
           setsendphone("");
@@ -1773,9 +1748,7 @@ const Game: React.FC = () => {
                     >
                       <div className="text-xs text-gray-400">KES:</div>{" "}
                       <div className="text-lg font-bold text-green-600">
-                        {(
-                          Number(sessionStorage.getItem("balance")) ?? 0
-                        ).toFixed(2)}
+                        {balance.toFixed(2)}
                       </div>
                     </div>
                   </div>
@@ -3639,7 +3612,7 @@ const Game: React.FC = () => {
         userID={userID}
         username={username}
         onClose={toggleAcc}
-        balance={Number(sessionStorage.getItem("balance")) ?? 0}
+        balance={balance}
       />
     </div>
   );
