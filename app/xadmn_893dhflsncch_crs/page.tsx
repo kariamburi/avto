@@ -340,14 +340,6 @@ const page = () => {
   const [Players, setPlayers] = useState<any[]>([]);
   const handleMybets = async (index: number) => {
     setActiveTab(index);
-
-    if (index === 0) {
-    } else if (index === 1) {
-    } else if (index === 2) {
-    } else if (index === 3) {
-    } else if (index === 4) {
-    } else if (index === 5) {
-    }
   };
   const handleFetchDep = async () => {
     if (startDateDep && endDateDep) {
@@ -432,52 +424,11 @@ const page = () => {
   }, []);
 
   useEffect(() => {
-    //const startDate = new Date("2024-01-01");
-    // const endDate = new Date("2024-12-31");
-    if (startDate && endDate) {
-      fetchBetsDates(startDate, endDate)
-        .then((result) => {
-          const bets = result?.bets ?? [];
-          const bet = result?.totalBet ?? 0; // Adjust according to your actual property names
-          const cashout = result?.totalCashout ?? 0; // Adjust according to your actual property names
-          setBets(bets);
-          settotalbet(bet);
-          settotalcashout(cashout); // Ensure your state variable and setter match (settotalcashout -> setTotalCashout)
-        })
-        .catch((error) => {
-          console.error("Error fetching bets:", error);
-          // Handle error state or display error message to the user
-        });
-    }
-  }, [sentstatusbets]);
-
-  useEffect(() => {
-    if (startDateWith && endDateWith) {
-      fetchWithdraw(startDateWith, endDateWith)
-        .then((result) => {
-          const bets = result?.bets ?? [];
-          const total = result?.total ?? 0;
-          setWithdraw(bets);
-          settotalWithdraw(total); // Ensure your state variable and setter match (settotalcashout -> setTotalCashout)
-        })
-        .catch((error) => {
-          console.error("Error fetching bets:", error);
-          // Handle error state or display error message to the user
-        });
-    }
-  }, [sentstatus]);
-
-  useEffect(() => {
     const status_id = sessionStorage.getItem("status");
     if (status_id !== "admin") {
       router.push(`/`);
     }
-    fetchBalance().then((result) => {
-      const bets = result?.bets ?? [];
-      const total = result?.total ?? 0;
-      setallbalance(bets);
-      settotalbalance(total);
-    });
+
     const loadSettings = async () => {
       const userQuery = query(collection(db, "settings"));
       const userSnapshot = await getDocs(userQuery);
