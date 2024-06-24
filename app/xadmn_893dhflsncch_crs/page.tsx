@@ -342,66 +342,11 @@ const page = () => {
     setActiveTab(index);
 
     if (index === 0) {
-      fetchBalance().then((result) => {
-        const bets = result?.bets ?? [];
-        const total = result?.total ?? 0;
-        setallbalance(bets);
-        settotalbalance(total);
-      });
     } else if (index === 1) {
-      if (startDateDep && endDateDep) {
-        fetchDeposit(startDateDep, endDateDep)
-          .then((result) => {
-            const bets = result?.bets ?? [];
-            const total = result?.total ?? 0;
-            setDeposit(bets);
-            settotalDeposit(total); // Ensure your state variable and setter match (settotalcashout -> setTotalCashout)
-          })
-          .catch((error) => {
-            console.error("Error fetching bets:", error);
-            // Handle error state or display error message to the user
-          });
-      }
     } else if (index === 2) {
-      if (startDateWith && endDateWith) {
-        fetchWithdraw(startDateWith, endDateWith)
-          .then((result) => {
-            const bets = result?.bets ?? [];
-            const total = result?.total ?? 0;
-            setWithdraw(bets);
-            settotalWithdraw(total); // Ensure your state variable and setter match (settotalcashout -> setTotalCashout)
-          })
-          .catch((error) => {
-            console.error("Error fetching bets:", error);
-            // Handle error state or display error message to the user
-          });
-      }
     } else if (index === 3) {
-      if (startDate && endDate) {
-        fetchBetsDates(startDate, endDate)
-          .then((result) => {
-            const bets = result?.bets ?? [];
-            const bet = result?.totalBet ?? 0; // Adjust according to your actual property names
-            const cashout = result?.totalCashout ?? 0; // Adjust according to your actual property names
-            setBets(bets);
-            settotalbet(bet);
-            settotalcashout(cashout); // Ensure your state variable and setter match (settotalcashout -> setTotalCashout)
-          })
-          .catch((error) => {
-            console.error("Error fetching bets:", error);
-            // Handle error state or display error message to the user
-          });
-      }
     } else if (index === 4) {
-      fetchPlayers().then((ply) => {
-        //  console.log("Bets for phone number:", bets);
-        setPlayers(ply);
-      });
     } else if (index === 5) {
-      fetchPlayers().then((ply) => {
-        //  console.log("Bets for phone number:", bets);
-        setPlayers(ply);
-      });
     }
   };
   const handleFetchDep = async () => {
@@ -415,9 +360,24 @@ const page = () => {
         })
         .catch((error) => {
           console.error("Error fetching bets:", error);
-          // Handle error state or display error message to the user
         });
     }
+  };
+
+  const handleFetchPlayers = async () => {
+    fetchPlayers().then((ply) => {
+      //  console.log("Bets for phone number:", bets);
+      setPlayers(ply);
+    });
+  };
+
+  const handleFetchBal = async () => {
+    fetchBalance().then((result) => {
+      const bets = result?.bets ?? [];
+      const total = result?.total ?? 0;
+      setallbalance(bets);
+      settotalbalance(total);
+    });
   };
   const handleFetchWith = async () => {
     if (startDateWith && endDateWith) {
@@ -988,7 +948,15 @@ const page = () => {
                       <div className="justify-center items-center flex flex-col">
                         Date
                       </div>
-                      <div></div>
+                      <div>
+                        {" "}
+                        <button
+                          className="w-[150px] bg-orange-600 text-white hover:orange-900 p-1 rounded-full"
+                          onClick={handleFetchBal}
+                        >
+                          Fetch Balance
+                        </button>
+                      </div>
                     </div>
                     <ul className="w-full">
                       {Deposit.map((bet: any, index) => {
@@ -1451,7 +1419,7 @@ const page = () => {
                     </div>
 
                     <div className="border-gray-900 border w-full mb-1"></div>
-                    <div className="grid grid-cols-3 text-gray-400 text-xs">
+                    <div className="grid grid-cols-4 text-gray-400 text-xs">
                       <div className="justify-center items-center flex flex-col">
                         Name
                       </div>
@@ -1461,6 +1429,14 @@ const page = () => {
 
                       <div className="justify-center items-center flex flex-col">
                         id
+                      </div>
+                      <div className="justify-center items-center flex flex-col">
+                        <button
+                          className="w-[150px] bg-orange-600 text-white hover:orange-900 p-1 rounded-full"
+                          onClick={handleFetchPlayers}
+                        >
+                          Fetch Players
+                        </button>
                       </div>
                     </div>
                     <ul className="w-full">
