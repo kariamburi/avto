@@ -801,6 +801,14 @@ const page = () => {
                       <div className="justify-center items-center flex flex-col">
                         id
                       </div>
+                      <div>
+                        <button
+                          className="w-[150px] bg-orange-600 text-white hover:orange-900 p-1 rounded-full"
+                          onClick={handleFetchBal}
+                        >
+                          Fetch Balance
+                        </button>
+                      </div>
                     </div>
                     <ul className="w-full">
                       {allbalance.map((bet: any, index) => {
@@ -898,15 +906,6 @@ const page = () => {
                       </div>
                       <div className="justify-center items-center flex flex-col">
                         Date
-                      </div>
-                      <div>
-                        {" "}
-                        <button
-                          className="w-[150px] bg-orange-600 text-white hover:orange-900 p-1 rounded-full"
-                          onClick={handleFetchBal}
-                        >
-                          Fetch Balance
-                        </button>
                       </div>
                     </div>
                     <ul className="w-full">
