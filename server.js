@@ -29,25 +29,25 @@ const generateCrashPoint = () => {
   const h = Math.random();
   const p = Math.floor(h * 10);
   const r = h * (1 - houseEdge);
-  console.error("random: "+r);
+ // console.error("random: "+r);
   if (p % 5 === 0 && levelA === 1) {
-    console.error("1  range1: "+range1+" range2: "+range2+" range3:"+range3+" range4:"+range4);
+    //console.error("1  range1: "+range1+" range2: "+range2+" range3:"+range3+" range4:"+range4);
     return 1 + 0.1 + (0.2 - 0.1) * Math.random();
   }
   if (r <= range1 && levelB === 1) {
-    console.error("2  range1: "+range1+" range2: "+range2+" range3:"+range3+" range4:"+range4);
+   // console.error("2  range1: "+range1+" range2: "+range2+" range3:"+range3+" range4:"+range4);
     return 1 + 0.1 + (0.3 - 0.1) * Math.random();
   } else if (r <= range2) {
-    console.error("3  range1: "+range1+" range2: "+range2+" range3:"+range3+" range4:"+range4);
+   // console.error("3  range1: "+range1+" range2: "+range2+" range3:"+range3+" range4:"+range4);
     return 1 + Math.random();
   } else if (r <= range3) {
-    console.error("4  range1: "+range1+" range2: "+range2+" range3:"+range3+" range4:"+range4);
+ //   console.error("4  range1: "+range1+" range2: "+range2+" range3:"+range3+" range4:"+range4);
     return 2 + Math.random() * 3;
   } else if (r <= range4) {
-    console.error("5  range1: "+range1+" range2: "+range2+" range3:"+range3+" range4:"+range4);
+    //console.error("5  range1: "+range1+" range2: "+range2+" range3:"+range3+" range4:"+range4);
     return 5 + Math.random() * 5;
   } else {
-    console.error("6  range1: "+range1+" range2: "+range2+" range3:"+range3+" range4:"+range4);
+  //  console.error("6  range1: "+range1+" range2: "+range2+" range3:"+range3+" range4:"+range4);
     return 10 + Math.random() * 10;
   }
 };
