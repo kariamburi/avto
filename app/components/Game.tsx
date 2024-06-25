@@ -507,8 +507,10 @@ const Game: React.FC = () => {
   const [houseEdge, sethouseEdge] = useState("0");
   const [levelA, setlevelA] = useState("1");
   const [levelB, setlevelB] = useState("1");
-  const [point, setpoint] = useState("1");
-  const [range, setrange] = useState("100");
+  const [range1, setrange1] = useState("0.2");
+  const [range2, setrange2] = useState("0.6");
+  const [range3, setrange3] = useState("0.85");
+  const [range4, setrange4] = useState("0.95");
   const [paybill, setpaybill] = useState("155276");
   useEffect(() => {
     const user_id = sessionStorage.getItem("userID");
@@ -554,8 +556,10 @@ const Game: React.FC = () => {
         sethouseEdge(userData.houseEdge);
         setlevelA(userData.levelA);
         setlevelB(userData.levelB);
-        setpoint(userData.point);
-        setrange(userData.range);
+        setrange1(userData.range1);
+        setrange2(userData.range2);
+        setrange3(userData.range3);
+        setrange4(userData.range4);
         setpaybill(userData.paybill);
       }
     };
@@ -593,8 +597,10 @@ const Game: React.FC = () => {
           Number(houseEdge),
           Number(levelA),
           Number(levelB),
-          Number(point),
-          Number(range)
+          Number(range1),
+          Number(range2),
+          Number(range3),
+          Number(range4)
         );
         //}
       }
