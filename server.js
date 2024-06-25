@@ -18,36 +18,36 @@ let bettingPhase = false;
 let houseEdge = 0;
 let levelA = 1;
 let levelB = 1;
-let point = 1;
-let range = 100;
-
+let range1 = 0.2;
+let range2 = 0.6;
+let range3 = 0.85;
+let range4 = 0.95;
 let currentGameStatus = 'waiting';
 const clients = new Set();
-function getCrashPoint() {
-  const e = 2 ** 32;
-  const h = crypto.randomInt(e);
-  if (h % (range/4) === 0) {
-    return 1;
-  }
-  return Math.floor((range * e - h) / (e - h)) / range;
-}
+
 const generateCrashPoint = () => {
   const h = Math.random();
   const p = Math.floor(h * 10);
   const r = h * (1 - houseEdge);
-
-  if (p % 5 === 0 && levelA ===1) {
+  
+  if (p % 5 === 0 && levelA === 1) {
+    console.error("1  range1: "+range1+" range2: "+range2+" range3:"+range3+" range4:"+range4);
     return 1 + 0.1 + (0.2 - 0.1) * Math.random();
   }
-  if (r <= 0.20 && levelB ===1) {
+  if (r <= range1 && levelB === 1) {
+    console.error("2  range1: "+range1+" range2: "+range2+" range3:"+range3+" range4:"+range4);
     return 1 + 0.1 + (0.3 - 0.1) * Math.random();
-  } else if (r <= 0.60) {
+  } else if (r <= range2) {
+    console.error("3  range1: "+range1+" range2: "+range2+" range3:"+range3+" range4:"+range4);
     return 1 + Math.random();
-  } else if (r <= 0.85) {
+  } else if (r <= range3) {
+    console.error("4  range1: "+range1+" range2: "+range2+" range3:"+range3+" range4:"+range4);
     return 2 + Math.random() * 3;
-  } else if (r <= 0.95) {
+  } else if (r <= range4) {
+    console.error("5  range1: "+range1+" range2: "+range2+" range3:"+range3+" range4:"+range4);
     return 5 + Math.random() * 5;
   } else {
+    console.error("6  range1: "+range1+" range2: "+range2+" range3:"+range3+" range4:"+range4);
     return 10 + Math.random() * 10;
   }
 };
@@ -99,12 +99,7 @@ const startGameLoop = () => {
   if (gameInProgress) return;
   gameInProgress = true;
  // console.log('Starting game loop');
- if(point === 1){
   crashPoint = generateCrashPoint();
- }else{
-  crashPoint = getCrashPoint();
- }
-  
 
   const interval = setInterval(() => {
     multiplier += 0.01;
@@ -116,11 +111,7 @@ const startGameLoop = () => {
      // console.log('CRASHED: ' + multiplier);
       clearInterval(interval);
       gameInProgress = false;
-      if(point === 1){
-        crashPoint = generateCrashPoint();
-       }else{
-        crashPoint = getCrashPoint();
-       }
+      crashPoint = generateCrashPoint();
       multiplier = 1.0;
       players = [];
       startupdateserverPhase();
@@ -188,9 +179,11 @@ app.prepare().then(async () => {
           houseEdge = Number(data.value);
           levelB = Number(data.levelB);
           levelA = Number(data.levelA);
-          point = Number(data.point);
-          range = Number(data.range);
-          console.error('houseEdge:'+houseEdge+" levelA: "+levelA+" levelB: "+levelB+" Point: "+point+" range: "+range);
+          range1 = Number(data.range1);
+          range2 = Number(data.range2);
+          range3 = Number(data.range3);
+          range4 = Number(data.range4);
+          console.error('houseEdge:'+houseEdge+" levelA: "+levelA+" levelB: "+levelB+"  range1: "+range1+" range2: "+range2+" range3:"+range3+" range4:"+range4);
         }
       } catch (err) {
         console.error('Error processing message:', err);
