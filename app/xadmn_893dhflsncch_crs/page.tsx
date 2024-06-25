@@ -248,8 +248,10 @@ async function updateSettings(
   houseEdge: string,
   levelA: string,
   levelB: string,
-  point: string,
-  range: string,
+  range1: string,
+  range2: string,
+  range3: string,
+  range4: string,
   paybill: string
 ) {
   const q = query(collection(db, "settings"));
@@ -270,8 +272,10 @@ async function updateSettings(
       houseEdge: houseEdge,
       levelA: levelA,
       levelB: levelB,
-      point: point,
-      range: range,
+      range1: range1,
+      range2: range2,
+      range3: range3,
+      range4: range4,
       paybill: paybill,
     })
       .then(() => {
@@ -338,6 +342,10 @@ const page = () => {
   const [totalbet, settotalbet] = useState<number>(0);
   const [totalcashout, settotalcashout] = useState<number>(0);
   const [Players, setPlayers] = useState<any[]>([]);
+  const [range1, setrange1] = useState("0.2");
+  const [range2, setrange2] = useState("0.6");
+  const [range3, setrange3] = useState("0.85");
+  const [range4, setrange4] = useState("0.95");
   const handleMybets = async (index: number) => {
     setActiveTab(index);
   };
@@ -443,8 +451,10 @@ const page = () => {
         sethouseEdge(userData.houseEdge);
         setlevelA(userData.levelA);
         setlevelB(userData.levelB);
-        setpoint(userData.point);
-        setrange(userData.range);
+        setrange1(userData.range1);
+        setrange2(userData.range2);
+        setrange3(userData.range3);
+        setrange4(userData.range4);
         setpaybill(userData.paybill);
       }
     };
@@ -563,8 +573,7 @@ const page = () => {
   const [houseEdge, sethouseEdge] = useState("0.1");
   const [levelA, setlevelA] = useState("1");
   const [levelB, setlevelB] = useState("1");
-  const [point, setpoint] = useState("1");
-  const [range, setrange] = useState("100");
+
   const [paybill, setpaybill] = useState("155276");
   const handleSettings = async (e: any) => {
     e.preventDefault();
@@ -605,18 +614,27 @@ const page = () => {
       alert("Enter levelB!");
       return;
     }
-    if (point.trim() === "") {
-      alert("Enter Point!");
+    if (range1.trim() === "") {
+      alert("Enter Range1!");
+      return;
+    }
+    if (range2.trim() === "") {
+      alert("Enter Range2!");
+      return;
+    }
+    if (range3.trim() === "") {
+      alert("Enter Range3!");
+      return;
+    }
+    if (range4.trim() === "") {
+      alert("Enter Range4!");
       return;
     }
     if (paybill.trim() === "") {
       alert("Enter Paybill!");
       return;
     }
-    if (range.trim() === "") {
-      alert("Enter Range!");
-      return;
-    }
+
     try {
       const userQuery = query(collection(db, "settings"));
       const userSnapshot = await getDocs(userQuery);
@@ -631,16 +649,20 @@ const page = () => {
           houseEdge,
           levelA,
           levelB,
-          point,
-          range,
+          range1,
+          range2,
+          range3,
+          range4,
           paybill
         );
         houseEdgeValue(
           Number(houseEdge),
           Number(levelA),
           Number(levelB),
-          Number(point),
-          Number(range)
+          Number(range1),
+          Number(range2),
+          Number(range3),
+          Number(range4)
         );
         toast({
           title: "Successful",
@@ -660,8 +682,10 @@ const page = () => {
           houseEdge: houseEdge,
           levelA: levelA,
           levelB: levelB,
-          point: point,
-          range: range,
+          range1: range1,
+          range2: range2,
+          range3: range3,
+          range4: range4,
           paybill: paybill,
           createdAt: serverTimestamp(),
         });
@@ -669,8 +693,10 @@ const page = () => {
           Number(houseEdge),
           Number(levelA),
           Number(levelB),
-          Number(point),
-          Number(range)
+          Number(range1),
+          Number(range2),
+          Number(range3),
+          Number(range4)
         );
         toast({
           title: "Successful",
@@ -1518,24 +1544,38 @@ const page = () => {
                           />
                         </div>
                         <div className="grid grid-cols-3 items-center gap-4">
-                          <Label htmlFor="height">
-                            Crash Point Level (0 or 1)
-                          </Label>
+                          <Label htmlFor="height">Range 1</Label>
                           <Input
-                            id="point"
-                            value={point}
-                            onChange={(e) => setpoint(e.target.value)}
+                            id="range1"
+                            value={range1}
+                            onChange={(e) => setrange1(e.target.value)}
                             className="col-span-2 h-8 text-gray-900"
                           />
                         </div>
                         <div className="grid grid-cols-3 items-center gap-4">
-                          <Label htmlFor="height">
-                            Range (0-100) (Crash Point Level 0)
-                          </Label>
+                          <Label htmlFor="height">Range 2</Label>
                           <Input
-                            id="range"
-                            value={range}
-                            onChange={(e) => setrange(e.target.value)}
+                            id="range2"
+                            value={range2}
+                            onChange={(e) => setrange2(e.target.value)}
+                            className="col-span-2 h-8 text-gray-900"
+                          />
+                        </div>
+                        <div className="grid grid-cols-3 items-center gap-4">
+                          <Label htmlFor="height">Range 3</Label>
+                          <Input
+                            id="range3"
+                            value={range3}
+                            onChange={(e) => setrange3(e.target.value)}
+                            className="col-span-2 h-8 text-gray-900"
+                          />
+                        </div>
+                        <div className="grid grid-cols-3 items-center gap-4">
+                          <Label htmlFor="height">Range 4</Label>
+                          <Input
+                            id="range4"
+                            value={range4}
+                            onChange={(e) => setrange4(e.target.value)}
                             className="col-span-2 h-8 text-gray-900"
                           />
                         </div>
