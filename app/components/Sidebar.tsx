@@ -11,9 +11,10 @@ import SupportChat from "./supportChat";
 type sidebarProps = {
   senderName: string;
   senderId: string;
+  onClose: () => void;
 };
 
-const Sidebar = ({ senderName, senderId }: sidebarProps) => {
+const Sidebar = ({ senderName, senderId, onClose }: sidebarProps) => {
   const [messages, setMessages] = useState<any[]>([]);
 
   useEffect(() => {
@@ -124,7 +125,7 @@ const Sidebar = ({ senderName, senderId }: sidebarProps) => {
                 } rounded-sm`}
               >
                 <div
-                  onClick={toggleChat}
+                  onClick={onClose}
                   className="bg-green-700 rounded-lg text-gray-200  hover:bg-gray-400 hover:text-black p-3 mb-1 hover:cursor-pointer"
                 >
                   <div className="flex items-center gap-2">

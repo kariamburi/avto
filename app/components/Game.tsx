@@ -416,7 +416,7 @@ const Game: React.FC = () => {
       gameStatus === "running" &&
       multiplier.toFixed(2) >= parseFloat(autoCashoutMultipler).toFixed(2)
     ) {
-      alert("isOnCashout");
+      //alert("isOnCashout");
       setBalance(balance + bet * parseFloat(autoCashoutMultipler));
       sessionStorage.setItem(
         "balance",
