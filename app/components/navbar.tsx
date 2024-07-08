@@ -2,6 +2,7 @@
 import { usePathname, useRouter } from "next/navigation";
 import MobileNav from "./MobileNav";
 import HomeOutlinedIcon from "@mui/icons-material/HomeOutlined";
+import Image from "next/image";
 export default function Navbar() {
   // const [unreadCount, setUnreadCount] = useState<number>(0);
   const router = useRouter();
@@ -17,20 +18,10 @@ export default function Navbar() {
       <div className="flex-1 my-auto">
         <div className="flex gap-2 p-2 items-center">
           <div className="rounded-full overflow-hidden hidden lg:inline">
-            <img
-              src="/logo1.png"
-              alt="logo"
-              onClick={() => router.push("/")}
-              className="w-24 hover:cursor-pointer"
-            />
+            <Image src="/logo1.png" width={100} height={24} alt="game logo" />
           </div>
           <div className="rounded-full overflow-hidden lg:hidden">
-            <img
-              src="/logo1.png"
-              alt="logo"
-              onClick={() => router.push("/")}
-              className="h-8 hover:cursor-pointer"
-            />
+            <Image src="/logo1.png" width={100} height={24} alt="game logo" />
           </div>
         </div>
       </div>

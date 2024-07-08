@@ -39,9 +39,17 @@ const Aviator = ({ multiplier, sound }: CrashProps) => {
       <div className="flex flex-col items-center">
         {displayMessage === "flewAway" ? (
           <>
-            <div className="text-white">FLEW AWAY</div>
-            <div className="text-6xl text-red-500 font-bold" id="multiplier">
-              x{multiplier}
+            <div className="relative flex items-center justify-center">
+              <div className="absolute flex flex-col items-center w-[250px]">
+                <div className="mt-10 text-white">FLEW AWAY</div>
+                <div
+                  className="text-6xl text-white font-bold z-10"
+                  id="multiplier"
+                >
+                  x{multiplier}
+                </div>
+              </div>
+              <div className="absolute z-[0] w-[250px] h-[250px] rounded-full blue__gradient" />
             </div>
             <motion.div
               variants={aviatorVariants}
@@ -63,13 +71,16 @@ const Aviator = ({ multiplier, sound }: CrashProps) => {
                 BETTING TIME...
               </div>
             </div>
-            <div className="w-full bg-gray-200 rounded-full h-2.5 dark:bg-gray-700 mt-2">
-              <div className="bg-[#DE3D26] h-2.5 rounded-full loading-bar"></div>
+            <div className="w-full bg-gray-200 h-2.5 dark:bg-gray-700 mt-2">
+              <div className="bg-[#DE3D26] h-2.5 loading-bar"></div>
             </div>
           </div>
         )}
       </div>
-      <audio ref={takeoffSound} src="/takeoff.mp3" />
+      <audio ref={takeoffSound}>
+        <source src="/takeoff.mp3" type="audio/mpeg" />
+      </audio>
+
       <style jsx>{`
         .loading-bar {
           animation: load 15s linear forwards;
@@ -77,11 +88,21 @@ const Aviator = ({ multiplier, sound }: CrashProps) => {
 
         @keyframes load {
           0% {
-            width: 0%;
-          }
-          100% {
             width: 100%;
           }
+          100% {
+            width: 0%;
+          }
+        }
+      `}</style>
+      <style jsx>{`
+        .blue__gradient {
+          background: linear-gradient(
+            180deg,
+            rgba(188, 165, 255, 0) 0%,
+            #214d76 100%
+          );
+          filter: blur(40px);
         }
       `}</style>
     </>

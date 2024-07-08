@@ -710,70 +710,6 @@ const page = () => {
     }
   };
 
-  const handleClick = () => {
-    for (let i = 0; i < 10; i++) {
-      const minBet = 500;
-      const maxBet = 4000;
-
-      const randomBetAmount = (
-        Math.floor(Math.random() * ((maxBet - minBet) / 10 + 1)) * 10 +
-        minBet
-      ).toFixed(0);
-
-      const minBetNo = 4;
-      const maxBetNo = 15;
-      const randomBetNo = Math.random() * (maxBetNo - minBetNo + 1) + minBetNo;
-      0;
-      const cashout = Number(randomBetNo.toFixed(2)) * Number(randomBetAmount);
-      const randomTwoLetters = generateRandomString();
-      const randomPhone = generateRandomPhone();
-      const randomTimestampToday = generateRandomTimestampToday();
-      addDoc(collection(db, "bets"), {
-        phone: randomPhone,
-        name: randomTwoLetters,
-        bet: Number(randomBetAmount),
-        betno: 1,
-        multiplier: Number(randomBetNo.toFixed(2)),
-        cashout: Number(cashout),
-        status: "Win",
-        createdAt: randomTimestampToday,
-        auto: "yes",
-      });
-    }
-    alert("Done");
-  };
-
-  const generateRandomString = () => {
-    const letters = "abcdefghijklmnopqrstuvwxyz";
-    const randomChar = () =>
-      letters.charAt(Math.floor(Math.random() * letters.length));
-    const firstChar = randomChar().toUpperCase();
-    const secondChar = randomChar();
-    return firstChar + secondChar;
-  };
-  const generateRandomPhone = () => {
-    const countryCode = "254";
-    const randomNineDigits = Math.floor(Math.random() * 900000000) + 100000000; // Generates a 9-digit number
-    return countryCode + randomNineDigits.toString();
-  };
-  const generateRandomTimestampToday = () => {
-    const now = new Date();
-
-    // Set the time to midnight to start from the beginning of the day
-    now.setHours(0, 0, 0, 0);
-
-    // Generate a random hour between 0 and 23
-    const randomHour = Math.floor(Math.random() * 24);
-
-    // Create a new date with the random hour
-    const randomDate = new Date(now);
-    randomDate.setHours(randomHour);
-
-    // Convert the random date to a Firestore Timestamp
-    const randomTimestamp = Timestamp.fromDate(randomDate);
-
-    return randomTimestamp;
-  };
   const [isChatOpenPlayer, setChatOpenPlay] = useState("");
   const toggleChatPlayer = (id: string) => {
     setChatOpenPlay(id);
@@ -802,7 +738,7 @@ const page = () => {
             <ScrollArea className="h-[500px]">
               {activeTab === 0 && (
                 <>
-                  <div className="">
+                  <div className="w-full overflow-x-auto">
                     <div className="m-1 flex flex-col text-white text-sm">
                       <div className="text-lg font-bold">BALANCE</div>
                       <div className="text-gray-400">
@@ -866,7 +802,7 @@ const page = () => {
               )}
               {activeTab === 1 && (
                 <>
-                  <div>
+                  <div className="w-full overflow-x-auto">
                     <div className="m-1 flex flex-col text-white text-sm">
                       <div className="text-lg font-bold">Deposit</div>
                       <div className="text-gray-400">No. {Deposit.length}</div>
@@ -1019,7 +955,7 @@ const page = () => {
               )}
               {activeTab === 2 && (
                 <>
-                  <div>
+                  <div className="w-full overflow-x-auto">
                     <div className="m-1 flex gap-2 text-white text-sm justify-between items-center">
                       <div className="flex flex-col">
                         <div className="text-lg font-bold">Withdraw</div>
@@ -1192,7 +1128,7 @@ const page = () => {
               )}
               {activeTab === 3 && (
                 <>
-                  <div>
+                  <div className="w-full overflow-x-auto">
                     <div className="m-1 flex flex-col text-white text-sm">
                       <div className="text-lg font-bold">TOP BETS</div>
                       <div className="text-gray-400">No. {Bets.length}</div>
@@ -1245,12 +1181,6 @@ const page = () => {
                           className="w-[150px] bg-emerald-600 text-white hover:emerald-900 p-1 rounded-full"
                         >
                           Delete {betsitems}
-                        </button>
-                        <button
-                          onClick={handleClick}
-                          className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-                        >
-                          Generate and Post Random Bets
                         </button>
                       </div>
                     </div>
@@ -1388,7 +1318,7 @@ const page = () => {
               )}
               {activeTab === 4 && (
                 <>
-                  <div className="w-full">
+                  <div className="w-full overflow-x-auto">
                     <div className="m-1 flex flex-col text-white text-sm">
                       <div className="text-lg font-bold">Players</div>
                       <div className="text-gray-400">No. {Players.length}</div>

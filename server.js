@@ -57,18 +57,20 @@ const broadcastCurrentBets = () => {
     username: player.username,
     bet: player.bet,
     betno: player.betno,
+    cashoutmultiplier: player.cashoutmultiplier,
     cashoutStatus: player.cashoutStatus,
     multiplier,
   }));
   clients.forEach(client => {
     client.send(JSON.stringify({ type: 'currentBets', currentBets }));
+  //console.log(currentBets);
   });
 };
 
 const broadcastGameStatus = (status) => {
   currentGameStatus = status;
   clients.forEach(client => {
-    client.send(JSON.stringify({ type: 'status', status, houseEdge }));
+    client.send(JSON.stringify({ type: 'status', status }));
   });
 };
 
@@ -83,6 +85,7 @@ const startupdateserverPhase = () => {
   broadcastGameStatus('updateserver');
   setTimeout(() => {
     startBettingPhase();
+    addRandomPlayers();
   }, 2000);
 };
 
@@ -94,6 +97,65 @@ const startBettingPhase = () => {
     startGameLoop();
   }, 20000);
 };
+const generateRandomString = () => {
+  const letters = "abcdefghijklmnopqrstuvwxyz";
+  const randomChar = () =>
+    letters.charAt(Math.floor(Math.random() * letters.length));
+  const firstChar = randomChar().toUpperCase();
+  const secondChar = randomChar();
+  return firstChar + secondChar;
+};
+const addRandomPlayers = () => {
+  players = [];
+  numberOfPlayers = Math.floor(Math.random() * (150 - 20 + 1)) + 20; // Random number of players between 20 and 150
+
+  const addPlayerWithDelay = (i) => {
+    if (i < numberOfPlayers) {
+      const minBet = 10;
+      const maxBet = 4000;
+
+      const randomBetAmount = (
+        Math.floor(Math.random() * ((maxBet - minBet) / 10 + 1)) * 10 +
+        minBet
+      ).toFixed(0);
+
+      players.push({
+        username: generateRandomString() + "***",
+        bet: randomBetAmount,
+        betno: i,
+        cashoutmultiplier:1,
+        cashoutStatus: false,
+        auto: true,
+      });
+
+      // Broadcast after each player is added
+      broadcastCurrentBets();
+
+      // Set delay for the next player
+      setTimeout(() => addPlayerWithDelay(i + 1), Math.random() * (30000/numberOfPlayers)); // Random delay between 0 and 1000ms
+    }
+  };
+
+  addPlayerWithDelay(0); // Start adding players
+};
+
+const randomCashout = () => {
+  const playerIndex = Math.floor(Math.random() * players.length); // Assuming players is your array of players
+  if (playerIndex !== -1 && gameInProgress) {
+    const player = players[playerIndex];
+
+    if (!player.cashoutStatus && player.auto) {
+      const payout = player.bet * multiplier;
+      // Simulate delay before cashing out
+      setTimeout(() => {
+        player.cashoutStatus = true;
+        player.cashoutmultiplier = multiplier;
+       // player.ws.send(JSON.stringify({ type: 'cashout', payout }));
+      }, Math.random() * 30000); // Random delay between 0 and 5000ms (adjust as needed)
+    }
+  }
+};
+
 
 const startGameLoop = () => {
   if (gameInProgress) return;
@@ -117,6 +179,7 @@ const startGameLoop = () => {
       startupdateserverPhase();
     } else {
       broadcastMultiplier(); 
+      randomCashout(); // Randomly cashout players during the game loop
     }
     broadcastCurrentBets();
   }, 50);
@@ -153,7 +216,7 @@ app.prepare().then(async () => {
 
         if (data.type === 'bet') {
           if (!gameInProgress && bettingPhase) {
-            players.push({ ws, username: data.username, bet: data.amount, betno: data.betno, cashoutStatus: false });
+            players.push({ ws, username: data.username, bet: data.amount, betno: data.betno, cashoutmultiplier: data.cashoutmultiplier, cashoutStatus: false, auto: false });
           } else {
             ws.send(JSON.stringify({ type: 'error', message: 'Game in progress or betting phase has ended. Please wait for the next round.' }));
           }
@@ -170,8 +233,9 @@ app.prepare().then(async () => {
             const player = players[playerIndex];
             if (!player.cashoutStatus) {
               const payout = player.bet * multiplier;
-              ws.send(JSON.stringify({ type: 'cashout', payout }));
-              player.cashoutStatus = true;  
+              player.cashoutStatus = true;
+              player.cashoutmultiplier = multiplier;
+              player.ws.send(JSON.stringify({ type: 'cashout', payout }));
             }
           }
           broadcastCurrentBets();

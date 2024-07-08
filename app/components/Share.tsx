@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { FaShareAlt, FaFacebook, FaWhatsapp, FaTwitter } from "react-icons/fa";
 import ShareOutlinedIcon from "@mui/icons-material/ShareOutlined";
+import CloseOutlinedIcon from "@mui/icons-material/CloseOutlined";
 import {
   FacebookShareButton,
   FacebookIcon,
@@ -60,23 +61,31 @@ const Share: React.FC = () => {
     <div className="relative inline-block">
       <button
         onClick={toggleDropdown}
-        className="p-1 gap-1 text-xs text-gray-400 rounded-md ring-1 ring-gray-500"
+        className="p-1 gap-1 text-xs text-gray-200 rounded-full bg-[#273445] ring-1 ring-gray-500"
       >
         <ShareOutlinedIcon sx={{ fontSize: 14 }} />
         Share
       </button>
       {isOpen && (
-        <div className="absolute text-gray-900 right-0 mt-2 w-48 bg-white border border-gray-200 rounded-md shadow-lg z-10">
+        <div className="absolute text-gray-400 right-0 mt-2 w-48 bg-[#273445] rounded-md shadow-lg z-10">
+          <div className="flex items-center justify-between text-white p-1">
+            <h3 className="text-sm text-gray-100">Share</h3>
+
+            <div onClick={toggleDropdown} className="cursor-pointer text-white">
+              <CloseOutlinedIcon />
+            </div>
+          </div>
+
           <div
             onClick={() => handleShare("whatsapp")}
-            className="flex items-center px-4 py-2 hover:bg-gray-100 cursor-pointer"
+            className="flex items-center px-4 py-2 hover:bg-gray-900 cursor-pointer"
           >
             <WhatsappIcon size={18} round className="mr-2" />
             WhatsApp
           </div>
           <div
             onClick={() => handleShare("facebook")}
-            className="flex items-center px-4 py-2 hover:bg-gray-100 cursor-pointer"
+            className="flex items-center px-4 py-2 hover:bg-gray-900 cursor-pointer"
           >
             <FacebookIcon size={18} round className="mr-2" /> Facebook
           </div>

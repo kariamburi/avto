@@ -32,14 +32,9 @@ const generateStars = (count: number) => {
 const GameBackground: React.FC<GameBackgroundProps> = ({ multiplier }) => {
   return (
     <div className={styles["bg-container"]}>
-      {/* Starry Sky */}
-      <div className={styles.stars}>{generateStars(100)}</div>
-
       {/* Cloud Layers */}
       <div className={`${styles.clouds} ${styles["cloud-layer-1"]}`}></div>
       <div className={`${styles.clouds} ${styles["cloud-layer-2"]}`}></div>
-      <div className={`${styles.clouds} ${styles["cloud-layer-3"]}`}></div>
-
       {/* Airplane Animation */}
       <Aviator multiplier={multiplier} />
     </div>

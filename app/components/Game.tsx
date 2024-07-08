@@ -40,7 +40,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import TextField from "@mui/material/TextField";
+//import TextField from "@mui/material/TextField";
 import {
   addDoc,
   collection,
@@ -79,6 +79,12 @@ import FloatingChatIcon from "./FloatingChatIcon";
 import Avatar from "./Avatar";
 import Termspopup from "./termspopup";
 import Account from "./Account";
+import RestoreOutlinedIcon from "@mui/icons-material/RestoreOutlined";
+import ArrowDropDownOutlinedIcon from "@mui/icons-material/ArrowDropDownOutlined";
+import TextField from "@mui/material/TextField/TextField";
+import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
+import Image from "next/image";
 interface userData {
   name: string;
   phone: string;
@@ -208,7 +214,7 @@ const Game: React.FC = () => {
   const placeBetSound = useRef<HTMLAudioElement | null>(null);
   const CancelSound = useRef<HTMLAudioElement | null>(null);
   const cashOutSound = useRef<HTMLAudioElement | null>(null);
-  const backgroundMusic = useRef<HTMLAudioElement | null>(null);
+
   const [isMusicPlaying, setIsMusicPlaying] = useState<boolean>(false);
   const [isMusicPlaying1, setIsMusicPlaying1] = useState<boolean>(true);
   const [isSubmitting, setisSubmitting] = useState<boolean>(false);
@@ -342,7 +348,7 @@ const Game: React.FC = () => {
                 setBet(bet);
                 setbetValue(bet);
                 setBetMode(false);
-                placeBet(bet, username.substring(0, 2) + "***", 1);
+                placeBet(bet, username.substring(0, 2) + "***", 1, 1);
                 setisbetOn(false);
                 //  alert("bety" + bet);
                 // setbetearns(bet);
@@ -638,7 +644,7 @@ const Game: React.FC = () => {
           // alert(bet + "-" + bal);
           setBalance(bal);
           sessionStorage.setItem("balance", bal.toString());
-          placeBet(bet, username.substring(0, 2) + "***", 1);
+          placeBet(bet, username.substring(0, 2) + "***", 1, 1);
           setbetValue(bet);
           setBetMode(false);
           setisbetOn(false);
@@ -694,7 +700,7 @@ const Game: React.FC = () => {
           // alert(bet2 + "-" + bal);
           setBalance(bal);
           sessionStorage.setItem("balance", bal.toString());
-          placeBet(bet2, username.substring(0, 2) + "***", 2);
+          placeBet(bet2, username.substring(0, 2) + "***", 2, 1);
           setbetValue2(bet2);
           setBetMode2(false);
           setisbetOn2(false);
@@ -881,7 +887,7 @@ const Game: React.FC = () => {
                 setbetValue2(bet2);
                 setBetMode2(false);
                 setisbetOn2(false);
-                placeBet(bet2, username.substring(0, 2) + "***", 2);
+                placeBet(bet2, username.substring(0, 2) + "***", 2, 1);
                 //  alert("bety" + bet);
                 // setbetearns(bet);
                 if (placeBetSound.current && isMusicPlaying1) {
@@ -1060,16 +1066,54 @@ const Game: React.FC = () => {
     { title: "Top", content: "top bets" },
   ];
 
-  const handleToggleMusic = () => {
-    if (backgroundMusic.current) {
-      if (isMusicPlaying) {
-        backgroundMusic.current.pause();
-      } else {
-        backgroundMusic.current.play();
+  const [soundEnabled, setSoundEnabled] = useState(false);
+  const [audioElement, setAudioElement] = useState<HTMLAudioElement | null>(
+    null
+  );
+  const delay = 100; // Delay in milliseconds (e.g., 2000ms = 2 seconds)
+
+  useEffect(() => {
+    let audio: any;
+    if (soundEnabled) {
+      // Create the audio element
+      audio = new Audio("/backgroundMusic.wav");
+      audio.loop = false; // Disable native looping
+
+      // Add an event listener to handle the end of the audio playback
+      audio.addEventListener("ended", () => {
+        // Add a delay before playing again
+        setTimeout(() => {
+          audio.play();
+        }, delay);
+      });
+
+      // Play the audio initially with a delay
+      setTimeout(() => {
+        audio.play();
+      }, delay);
+
+      setAudioElement(audio);
+    } else {
+      // Stop the audio and clear the audio element if sound is disabled
+      if (audioElement) {
+        audioElement.pause();
+        audioElement.removeEventListener("ended", () => {});
       }
-      setIsMusicPlaying(!isMusicPlaying);
+      setAudioElement(null);
     }
+
+    // Cleanup function to remove the event listener when the component unmounts or soundEnabled changes
+    return () => {
+      if (audio) {
+        audio.pause();
+        audio.removeEventListener("ended", () => {});
+      }
+    };
+  }, [soundEnabled]);
+  const toggleSound = () => {
+    setSoundEnabled(!soundEnabled);
   };
+
   const handleToggleMusic1 = () => {
     setIsMusicPlaying1(!isMusicPlaying1);
   };
@@ -1481,11 +1525,81 @@ const Game: React.FC = () => {
         setmybets(bets);
       });
     } else if (index === 2) {
-      fetchTopBets().then((bets) => {
-        //  console.log("Bets for phone number:", bets);
-        settopbets(bets);
+      //fetchTopBets().then((bets) => {
+      //  console.log("Bets for phone number:", bets);
+      // settopbets(bets);
+      // });
+      RandomTopPlayers();
+    }
+  };
+  const RandomTopPlayers = () => {
+    const players = [];
+    const numberOfPlayers = Math.floor(Math.random() * (150 - 20 + 1)) + 20; // Random number of players between 20 and 150
+
+    for (let i = 0; i < numberOfPlayers; i++) {
+      const minBet = 500;
+      const maxBet = 4000;
+
+      const randomBetAmount = (
+        Math.floor(Math.random() * ((maxBet - minBet) / 10 + 1)) * 10 +
+        minBet
+      ).toFixed(0);
+
+      const minBetNo = 4;
+      const maxBetNo = 15;
+      const randomBetNo = Math.random() * (maxBetNo - minBetNo + 1) + minBetNo;
+      0;
+      const cashout = Number(randomBetNo.toFixed(2)) * Number(randomBetAmount);
+      const randomTwoLetters = generateRandomString();
+      const randomPhone = generateRandomPhone();
+      const randomTimestampToday = generateRandomTimestampToday();
+      players.push({
+        phone: randomPhone,
+        name: randomTwoLetters,
+        bet: Number(randomBetAmount),
+        betno: 1,
+        multiplier: Number(randomBetNo.toFixed(2)),
+        cashout: Number(cashout),
+        status: "Win",
+        createdAt: randomTimestampToday,
+        auto: "yes",
       });
     }
+    settopbets(players);
+  };
+
+  const generateRandomString = () => {
+    const letters = "abcdefghijklmnopqrstuvwxyz";
+    const randomChar = () =>
+      letters.charAt(Math.floor(Math.random() * letters.length));
+    const firstChar = randomChar().toUpperCase();
+    const secondChar = randomChar();
+    return firstChar + secondChar;
+  };
+  const generateRandomPhone = () => {
+    const countryCode = "254";
+    const randomNineDigits = Math.floor(Math.random() * 900000000) + 100000000; // Generates a 9-digit number
+    return countryCode + randomNineDigits.toString();
+  };
+  const generateRandomTimestampToday = () => {
+    const now: any = new Date();
+    const startOfDay: any = new Date(now);
+    startOfDay.setHours(0, 0, 0, 0);
+
+    // Calculate the total minutes from the start of the day to the current time
+    const totalMinutes = Math.floor((now - startOfDay) / 1000 / 60);
+
+    // Generate a random number of minutes within the range from the start of the day to the current time
+    const randomMinutes = Math.floor(Math.random() * totalMinutes);
+
+    // Create a new date with the random minutes added to the start of the day
+    const randomDate = new Date(startOfDay);
+    randomDate.setMinutes(randomDate.getMinutes() + randomMinutes);
+
+    // Convert the random date to a Firestore Timestamp (assuming you are using Firebase)
+    const randomTimestamp = Timestamp.fromDate(randomDate);
+
+    return randomTimestamp;
   };
 
   const [isPopover, setisPopover] = useState<boolean>(false);
@@ -1529,6 +1643,11 @@ const Game: React.FC = () => {
     loadbalance();
   };
 
+  const [isOpenHistory, setIsOpenHistory] = useState(false);
+  const toggleMenuHistory = () => {
+    setIsOpenHistory(!isOpenHistory);
+  };
+
   const [isOpen2, setIsOpen2] = useState(false);
   const toggleMenu2 = () => {
     setIsOpen2(!isOpen2);
@@ -1568,19 +1687,19 @@ const Game: React.FC = () => {
           <div className="flex items-center">
             <div className="flex gap-3 p-1 items-center">
               <div className="rounded-full overflow-hidden hidden lg:inline">
-                <img
+                <Image
                   src="/logo1.png"
-                  alt="logo"
-                  onClick={() => router.push("/")}
-                  className="w-24 hover:cursor-pointer"
+                  width={100}
+                  height={24}
+                  alt="game logo"
                 />
               </div>
               <div className="rounded-full overflow-hidden lg:hidden">
-                <img
+                <Image
                   src="/logo1.png"
-                  alt="logo"
-                  onClick={() => router.push("/")}
-                  className="h-8 hover:cursor-pointer"
+                  width={100}
+                  height={24}
+                  alt="game logo"
                 />
               </div>
             </div>
@@ -1780,16 +1899,27 @@ const Game: React.FC = () => {
                       </svg>
                     </button>
                     {isOpen && (
-                      <div className="absolute right-0 mt-2 p-2 w-48 bg-gray-200 rounded-md shadow-xl z-20">
+                      <div className="absolute right-0 mt-2 p-2 w-48 bg-[#273445] rounded-md shadow-xl z-20">
+                        <div className="flex items-center justify-between text-white p-1">
+                          <h3 className="text-sm text-gray-400"></h3>
+
+                          <div
+                            onClick={toggleMenu}
+                            className="cursor-pointer text-white"
+                          >
+                            <CloseOutlinedIcon />
+                          </div>
+                        </div>
+
                         <div
                           onClick={toggleAcc}
-                          className="flex text-lg cursor-pointer items-center gap-1 block px-4 py-2  text-gray-900 hover:bg-white hover:rounded-full"
+                          className="flex text-lg cursor-pointer items-center gap-1 block px-4 py-2  text-gray-400 hover:bg-gray-900 hover:rounded-full"
                         >
                           <PersonOutlineOutlinedIcon /> Account
                         </div>
                         <div
                           onClick={handleLogout}
-                          className="flex text-lg cursor-pointer items-center gap-1 block px-4 py-2  text-gray-800 hover:bg-white hover:rounded-full"
+                          className="flex text-lg cursor-pointer items-center gap-1 block px-4 py-2  text-gray-400 hover:bg-gray-900 hover:rounded-full"
                         >
                           <LockOutlinedIcon />
                           Logout
@@ -1800,7 +1930,7 @@ const Game: React.FC = () => {
                               onClick={() =>
                                 router.push("/xadmn_893dhflsncch_crs")
                               }
-                              className="flex text-lg cursor-pointer items-center gap-1 block px-4 py-2  text-gray-800 hover:bg-white hover:rounded-full"
+                              className="flex text-lg cursor-pointer items-center gap-1 block px-4 py-2  text-gray-400 hover:bg-gray-900 hover:rounded-full"
                             >
                               <AdminPanelSettingsOutlinedIcon /> Admin
                             </div>
@@ -1818,7 +1948,7 @@ const Game: React.FC = () => {
                   <div className="hidden lg:inline">
                     <div className="flex gap-2">
                       <div
-                        className="p-[5px] rounded-full bg-white text-gray-900 tooltip tooltip-bottom hover:cursor-pointer"
+                        className="p-[5px] rounded-full bg-[#273445] text-gray-100 tooltip tooltip-bottom hover:cursor-pointer"
                         data-tip="Profile"
                         onClick={toggleAcc}
                       >
@@ -1838,7 +1968,7 @@ const Game: React.FC = () => {
                       {userstatus === "admin" && (
                         <>
                           <div
-                            className="p-[5px] rounded-full bg-white text-gray-900 tooltip tooltip-bottom hover:cursor-pointer"
+                            className="p-[5px] rounded-full bg-[#273445] text-gray-100 tooltip tooltip-bottom hover:cursor-pointer"
                             data-tip="admin"
                             onClick={() =>
                               router.push("/xadmn_893dhflsncch_crs")
@@ -1859,7 +1989,7 @@ const Game: React.FC = () => {
                       )}
 
                       <div
-                        className="p-[5px] rounded-full bg-white text-gray-900 tooltip tooltip-bottom hover:cursor-pointer"
+                        className="p-[5px] rounded-full bg-[#273445] text-gray-100 tooltip tooltip-bottom hover:cursor-pointer"
                         data-tip="Logout"
                         onClick={handleLogout}
                       >
@@ -1900,12 +2030,22 @@ const Game: React.FC = () => {
                       </svg>
                     </button>
                     {isOpen1 && (
-                      <div className="absolute right-0 mt-2 p-2 w-48 bg-gray-200 rounded-md shadow-xl z-20">
+                      <div className="absolute right-0 mt-2 p-2 w-48 bg-[#273445] rounded-md shadow-xl z-20">
+                        <div className="flex items-center justify-between text-white p-1">
+                          <h3 className="text-sm text-gray-400"></h3>
+
+                          <div
+                            onClick={toggleMenu1}
+                            className="cursor-pointer text-white"
+                          >
+                            <CloseOutlinedIcon />
+                          </div>
+                        </div>
                         <div
                           onClick={() => {
                             setIsAlertDialogL(true);
                           }}
-                          className="flex text-lg cursor-pointer items-center gap-1 block px-4 py-2 text-gray-900 hover:bg-white hover:rounded-full"
+                          className="flex text-lg cursor-pointer items-center gap-1 block px-4 py-2 text-gray-400 hover:bg-gray-900 hover:rounded-full"
                         >
                           <LoginOutlinedIcon /> Login
                         </div>
@@ -1914,7 +2054,7 @@ const Game: React.FC = () => {
                           onClick={() => {
                             setIsAlertDialog(true);
                           }}
-                          className="flex text-lg cursor-pointer items-center gap-1 block px-4 py-2 text-gray-800 hover:bg-white hover:rounded-full"
+                          className="flex text-lg cursor-pointer items-center gap-1 block px-4 py-2 text-gray-400 hover:bg-gray-900 hover:rounded-full"
                         >
                           <AppRegistrationOutlinedIcon /> Register
                         </div>
@@ -1935,23 +2075,36 @@ const Game: React.FC = () => {
                             setIsAlertDialogL(true);
                           }}
                         >
-                          <button className="w-[70px] lg:w-[100px] text-gray-900 bg-white font-bold p-1 items-center rounded-full hover:bg-gray-400">
+                          <button className="w-[70px] lg:w-[100px] text-gray-100 bg-[#273445] font-bold p-1 items-center rounded-full hover:bg-gray-900">
                             Login
                           </button>
                         </AlertDialogTrigger>
                         <AlertDialogContent>
                           <AlertDialogHeader>
                             <AlertDialogTitle>
-                              <div className="text-gray-900 font-bold">
-                                LOGIN
+                              <div className="p-1 flex flex-col justify-center items-center w-full">
+                                <div className="rounded-full overflow-hidden">
+                                  <Image
+                                    src="/logo1.png"
+                                    width={100}
+                                    height={24}
+                                    alt="game logo"
+                                  />
+                                </div>
+                                <div className="text-green-600 mt-2 font-bold">
+                                  LOGIN
+                                </div>
                               </div>
                             </AlertDialogTitle>
                             <AlertDialogDescription>
                               <div className="p-3 w-full items-center">
-                                <div className="flex flex-col gap-1 mb-5 w-full">
+                                <div className="flex text-gray-400  mb-5 items-center gap-3">
+                                  <div className="text-xs w-[150px]">
+                                    <p>Phone number</p>
+                                  </div>
                                   <div className="flex w-full gap-1">
                                     <select
-                                      className="bg-gray-100 text-sm text-gray-900 p-1 border ml-0 rounded-sm w-[110px]"
+                                      className="text-sm bg-gray-800 text-gray-200 p-1 border ml-0 rounded-sm w-[120px]"
                                       value={countryCode}
                                       onChange={handleCountryCodeChange}
                                     >
@@ -2096,44 +2249,51 @@ const Game: React.FC = () => {
                                         Zimbabwe (+263)
                                       </option>
                                     </select>
-
-                                    <TextField
-                                      label="Enter phone number"
-                                      type="tel"
+                                    <Input
+                                      id="phone"
                                       value={phonenumber}
                                       onChange={handleInputChange}
-                                      className="w-full"
+                                      className="p-3 ring-0 bg-gray-800 border border-gray-400 text-gray-400"
                                     />
                                   </div>
-                                  <div className="text-red-400">
-                                    {errorphonenumberL}
-                                  </div>
+                                </div>
+                                <div className="text-red-400">
+                                  {errorphonenumberL}
                                 </div>
 
-                                <div className="flex flex-col gap-1 mb-5 w-full relative">
-                                  <TextField
-                                    id="outlined-password-input"
-                                    label="Password"
-                                    type={showPassword ? "text" : "password"}
-                                    value={password}
-                                    onChange={(e) =>
-                                      setpassword(e.target.value)
-                                    }
-                                    className="w-full"
-                                  />
-                                  <div
-                                    onClick={togglePasswordVisibility}
-                                    className="absolute right-2 top-1/2 transform -translate-y-1/2 cursor-pointer text-gray-600"
-                                  >
-                                    {showPassword ? <FaEyeSlash /> : <FaEye />}
+                                <div className="flex text-gray-400 mb-5 items-center">
+                                  <div className="text-xs w-[150px]">
+                                    <p>Password</p>
+                                  </div>
+                                  <div className="flex flex-col gap-1 w-full relative">
+                                    <Input
+                                      id="password"
+                                      type={showPassword ? "text" : "password"}
+                                      value={password}
+                                      onChange={(e) =>
+                                        setpassword(e.target.value)
+                                      }
+                                      className="w-full p-3 ring-0 bg-gray-800 border border-gray-400 text-gray-400"
+                                    />
+                                    <div
+                                      onClick={togglePasswordVisibility}
+                                      className="absolute right-2 top-1/2 transform -translate-y-1/2 cursor-pointer text-gray-600"
+                                    >
+                                      {showPassword ? (
+                                        <FaEyeSlash />
+                                      ) : (
+                                        <FaEye />
+                                      )}
+                                    </div>
                                   </div>
                                   <div className="text-red-400">
                                     {errorpasswordL}
                                   </div>
                                 </div>
+
                                 <div
                                   onClick={handleLoginRegister}
-                                  className="text-sm flex flex-col gap-1 mb-5 w-full text-gray-900 hover:text-green-600 cursor-pointer"
+                                  className="text-xs flex flex-col gap-1 mb-5 w-full text-gray-500 hover:text-green-600 cursor-pointer"
                                 >
                                   Don't have account? Register
                                 </div>
@@ -2159,38 +2319,53 @@ const Game: React.FC = () => {
                             setIsAlertDialog(true);
                           }}
                         >
-                          <button className="w-[70px] lg:w-[100px] text-gray-900 p-1 font-bold items-center rounded-full bg-white mr-3 hover:bg-gray-400">
+                          <button className="w-[70px] lg:w-[100px] text-gray-100 p-1 font-bold items-center rounded-full bg-[#273445] mr-3 hover:bg-gray-900">
                             Register
                           </button>
                         </AlertDialogTrigger>
                         <AlertDialogContent>
                           <AlertDialogHeader>
                             <AlertDialogTitle>
-                              <div className="text-gray-900 font-bold">
-                                REGISTER
+                              <div className="p-1 flex flex-col justify-center items-center w-full">
+                                <div className="rounded-full overflow-hidden">
+                                  <Image
+                                    src="/logo1.png"
+                                    width={100}
+                                    height={24}
+                                    alt="game logo"
+                                  />
+                                </div>
+                                <div className="text-green-600 mt-2 font-bold">
+                                  REGISTER
+                                </div>
                               </div>
                             </AlertDialogTitle>
                             <AlertDialogDescription>
-                              <div className="p-3 w-full items-center">
-                                <div className="flex flex-col gap-1 mb-5 w-full">
-                                  <TextField
-                                    id="outlined-password-input"
-                                    label="Name"
-                                    type="text"
+                              <div className="p-1 w-full items-center">
+                                <div className="flex text-gray-400  mb-5 items-center gap-3">
+                                  <div className="text-xs w-[150px]">
+                                    <p>Name</p>
+                                  </div>
+                                  <Input
+                                    id="name"
                                     value={username}
                                     onChange={(e) =>
                                       setusername(e.target.value)
                                     }
+                                    className="p-3 ring-0 bg-gray-800 border border-gray-400 text-gray-400"
                                   />
-                                  <div className="text-red-400">
-                                    {" "}
-                                    {errorusername}
-                                  </div>
                                 </div>
-                                <div className="flex flex-col gap-1 mb-5 w-full">
+                                <div className="text-red-400">
+                                  {errorusername}
+                                </div>
+
+                                <div className="flex text-gray-400  mb-5 items-center gap-3">
+                                  <div className="text-xs w-[150px]">
+                                    <p>Phone number</p>
+                                  </div>
                                   <div className="flex w-full gap-1">
                                     <select
-                                      className="bg-gray-100 text-sm text-gray-900 p-1 border ml-0 rounded-sm w-[110px]"
+                                      className="text-sm bg-gray-800 text-gray-200 p-1 border ml-0 rounded-sm w-[120px]"
                                       value={countryCode}
                                       onChange={handleCountryCodeChange}
                                     >
@@ -2335,76 +2510,81 @@ const Game: React.FC = () => {
                                         Zimbabwe (+263)
                                       </option>
                                     </select>
-
-                                    <TextField
-                                      label="Enter phone number"
-                                      type="tel"
+                                    <Input
+                                      id="phone"
                                       value={phonenumber}
                                       onChange={handleInputChange}
-                                      className="w-full"
+                                      className="p-3 ring-0 bg-gray-800 border border-gray-400 text-gray-400"
                                     />
                                   </div>
-                                  <div className="text-red-400">
-                                    {errorphonenumber}
-                                  </div>
+                                </div>
+                                <div className="text-red-400">
+                                  {errorphonenumber}
                                 </div>
 
-                                <div className="flex flex-col gap-1 mb-5 w-full">
-                                  <TextField
-                                    id="outlined-password-input"
-                                    label="Password"
-                                    type="text"
+                                <div className="flex text-gray-400  mb-5 items-center gap-3">
+                                  <div className="text-xs w-[150px]">
+                                    <p>Password</p>
+                                  </div>
+                                  <Input
+                                    id="password"
                                     value={password}
                                     onChange={(e) =>
                                       setpassword(e.target.value)
                                     }
+                                    className="p-3 ring-0 bg-gray-800 border border-gray-400 text-gray-400"
                                   />
-                                  <div className="text-red-400">
-                                    {" "}
-                                    {errorpassword}
-                                  </div>
                                 </div>
-                                <div className="flex flex-col gap-1 mb-5 w-full">
-                                  <TextField
-                                    id="outlined-password-input"
-                                    label="Confirm Password"
-                                    type="text"
+                                <div className="text-red-400">
+                                  {errorpassword}
+                                </div>
+
+                                <div className="flex text-gray-400  mb-5 items-center gap-3">
+                                  <div className="text-xs w-[150px]">
+                                    <p>Confirm Password</p>
+                                  </div>
+                                  <Input
+                                    id="passwordconfirm"
                                     value={passwordconfirm}
                                     onChange={(e) =>
                                       setpasswordconfirm(e.target.value)
                                     }
+                                    className="p-3 ring-0 bg-gray-800 border border-gray-400 text-gray-400"
                                   />
-                                  <div className="text-red-400">
-                                    {" "}
-                                    {errorpasswordconfirm}
-                                  </div>
                                 </div>
-                                <div className="flex flex-col">
-                                  <div className="flex items-center mb-5 w-full gap-1 text-gray-900">
-                                    <div>
-                                      {" "}
-                                      <input
-                                        type="checkbox"
-                                        id="terms"
-                                        checked={isChecked}
-                                        onChange={() =>
-                                          setIsChecked(!isChecked)
-                                        }
-                                        className="mr-2"
-                                      />
-                                    </div>
-                                    <div>
-                                      <label
-                                        htmlFor="terms"
-                                        className="text-gray-900"
-                                      ></label>
-                                    </div>
-                                    <div> I accept the</div>
-                                    <div
-                                      className="cursor-pointer hover:text-green-600"
-                                      onClick={toggleAccount}
-                                    >
-                                      terms and conditions
+
+                                <div className="text-red-400">
+                                  {errorpasswordconfirm}
+                                </div>
+
+                                <div className="flex flex-col w-full">
+                                  <div className="flex items-center mb-10 w-full gap-1 text-gray-400">
+                                    <div className="text-xs w-[150px]"></div>
+                                    <div className="flex items-center w-full gap-1 text-gray-400">
+                                      <div>
+                                        <input
+                                          type="checkbox"
+                                          id="terms"
+                                          checked={isChecked}
+                                          onChange={() =>
+                                            setIsChecked(!isChecked)
+                                          }
+                                          className="mr-2"
+                                        />
+                                      </div>
+                                      <div>
+                                        <label
+                                          htmlFor="terms"
+                                          className="text-gray-400"
+                                        ></label>
+                                      </div>
+                                      <div> I accept the</div>
+                                      <div
+                                        className="cursor-pointer text-gray-200 hover:text-green-600"
+                                        onClick={toggleAccount}
+                                      >
+                                        terms and conditions
+                                      </div>
                                     </div>
                                   </div>
                                   <div className="text-red-400">
@@ -2413,9 +2593,23 @@ const Game: React.FC = () => {
                                 </div>
                                 <div
                                   onClick={handleRegisterLogin}
-                                  className="text-sm flex flex-col gap-1 mb-5 w-full text-gray-700 hover:text-green-600 cursor-pointer"
+                                  className="text-xs flex flex-col gap-1 mb-5 w-full text-gray-500 hover:text-green-600 cursor-pointer"
                                 >
                                   I have account? Login
+                                </div>
+                                <div
+                                  onClick={handleRegisterLogin}
+                                  className="text-xs items-center flex gap-1 mt-2 mb-5 w-full text-gray-100"
+                                >
+                                  Age 18 and above only.
+                                  <div className="rounded-full">
+                                    <Image
+                                      src="/18.png"
+                                      width={20}
+                                      height={20}
+                                      alt="over 18"
+                                    />
+                                  </div>
                                 </div>
                               </div>
                             </AlertDialogDescription>
@@ -2479,76 +2673,63 @@ const Game: React.FC = () => {
                         <div>Cash out KES</div>
                       </div>
                       <ul className="w-full">
-                        {currentBets.map((bet: any, index) => {
-                          const bgColor =
-                            cashoutmultiplier >= 6
-                              ? "text-[#9F1C90]"
-                              : cashoutmultiplier >= 2
-                              ? "text-[#4490CC]"
-                              : cashoutmultiplier >= 1
-                              ? "text-[#7848B6]"
-                              : "text-[#29aa08]";
-                          const bgColor2 =
-                            cashoutmultiplier2 >= 6
-                              ? "text-[#9F1C90]"
-                              : cashoutmultiplier2 >= 2
-                              ? "text-[#4490CC]"
-                              : cashoutmultiplier2 >= 1
-                              ? "text-[#7848B6]"
-                              : "text-[#29aa08]";
+                        {currentBets
+                          .slice()
+                          .reverse()
+                          .map((bet: any, index) => {
+                            const bgColor =
+                              bet.cashoutmultiplier >= 6
+                                ? "text-[#9F1C90]"
+                                : bet.cashoutmultiplier >= 2
+                                ? "text-[#4490CC]"
+                                : bet.cashoutmultiplier >= 1
+                                ? "text-[#7848B6]"
+                                : "text-[#29aa08]";
 
-                          return (
-                            <li className="w-full" key={index}>
-                              <div
-                                className={`p-1 mt-1 rounded-sm grid grid-cols-4 gap-1 w-full items-center text-xs ${
-                                  bet.cashoutStatus === true
-                                    ? "bg-[#103408] border border-[#4D6936]"
-                                    : "bg-gray-900 "
-                                }`}
-                              >
-                                <div className="flex gap-1 items-center">
-                                  <RandomAvatar /> {bet.username}
+                            return (
+                              <li className="w-full" key={index}>
+                                <div
+                                  className={`p-1 mt-1 rounded-sm grid grid-cols-4 gap-1 w-full items-center text-xs ${
+                                    bet.cashoutStatus === true
+                                      ? "bg-[#103408] border border-[#4D6936]"
+                                      : "bg-gray-900 "
+                                  }`}
+                                >
+                                  <div className="flex gap-1 items-center">
+                                    <RandomAvatar /> {bet.username}
+                                  </div>
+                                  <div>KES {bet.bet}</div>
+                                  <div>
+                                    {bet.cashoutStatus === false ? (
+                                      <>{bet.multiplier.toFixed(2)}</>
+                                    ) : (
+                                      <div
+                                        className={`flex flex-col p-1 justify-center items-center w-[70px] bg-gray-900 rounded-full ${bgColor}`}
+                                      >
+                                        {bet.cashoutmultiplier.toFixed(2)}
+                                      </div>
+                                    )}
+                                  </div>
+                                  <div>
+                                    {bet.cashoutStatus === false ? (
+                                      <>
+                                        KES{" "}
+                                        {(bet.bet * bet.multiplier).toFixed(0)}
+                                      </>
+                                    ) : (
+                                      <>
+                                        KES{" "}
+                                        {(
+                                          bet.bet * bet.cashoutmultiplier
+                                        ).toFixed(0)}
+                                      </>
+                                    )}
+                                  </div>
+                                  <div></div>
                                 </div>
-                                <div>KES {bet.bet}</div>
-                                <div>
-                                  {bet.cashoutStatus === false ? (
-                                    <>{bet.multiplier.toFixed(2)}</>
-                                  ) : (
-                                    <div
-                                      className={`flex flex-col p-1 justify-center items-center w-[70px] bg-gray-900 rounded-full ${bgColor}`}
-                                    >
-                                      {bet.betno === 1 &&
-                                        cashoutmultiplier.toFixed(2)}
-                                      {bet.betno === 2 &&
-                                        cashoutmultiplier2.toFixed(2)}
-                                    </div>
-                                  )}
-                                </div>
-                                <div>
-                                  {bet.cashoutStatus === false ? (
-                                    <>
-                                      KES{" "}
-                                      {(bet.bet * bet.multiplier).toFixed(2)}
-                                    </>
-                                  ) : (
-                                    <>
-                                      KES
-                                      {bet.betno === 1 &&
-                                        (bet.bet * cashoutmultiplier).toFixed(
-                                          2
-                                        )}
-                                      {bet.betno === 2 &&
-                                        (bet.bet * cashoutmultiplier2).toFixed(
-                                          2
-                                        )}
-                                    </>
-                                  )}
-                                </div>
-                                <div></div>
-                              </div>
-                            </li>
-                          );
-                        })}
+                              </li>
+                            );
+                          })}
                       </ul>
                     </div>
                   </>
@@ -2698,11 +2879,11 @@ const Game: React.FC = () => {
                             // Handle error when formatting date
                           }
                           const bgColor =
-                            cashoutmultiplier >= 6
+                            multiplier >= 6
                               ? "text-[#9F1C90]"
-                              : cashoutmultiplier >= 2
+                              : multiplier >= 2
                               ? "text-[#4490CC]"
-                              : cashoutmultiplier >= 1
+                              : multiplier >= 1
                               ? "text-[#7848B6]"
                               : "text-[#29aa08]";
                           return (
@@ -2748,34 +2929,44 @@ const Game: React.FC = () => {
             <div className="relative">
               <button
                 onClick={toggleMenu2}
-                className="p-1 gap-1 W-[100px] text-xs text-gray-400 rounded-md ring-1 ring-gray-500"
+                className="p-1 gap-1 flex text-xs text-gray-200 rounded-full ring-1 bg-[#273445] ring-gray-500"
               >
                 <VolumeUpOutlinedIcon sx={{ fontSize: 14 }} />
                 Sound
               </button>
               {isOpen2 && (
-                <div className="absolute left-0 mt-2 py-2 w-56 bg-gray-200 rounded-md shadow-xl z-20">
+                <div className="absolute left-0 mt-2 py-2 w-56 bg-[#273445] rounded-md shadow-xl z-20">
+                  <div className="flex items-center justify-between text-white p-1">
+                    <h3 className="text-sm text-gray-100">Sound</h3>
+                    <div
+                      onClick={toggleMenu2}
+                      className="cursor-pointer text-white"
+                    >
+                      <CloseOutlinedIcon />
+                    </div>
+                  </div>
                   <div className="flex justify-between items-center p-1 mb-2">
-                    <label className="block text-sm text-gray-900">
-                      {isMusicPlaying
-                        ? "Pause Backgroud Music"
-                        : "Play Backgroud Music"}
+                    <label className="block text-xs text-gray-400">
+                      {soundEnabled
+                        ? "Pause background music"
+                        : "Play background music"}
                     </label>
                     <div
                       className={`relative w-12 h-5 rounded-full cursor-pointer transition-colors ${
-                        isMusicPlaying ? "bg-[#DE3D26]" : "bg-gray-400"
+                        soundEnabled ? "bg-[#DE3D26]" : "bg-gray-400"
                       }`}
-                      onClick={handleToggleMusic}
+                      onClick={toggleSound}
                     >
                       <div
                         className={`absolute top-0 left-0 w-5 h-5 bg-white rounded-full shadow-md transform transition-transform ${
-                          isMusicPlaying ? "translate-x-8" : "translate-x-0"
+                          soundEnabled ? "translate-x-8" : "translate-x-0"
                         }`}
                       />
                     </div>
                   </div>
+
                   <div className="flex flex justify-between items-center p-1">
-                    <label className="block text-sm text-gray-900">
+                    <label className="block text-xs text-gray-400">
                       {isMusicPlaying1
                         ? "Pause Sound Effect"
                         : "Play Sound Effect"}
@@ -2797,8 +2988,9 @@ const Game: React.FC = () => {
               )}
             </div>
 
-            <ScrollArea className="h-[35px]">
-              <div className="flex w-max space-x-4 p-0">
+            <ScrollArea className="w-full">
+              <div ref={messagesEndRef} className="w-[40px]"></div>
+              <div className="flex w-full p-0">
                 <ul className="flex gap-1 text-sm">
                   {multipliers.map((multiplier: number, index: number) => {
                     const bgColor =
@@ -2820,10 +3012,58 @@ const Game: React.FC = () => {
                     );
                   })}
                 </ul>
-                <div ref={messagesEndRef} className="w-[40px]"></div>
               </div>
-              <ScrollBar orientation="horizontal" className="bg-gray-900" />
             </ScrollArea>
+
+            <div className="relative">
+              <button
+                onClick={toggleMenuHistory}
+                className="p-1 gap-1 W-[100px] text-xs text-gray-200 rounded-full ring-1 bg-[#273445] ring-gray-500"
+              >
+                <div className="flex gap-2 items-center">
+                  <RestoreOutlinedIcon sx={{ fontSize: 14 }} />
+                  <ArrowDropDownOutlinedIcon sx={{ fontSize: 14 }} />
+                </div>
+              </button>
+              {isOpenHistory && (
+                <div className="absolute right-0 mt-2 py-2 w-[360px] bg-[#273445] rounded-md shadow-xl z-20">
+                  <div className="flex items-center justify-between text-white p-1">
+                    <h3 className="text-sm text-gray-200">History</h3>
+
+                    <div
+                      onClick={toggleMenuHistory}
+                      className="cursor-pointer text-white"
+                    >
+                      <CloseOutlinedIcon />
+                    </div>
+                  </div>
+
+                  <ScrollArea className="h-m-[400px]">
+                    <div className="bg-[#273445] grid grid-cols-5 p-1">
+                      {multipliers.map((multiplier: number, index: number) => {
+                        const bgColor =
+                          multiplier >= 6
+                            ? "text-[#9F1C90]"
+                            : multiplier >= 2
+                            ? "text-[#4490CC]"
+                            : multiplier >= 1
+                            ? "text-[#7848B6]"
+                            : "text-[#29aa08]";
+
+                        return (
+                          <li
+                            key={index}
+                            className={`flex flex-col m-1 p-1 text-xs justify-center items-center w-[60px] bg-gray-900 rounded-full ${bgColor}`}
+                          >
+                            x{multiplier.toFixed(2)}
+                          </li>
+                        );
+                      })}
+                    </div>
+                  </ScrollArea>
+                </div>
+              )}
+            </div>
           </div>
 
           <Gameanimation
@@ -2831,7 +3071,59 @@ const Game: React.FC = () => {
             multiplier={multiplier}
             sound={isMusicPlaying1}
           />
-
+          {/*    <div className="overflow-hidden whitespace-nowrap">
+            <div className="inline-block animate-marquee">
+              <div className="h-2 w-2 bg-white rounded-full inline-block mx-1"></div>
+              <div className="h-2 w-2 bg-white rounded-full inline-block mx-1"></div>
+              <div className="h-2 w-2 bg-white rounded-full inline-block mx-1"></div>
+              <div className="h-2 w-2 bg-white rounded-full inline-block mx-1"></div>
+              <div className="h-2 w-2 bg-white rounded-full inline-block mx-1"></div>
+              <div className="h-2 w-2 bg-white rounded-full inline-block mx-1"></div>
+              <div className="h-2 w-2 bg-white rounded-full inline-block mx-1"></div>
+              <div className="h-2 w-2 bg-white rounded-full inline-block mx-1"></div>
+              <div className="h-2 w-2 bg-white rounded-full inline-block mx-1"></div>
+              <div className="h-2 w-2 bg-white rounded-full inline-block mx-1"></div>
+              <div className="h-2 w-2 bg-white rounded-full inline-block mx-1"></div>
+              <div className="h-2 w-2 bg-white rounded-full inline-block mx-1"></div>
+              <div className="h-2 w-2 bg-white rounded-full inline-block mx-1"></div>
+              <div className="h-2 w-2 bg-white rounded-full inline-block mx-1"></div>
+              <div className="h-2 w-2 bg-white rounded-full inline-block mx-1"></div>
+              <div className="h-2 w-2 bg-white rounded-full inline-block mx-1"></div>
+            </div>
+            <style jsx>{`
+              @keyframes marquee {
+                0% {
+                  transform: translateX(100%);
+                }
+                100% {
+                  transform: translateX(-100%);
+                }
+              }
+              .animate-marquee {
+                display: inline-block;
+                animation: marquee 6s linear infinite;
+              }
+            `}</style>
+          </div>
+          <div className="overflow-hidden whitespace-nowrap">
+            <div className="inline-block animate-marquee">
+              This is a marquee animation example in a Next.js app!
+            </div>
+            <style jsx>{`
+              @keyframes marquee {
+                0% {
+                  transform: translateX(100%);
+                }
+                100% {
+                  transform: translateX(-100%);
+                }
+              }
+              .animate-marquee {
+                animation: marquee 10s linear infinite;
+              }
+            `}</style>
+          </div>
+          */}
           <div className="w-full lg:flex gap-2 items-center justify-center space-y-0">
             <div className="flex w-full p-1 flex-col bg-gray-700 mb-2 lg:mb-0 rounded-lg shadow-lg items-center justify-center">
               <div className="bg-gray-70 mt-2 p-2 rounded-lg flex items-center justify-center">
@@ -3289,10 +3581,15 @@ const Game: React.FC = () => {
             </div>
           </div>
         </div>
-        <audio ref={placeBetSound} src="/placeBet.mp3" />
-        <audio ref={cashOutSound} src="/cashOut.mp3" />
-        <audio ref={CancelSound} src="/cancel.mp3" />
-        <audio ref={backgroundMusic} src="/backgroundMusic.mp3" loop />
+        <audio ref={placeBetSound}>
+          <source src="/placeBet.mp3" type="audio/mpeg" />
+        </audio>
+        <audio ref={cashOutSound}>
+          <source src="/cashOut.mp3" type="audio/mpeg" />
+        </audio>
+        <audio ref={CancelSound}>
+          <source src="/cancel.mp3" type="audio/mpeg" />
+        </audio>
       </main>
       <section className="p-1 container mx-auto lg:hidden">
         <div className="bg-gray-800 p-2 rounded-lg shadow-lg space-y-6">
@@ -3334,76 +3631,63 @@ const Game: React.FC = () => {
                         <div>Cash out KES</div>
                       </div>
                       <ul className="w-full">
-                        {currentBets.map((bet: any, index) => {
-                          const bgColor =
-                            cashoutmultiplier >= 6
-                              ? "text-[#9F1C90]"
-                              : cashoutmultiplier >= 2
-                              ? "text-[#4490CC]"
-                              : cashoutmultiplier >= 1
-                              ? "text-[#7848B6]"
-                              : "text-[#29aa08]";
-                          const bgColor2 =
-                            cashoutmultiplier2 >= 6
-                              ? "text-[#9F1C90]"
-                              : cashoutmultiplier2 >= 2
-                              ? "text-[#4490CC]"
-                              : cashoutmultiplier2 >= 1
-                              ? "text-[#7848B6]"
-                              : "text-[#29aa08]";
+                        {currentBets
+                          .slice()
+                          .reverse()
+                          .map((bet: any, index) => {
+                            const bgColor =
+                              bet.cashoutmultiplier >= 6
+                                ? "text-[#9F1C90]"
+                                : bet.cashoutmultiplier >= 2
+                                ? "text-[#4490CC]"
+                                : bet.cashoutmultiplier >= 1
+                                ? "text-[#7848B6]"
+                                : "text-[#29aa08]";
 
-                          return (
-                            <li className="w-full" key={index}>
-                              <div
-                                className={`p-1 mt-1 rounded-sm grid grid-cols-4 gap-1 w-full items-center text-xs ${
-                                  bet.cashoutStatus === true
-                                    ? "bg-[#103408] border border-[#4D6936]"
-                                    : "bg-gray-900 "
-                                }`}
-                              >
-                                <div className="flex gap-1 items-center">
-                                  <RandomAvatar /> {bet.username}
+                            return (
+                              <li className="w-full" key={index}>
+                                <div
+                                  className={`p-1 mt-1 rounded-sm grid grid-cols-4 gap-1 w-full items-center text-xs ${
+                                    bet.cashoutStatus === true
+                                      ? "bg-[#103408] border border-[#4D6936]"
+                                      : "bg-gray-900 "
+                                  }`}
+                                >
+                                  <div className="flex gap-1 items-center">
+                                    <RandomAvatar /> {bet.username}
+                                  </div>
+                                  <div>KES {bet.bet}</div>
+                                  <div>
+                                    {bet.cashoutStatus === false ? (
+                                      <>{bet.multiplier.toFixed(2)}</>
+                                    ) : (
+                                      <div
+                                        className={`flex flex-col p-1 justify-center items-center w-[70px] bg-gray-900 rounded-full ${bgColor}`}
+                                      >
+                                        {bet.cashoutmultiplier.toFixed(2)}
+                                      </div>
+                                    )}
+                                  </div>
+                                  <div>
+                                    {bet.cashoutStatus === false ? (
+                                      <>
+                                        KES{" "}
+                                        {(bet.bet * bet.multiplier).toFixed(0)}
+                                      </>
+                                    ) : (
+                                      <>
+                                        KES{" "}
+                                        {(
+                                          bet.bet * bet.cashoutmultiplier
+                                        ).toFixed(0)}
+                                      </>
+                                    )}
+                                  </div>
+                                  <div></div>
                                 </div>
-                                <div>KES {bet.bet}</div>
-                                <div>
-                                  {bet.cashoutStatus === false ? (
-                                    <>{bet.multiplier.toFixed(2)}</>
-                                  ) : (
-                                    <div
-                                      className={`flex flex-col p-1 justify-center items-center w-[70px] bg-gray-900 rounded-full ${bgColor}`}
-                                    >
-                                      {bet.betno === 1 &&
-                                        cashoutmultiplier.toFixed(2)}
-                                      {bet.betno === 2 &&
-                                        cashoutmultiplier2.toFixed(2)}
-                                    </div>
-                                  )}
-                                </div>
-                                <div>
-                                  {bet.cashoutStatus === false ? (
-                                    <>
-                                      KES{" "}
-                                      {(bet.bet * bet.multiplier).toFixed(2)}
-                                    </>
-                                  ) : (
-                                    <>
-                                      KES
-                                      {bet.betno === 1 &&
-                                        (bet.bet * cashoutmultiplier).toFixed(
-                                          2
-                                        )}
-                                      {bet.betno === 2 &&
-                                        (bet.bet * cashoutmultiplier2).toFixed(
-                                          2
-                                        )}
-                                    </>
-                                  )}
-                                </div>
-                                <div></div>
-                              </div>
-                            </li>
-                          );
-                        })}
+                              </li>
+                            );
+                          })}
                       </ul>
                     </div>
                   </>
@@ -3553,11 +3837,11 @@ const Game: React.FC = () => {
                             // Handle error when formatting date
                           }
                           const bgColor =
-                            cashoutmultiplier >= 6
+                            multiplier >= 6
                               ? "text-[#9F1C90]"
-                              : cashoutmultiplier >= 2
+                              : multiplier >= 2
                               ? "text-[#4490CC]"
-                              : cashoutmultiplier >= 1
+                              : multiplier >= 1
                               ? "text-[#7848B6]"
                               : "text-[#29aa08]";
                           return (

@@ -66,9 +66,9 @@ const useWebSocket = () => {
     }
   };
 
-  const placeBet = (amount: number, username:string, betno: number) => {
+  const placeBet = (amount: number, username:string, betno: number, cashoutmultiplier:number) => {
     if (socket && isConnected) {
-      socket.send(JSON.stringify({ type: 'bet', amount, username, betno}));
+      socket.send(JSON.stringify({ type: 'bet', amount, username, betno, cashoutmultiplier}));
     }
   };
 
