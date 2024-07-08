@@ -1076,7 +1076,7 @@ const Game: React.FC = () => {
     let audio: any;
     if (soundEnabled) {
       // Create the audio element
-      audio = new Audio("/backgroundMusic.wav");
+      audio = new Audio("/backgroundMusic.mp3");
       audio.loop = false; // Disable native looping
 
       // Add an event listener to handle the end of the audio playback
@@ -3026,7 +3026,7 @@ const Game: React.FC = () => {
                 </div>
               </button>
               {isOpenHistory && (
-                <div className="absolute right-0 mt-2 py-2 w-[360px] bg-[#273445] rounded-md shadow-xl z-20">
+                <div className="absolute right-0 mt-2 py-2 w-[320px] bg-[#273445] rounded-md shadow-xl z-20">
                   <div className="flex items-center justify-between text-white p-1">
                     <h3 className="text-sm text-gray-200">History</h3>
 
