@@ -2097,11 +2097,8 @@ const Game: React.FC = () => {
                               </div>
                             </AlertDialogTitle>
                             <AlertDialogDescription>
-                              <div className="p-3 w-full items-center">
+                              <div className="p-1 w-full items-center">
                                 <div className="flex text-gray-400  mb-5 items-center gap-3">
-                                  <div className="text-xs w-[150px]">
-                                    <p>Phone number</p>
-                                  </div>
                                   <div className="flex w-full gap-1">
                                     <select
                                       className="text-sm bg-gray-800 text-gray-200 p-1 border ml-0 rounded-sm w-[120px]"
@@ -2251,6 +2248,7 @@ const Game: React.FC = () => {
                                     </select>
                                     <Input
                                       id="phone"
+                                      placeholder="Phone Number"
                                       value={phonenumber}
                                       onChange={handleInputChange}
                                       className="p-3 ring-0 bg-gray-800 border border-gray-400 text-gray-400"
@@ -2262,14 +2260,12 @@ const Game: React.FC = () => {
                                 </div>
 
                                 <div className="flex text-gray-400 mb-5 items-center">
-                                  <div className="text-xs w-[150px]">
-                                    <p>Password</p>
-                                  </div>
                                   <div className="flex flex-col gap-1 w-full relative">
                                     <Input
                                       id="password"
                                       type={showPassword ? "text" : "password"}
                                       value={password}
+                                      placeholder="Password"
                                       onChange={(e) =>
                                         setpassword(e.target.value)
                                       }
@@ -2343,12 +2339,10 @@ const Game: React.FC = () => {
                             <AlertDialogDescription>
                               <div className="p-1 w-full items-center">
                                 <div className="flex text-gray-400  mb-5 items-center gap-3">
-                                  <div className="text-xs w-[150px]">
-                                    <p>Name</p>
-                                  </div>
                                   <Input
                                     id="name"
                                     value={username}
+                                    placeholder="Name"
                                     onChange={(e) =>
                                       setusername(e.target.value)
                                     }
@@ -2360,9 +2354,6 @@ const Game: React.FC = () => {
                                 </div>
 
                                 <div className="flex text-gray-400  mb-5 items-center gap-3">
-                                  <div className="text-xs w-[150px]">
-                                    <p>Phone number</p>
-                                  </div>
                                   <div className="flex w-full gap-1">
                                     <select
                                       className="text-sm bg-gray-800 text-gray-200 p-1 border ml-0 rounded-sm w-[120px]"
@@ -2513,6 +2504,7 @@ const Game: React.FC = () => {
                                     <Input
                                       id="phone"
                                       value={phonenumber}
+                                      placeholder="Phone Number"
                                       onChange={handleInputChange}
                                       className="p-3 ring-0 bg-gray-800 border border-gray-400 text-gray-400"
                                     />
@@ -2523,12 +2515,10 @@ const Game: React.FC = () => {
                                 </div>
 
                                 <div className="flex text-gray-400  mb-5 items-center gap-3">
-                                  <div className="text-xs w-[150px]">
-                                    <p>Password</p>
-                                  </div>
                                   <Input
                                     id="password"
                                     value={password}
+                                    placeholder="Password"
                                     onChange={(e) =>
                                       setpassword(e.target.value)
                                     }
@@ -2540,12 +2530,10 @@ const Game: React.FC = () => {
                                 </div>
 
                                 <div className="flex text-gray-400  mb-5 items-center gap-3">
-                                  <div className="text-xs w-[150px]">
-                                    <p>Confirm Password</p>
-                                  </div>
                                   <Input
                                     id="passwordconfirm"
                                     value={passwordconfirm}
+                                    placeholder="Confirm Password"
                                     onChange={(e) =>
                                       setpasswordconfirm(e.target.value)
                                     }
@@ -2559,7 +2547,6 @@ const Game: React.FC = () => {
 
                                 <div className="flex flex-col w-full">
                                   <div className="flex items-center mb-10 w-full gap-1 text-gray-400">
-                                    <div className="text-xs w-[150px]"></div>
                                     <div className="flex items-center w-full gap-1 text-gray-400">
                                       <div>
                                         <input
@@ -2580,7 +2567,7 @@ const Game: React.FC = () => {
                                       </div>
                                       <div> I accept the</div>
                                       <div
-                                        className="cursor-pointer text-gray-200 hover:text-green-600"
+                                        className="cursor-pointer text-gray-400 hover:text-green-600"
                                         onClick={toggleAccount}
                                       >
                                         terms and conditions
