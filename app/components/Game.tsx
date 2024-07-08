@@ -1079,15 +1079,13 @@ const Game: React.FC = () => {
       audio = new Audio("/backgroundMusic.mp3");
       audio.loop = false; // Disable native looping
 
-      const handleEnded = () => {
+      // Add an event listener to handle the end of the audio playback
+      audio.addEventListener("ended", () => {
         // Add a delay before playing again
         setTimeout(() => {
           audio.play();
         }, delay);
-      };
-
-      // Add the event listener to handle the end of the audio playback
-      audio.addEventListener("ended", handleEnded);
+      });
 
       // Play the audio initially with a delay
       setTimeout(() => {
@@ -1099,7 +1097,7 @@ const Game: React.FC = () => {
       // Stop the audio and clear the audio element if sound is disabled
       if (audioElement) {
         audioElement.pause();
-        audioElement.removeEventListener("ended", handleEnded);
+        audioElement.removeEventListener("ended", () => {});
       }
       setAudioElement(null);
     }
@@ -1108,7 +1106,7 @@ const Game: React.FC = () => {
     return () => {
       if (audio) {
         audio.pause();
-        audio.removeEventListener("ended", handleEnded);
+        audio.removeEventListener("ended", () => {});
       }
     };
   }, [soundEnabled]);
