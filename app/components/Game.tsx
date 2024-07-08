@@ -222,7 +222,7 @@ const Game: React.FC = () => {
   // const [betearns, setbetearns] = useState<number>(0); // Example initial balance
   const [autoCashoutMultipler, setautoCashoutMultipler] = useState("1.1");
   const [autoCashoutMultipler2, setautoCashoutMultipler2] = useState("1.1");
-  const messagesEndRef = useRef<HTMLDivElement>(null);
+  // const messagesEndRef = useRef<HTMLDivElement>(null);
   const { toast } = useToast();
   const router = useRouter();
 
@@ -415,6 +415,15 @@ const Game: React.FC = () => {
   };
 
   useEffect(() => {
+    if (gameStatus === "crashed") {
+      setMultipliers((prevMultipliers) => [...prevMultipliers, multiplier]);
+      // console.log("crashed att " + multiplier);
+      setisbetOn(true);
+      setisbetOn2(true);
+    }
+  }, [gameStatus]);
+
+  useEffect(() => {
     if (
       isOnCashout &&
       BetMode === false &&
@@ -575,13 +584,14 @@ const Game: React.FC = () => {
 
   useEffect(() => {
     if (gameStatus === "crashed" && betstatus === "updateserver") {
-      setMultipliers((prevMultipliers) => [...prevMultipliers, multiplier]);
-      setisbetOn(true);
-      setisbetOn2(true);
-      const scrollToBottom = () => {
-        messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-      };
-      scrollToBottom();
+      //((prevMultipliers) => [...prevMultipliers, multiplier]);
+      //console.log("crashed at " + multiplier);
+      // setisbetOn(true);
+      // setisbetOn2(true);
+      // const scrollToBottom = () => {
+      // messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+      // };
+      // scrollToBottom();
       if (userID !== "") {
         const loadbalance = async () => {
           const userQuery = query(

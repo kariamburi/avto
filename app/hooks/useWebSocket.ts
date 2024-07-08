@@ -12,7 +12,7 @@ const useWebSocket = () => {
   useEffect(() => {
     //const ws = new WebSocket('wss://23.227.167.127:3000/ws');
     const ws = new WebSocket('wss://aviatorgm.com:3000/ws');
-    //const ws = new WebSocket('ws://localhost:3000/ws');
+   // const ws = new WebSocket('ws://localhost:3000/ws');
     setSocket(ws);
 
     ws.onopen = () => {
@@ -33,7 +33,7 @@ const useWebSocket = () => {
     ws.onmessage = (event: MessageEvent) => {
       try {
         const data = JSON.parse(event.data);
-        console.log('WebSocket message received:', data);
+       // console.log('WebSocket message received:', data);
        // console.log('Received:', data);
         if (data.type === 'update') {
           setMultiplier(data.multiplier);
@@ -43,8 +43,7 @@ const useWebSocket = () => {
           setGameStatus('crashed');
        }else if (data.type === 'currentBets') {
         setCurrentBets(data.currentBets);
-       
-        console.log(data.currentBets)
+      //  console.log(data.currentBets)
       } else if (data.type === 'status') {
         setBetstatus(data.status);
         sethouse(data.houseEdge)

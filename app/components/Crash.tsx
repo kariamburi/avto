@@ -16,16 +16,17 @@ const Aviator = ({ multiplier, sound }: CrashProps) => {
   const takeoffSound = useRef<HTMLAudioElement | null>(null);
   const [displayMessage, setDisplayMessage] = useState("flewAway");
   const controls = useAnimation();
-
+  let timer: any;
   useEffect(() => {
-    if (takeoffSound.current && sound === true) {
-      takeoffSound.current.play();
-    }
-
-    const timer = setTimeout(() => {
-      setDisplayMessage("loadingNextRound");
-    }, 5000); // Switch message after 5 seconds
     try {
+      if (takeoffSound.current && sound === true) {
+        takeoffSound.current.play();
+      }
+
+      timer = setTimeout(() => {
+        setDisplayMessage("loadingNextRound");
+      }, 5000); // Switch message after 5 seconds
+
       controls.start("animate"); // Start animation
     } catch (error) {
       console.error("Animation error:", error);

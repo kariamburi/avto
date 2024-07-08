@@ -28,7 +28,7 @@ const Aviator = ({ multiplier }: GameBackgroundProps) => {
           await controls.start("center");
           await controls.start("upAndDown");
         } catch (error) {
-          console.error("Animation error:", error);
+          //console.error("Animation error:", error);
         }
       };
 
