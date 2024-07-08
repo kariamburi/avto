@@ -2976,28 +2976,30 @@ const Game: React.FC = () => {
             </div>
 
             <ScrollArea className="w-full">
-              <div ref={messagesEndRef} className="w-[40px]"></div>
               <div className="flex w-full p-0">
                 <ul className="flex gap-1 text-sm">
-                  {multipliers.map((multiplier: number, index: number) => {
-                    const bgColor =
-                      multiplier >= 6
-                        ? "text-[#9F1C90]"
-                        : multiplier >= 2
-                        ? "text-[#4490CC]"
-                        : multiplier >= 1
-                        ? "text-[#7848B6]"
-                        : "text-[#29aa08]";
+                  {multipliers
+                    .slice()
+                    .reverse()
+                    .map((multiplier: number, index: number) => {
+                      const bgColor =
+                        multiplier >= 6
+                          ? "text-[#9F1C90]"
+                          : multiplier >= 2
+                          ? "text-[#4490CC]"
+                          : multiplier >= 1
+                          ? "text-[#7848B6]"
+                          : "text-[#29aa08]";
 
-                    return (
-                      <li
-                        key={index}
-                        className={`flex flex-col p-1 justify-center items-center w-[70px] bg-gray-900 rounded-full ${bgColor}`}
-                      >
-                        x{multiplier.toFixed(2)}
-                      </li>
-                    );
-                  })}
+                      return (
+                        <li
+                          key={index}
+                          className={`flex flex-col p-1 justify-center items-center w-[70px] bg-gray-900 rounded-full ${bgColor}`}
+                        >
+                          x{multiplier.toFixed(2)}
+                        </li>
+                      );
+                    })}
                 </ul>
               </div>
             </ScrollArea>
@@ -3027,25 +3029,28 @@ const Game: React.FC = () => {
 
                   <ScrollArea className="h-m-[400px]">
                     <div className="bg-[#273445] grid grid-cols-5 p-1">
-                      {multipliers.map((multiplier: number, index: number) => {
-                        const bgColor =
-                          multiplier >= 6
-                            ? "text-[#9F1C90]"
-                            : multiplier >= 2
-                            ? "text-[#4490CC]"
-                            : multiplier >= 1
-                            ? "text-[#7848B6]"
-                            : "text-[#29aa08]";
+                      {multipliers
+                        .slice()
+                        .reverse()
+                        .map((multiplier: number, index: number) => {
+                          const bgColor =
+                            multiplier >= 6
+                              ? "text-[#9F1C90]"
+                              : multiplier >= 2
+                              ? "text-[#4490CC]"
+                              : multiplier >= 1
+                              ? "text-[#7848B6]"
+                              : "text-[#29aa08]";
 
-                        return (
-                          <li
-                            key={index}
-                            className={`flex flex-col m-1 p-1 text-xs justify-center items-center w-[60px] bg-gray-900 rounded-full ${bgColor}`}
-                          >
-                            x{multiplier.toFixed(2)}
-                          </li>
-                        );
-                      })}
+                          return (
+                            <li
+                              key={index}
+                              className={`flex flex-col m-1 p-1 text-xs justify-center items-center w-[60px] bg-gray-900 rounded-full ${bgColor}`}
+                            >
+                              x{multiplier.toFixed(2)}
+                            </li>
+                          );
+                        })}
                     </div>
                   </ScrollArea>
                 </div>
