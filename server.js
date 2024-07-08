@@ -1,7 +1,9 @@
 const express = require('express');
 const http = require('http');
+const https = require('https');
 const WebSocket = require('ws');
 const next = require('next');
+const fs = require('fs');
 const crypto = require('crypto');
 
 // Create a Next.js app
@@ -13,37 +15,39 @@ let crashPoint;
 let gameInProgress = false;
 let multiplier = 1.0;
 let bettingPhase = false;
-const houseEdge=0;
+let houseEdge = 0;
+let levelA = 1;
+let levelB = 1;
+let range1 = 0.2;
+let range2 = 0.6;
+let range3 = 0.85;
+let range4 = 0.95;
 let currentGameStatus = 'waiting';
 const clients = new Set();
-let numberOfPlayers = 0;
-function getCrashPoint() {
-  const e = 2 ** 32;
-  const h = crypto.randomInt(e);
-  if (h % 25 === 0) {
-    return 1;
-  }
-  return Math.floor((100 * e - h) / (e - h)) / 100;
-}
 
 const generateCrashPoint = () => {
   const h = Math.random();
-  const p = Math.floor(h * 10);  // generates an integer between 0 and 9
+  const p = Math.floor(h * 10);
   const r = h * (1 - houseEdge);
-
-  if (p % 5 === 0) {
+ // console.error("random: "+r);
+  if (p % 5 === 0 && levelA === 1) {
+    //console.error("1  range1: "+range1+" range2: "+range2+" range3:"+range3+" range4:"+range4);
     return 1 + 0.1 + (0.2 - 0.1) * Math.random();
   }
-
-  if (r <= 0.20) {
+  if (r <= range1 && levelB === 1) {
+   // console.error("2  range1: "+range1+" range2: "+range2+" range3:"+range3+" range4:"+range4);
     return 1 + 0.1 + (0.3 - 0.1) * Math.random();
-  } else if (r <= 0.60) {
+  } else if (r <= range2) {
+   // console.error("3  range1: "+range1+" range2: "+range2+" range3:"+range3+" range4:"+range4);
     return 1 + Math.random();
-  } else if (r <= 0.85) {
+  } else if (r <= range3) {
+ //   console.error("4  range1: "+range1+" range2: "+range2+" range3:"+range3+" range4:"+range4);
     return 2 + Math.random() * 3;
-  } else if (r <= 0.95) {
+  } else if (r <= range4) {
+    //console.error("5  range1: "+range1+" range2: "+range2+" range3:"+range3+" range4:"+range4);
     return 5 + Math.random() * 5;
   } else {
+  //  console.error("6  range1: "+range1+" range2: "+range2+" range3:"+range3+" range4:"+range4);
     return 10 + Math.random() * 10;
   }
 };
@@ -152,10 +156,11 @@ const randomCashout = () => {
   }
 };
 
+
 const startGameLoop = () => {
   if (gameInProgress) return;
   gameInProgress = true;
-  console.log('Starting game loop');
+ // console.log('Starting game loop');
   crashPoint = generateCrashPoint();
 
   const interval = setInterval(() => {
@@ -165,7 +170,7 @@ const startGameLoop = () => {
       clients.forEach(client => {
         client.send(JSON.stringify({ type: 'crash', multiplier }));
       });
-      console.log('CRASHED: ' + multiplier);
+     // console.log('CRASHED: ' + multiplier);
       clearInterval(interval);
       gameInProgress = false;
       crashPoint = generateCrashPoint();
@@ -174,7 +179,7 @@ const startGameLoop = () => {
       startupdateserverPhase();
     } else {
       broadcastMultiplier(); 
-    randomCashout(); // Randomly cashout players during the game loop
+      randomCashout(); // Randomly cashout players during the game loop
     }
     broadcastCurrentBets();
   }, 50);
@@ -187,7 +192,12 @@ app.prepare().then(async () => {
     res.json({ message: 'Hello from custom server!' });
   });
 
-  const httpServer = http.createServer(server);
+  const sslOptions = {
+    key: fs.readFileSync('/etc/letsencrypt/live/aviatorgm.com/privkey.pem'),
+    cert: fs.readFileSync('/etc/letsencrypt/live/aviatorgm.com/fullchain.pem')
+  };
+
+  const httpsServer = https.createServer(sslOptions, server);
 
   const wss = new WebSocket.Server({ noServer: true });
 
@@ -202,7 +212,7 @@ app.prepare().then(async () => {
     ws.on('message', (message) => {
       try {
         const data = JSON.parse(message);
-        console.log('Received:', data);
+       // console.log('Received:', data);
 
         if (data.type === 'bet') {
           if (!gameInProgress && bettingPhase) {
@@ -229,6 +239,15 @@ app.prepare().then(async () => {
             }
           }
           broadcastCurrentBets();
+        }else if(data.type === 'houseEdge'){
+          houseEdge = Number(data.value);
+          levelB = Number(data.levelB);
+          levelA = Number(data.levelA);
+          range1 = Number(data.range1);
+          range2 = Number(data.range2);
+          range3 = Number(data.range3);
+          range4 = Number(data.range4);
+          console.error('houseEdge:'+houseEdge+" levelA: "+levelA+" levelB: "+levelB+"  range1: "+range1+" range2: "+range2+" range3:"+range3+" range4:"+range4);
         }
       } catch (err) {
         console.error('Error processing message:', err);
@@ -248,7 +267,7 @@ app.prepare().then(async () => {
     });
   });
 
-  httpServer.on('upgrade', (request, socket, head) => {
+  httpsServer.on('upgrade', (request, socket, head) => {
     if (request.url === '/ws') {
       wss.handleUpgrade(request, socket, head, (ws) => {
         wss.emit('connection', ws, request);
@@ -263,16 +282,16 @@ app.prepare().then(async () => {
   });
 
   const PORT = process.env.PORT || 3000;
-  httpServer.listen(PORT, async (err) => {
+  httpsServer.listen(PORT, async (err) => {
     if (err) throw err;
-    console.log(`> Ready on http://localhost:${PORT}`);
+    console.log(`> Ready on https://localhost:${PORT}`);
 
     // Fetch the house edge value
-  
-     
-      // Start the initial betting phase after fetching house edge
-      startupdateserverPhase();
-    
+    // houseEdge = await fetchhouseEdge();
+    // console.log(`House Edge: ${houseEdge}`);
+
+    // Start the initial betting phase after fetching house edge
+    startupdateserverPhase();
   });
 }).catch((err) => {
   console.error('Error preparing Next.js app:', err);
