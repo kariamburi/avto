@@ -29,10 +29,9 @@ const generateCrashPoint = () => {
   const h = Math.random();
   const p = Math.floor(h * 10);
   const r = h * (1 - houseEdge);
- // console.error("random: "+r);
   if (p % 5 === 0 && levelA === 1) {
-    //console.error("1  range1: "+range1+" range2: "+range2+" range3:"+range3+" range4:"+range4);
-    return 1 + 0.1 + (0.2 - 0.1) * Math.random();
+   // return 1 + 0.01 + (0.02 - 0.01) * Math.random();
+    return 1.00;
   }
   if (r <= range1 && levelB === 1) {
    // console.error("2  range1: "+range1+" range2: "+range2+" range3:"+range3+" range4:"+range4);
@@ -167,6 +166,7 @@ const startGameLoop = () => {
     multiplier += 0.01;
 
     if (multiplier >= crashPoint) {
+      broadcastMultiplier(); 
       clients.forEach(client => {
         client.send(JSON.stringify({ type: 'crash', multiplier }));
       });

@@ -80,7 +80,13 @@ const Aviator = ({ multiplier }: GameBackgroundProps) => {
           variants={aviatorVariants}
           style={{ position: "absolute", bottom: 0, left: 0 }}
         >
-          <Image src="/rocket.gif" width={150} height={150} alt="Aviator" />
+          <Image
+            src="/rocket.gif"
+            width={150}
+            height={150}
+            alt="Aviator"
+            unoptimized
+          />
         </motion.div>
       </div>
       <style jsx>{`
