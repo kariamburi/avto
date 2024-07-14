@@ -85,6 +85,12 @@ import TextField from "@mui/material/TextField/TextField";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import Image from "next/image";
+import Scroll from "./Scroll";
+import {
+  getUserIDFromCookie,
+  removeUserIDFromCookie,
+  setUserIDInCookie,
+} from "./cookies";
 interface userData {
   name: string;
   phone: string;
@@ -527,6 +533,7 @@ const Game: React.FC = () => {
   const [range3, setrange3] = useState("0.85");
   const [range4, setrange4] = useState("0.95");
   const [paybill, setpaybill] = useState("155276");
+  const [message, setmessage] = useState([]);
   useEffect(() => {
     const user_id = sessionStorage.getItem("userID");
 
@@ -576,6 +583,10 @@ const Game: React.FC = () => {
         setrange3(userData.range3);
         setrange4(userData.range4);
         setpaybill(userData.paybill);
+        const messages = userData.message
+          .split("*")
+          .map((msg: any) => `<p>${msg}</p>`);
+        setmessage(messages);
       }
     };
     loadSettings();
@@ -1328,6 +1339,7 @@ const Game: React.FC = () => {
         setuserID(userData.phone);
         setusername(userData.name);
         setuserstatus(userData.status);
+        setUserIDInCookie(userData.phone);
 
         //check balance
 
@@ -1353,8 +1365,52 @@ const Game: React.FC = () => {
 
     // setValue("");
   };
+  useEffect(() => {
+    const userIDFromCookie = getUserIDFromCookie();
 
+    if (userIDFromCookie) {
+      const loadsession = async () => {
+        try {
+          const userQuery = query(
+            collection(db, "aviator_users"),
+            where("phone", "==", userIDFromCookie)
+          );
+          const userSnapshot = await getDocs(userQuery);
+          if (userSnapshot.empty) {
+          } else {
+            const userData = userSnapshot.docs[0].data();
+
+            sessionStorage.setItem("username", userData.name);
+            sessionStorage.setItem("userID", userData.phone);
+            sessionStorage.setItem("status", userData.status);
+
+            setuserID(userData.phone);
+            setusername(userData.name);
+            setuserstatus(userData.status);
+
+            //check balance
+
+            const balQuery = query(
+              collection(db, "balance"),
+              where("phone", "==", userData.phone)
+            );
+            const balSnapshot = await getDocs(balQuery);
+            if (!balSnapshot.empty) {
+              const balData = balSnapshot.docs[0].data();
+              sessionStorage.setItem("balance", balData.amount);
+              setBalance(Number(balData.amount));
+            }
+            //balance
+          }
+        } catch (error) {
+          console.error("Error adding document: ", error);
+        }
+      };
+      loadsession();
+    }
+  }, []);
   const handleLogout = () => {
+    removeUserIDFromCookie();
     sessionStorage.setItem("username", "");
     sessionStorage.setItem("userID", "");
     sessionStorage.setItem("status", "");
@@ -3106,10 +3162,10 @@ const Game: React.FC = () => {
                 animation: marquee 6s linear infinite;
               }
             `}</style>
-          </div>
-          <div className="overflow-hidden whitespace-nowrap">
-            <div className="inline-block animate-marquee">
-              This is a marquee animation example in a Next.js app!
+          </div> */}
+          <div className="p-1 w-full overflow-hidden">
+            <div className="flex gap-20 w-full animate-marquee">
+              {<Scroll messages={message} />}
             </div>
             <style jsx>{`
               @keyframes marquee {
@@ -3121,11 +3177,11 @@ const Game: React.FC = () => {
                 }
               }
               .animate-marquee {
-                animation: marquee 10s linear infinite;
+                animation: marquee 25s linear infinite;
               }
             `}</style>
           </div>
-          */}
+
           <div className="w-full lg:flex gap-2 items-center justify-center space-y-0">
             <div className="flex w-full p-1 flex-col bg-gray-700 mb-2 lg:mb-0 rounded-lg shadow-lg items-center justify-center">
               <div className="bg-gray-70 mt-2 p-2 rounded-lg flex items-center justify-center">

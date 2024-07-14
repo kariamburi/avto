@@ -33,6 +33,12 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import Sidebar from "../components/Sidebar";
 import Chat from "../components/Chat";
+import dynamic from "next/dynamic";
+import "react-quill/dist/quill.snow.css";
+
+// Dynamically import ReactQuill to avoid SSR issues
+const ReactQuill = dynamic(() => import("react-quill"), { ssr: false });
+
 interface Bet {
   id: string;
   phone: string;
@@ -252,7 +258,8 @@ async function updateSettings(
   range2: string,
   range3: string,
   range4: string,
-  paybill: string
+  paybill: string,
+  message: string
 ) {
   const q = query(collection(db, "settings"));
   const querySnapshot = await getDocs(q);
@@ -277,6 +284,7 @@ async function updateSettings(
       range3: range3,
       range4: range4,
       paybill: paybill,
+      message: message,
     })
       .then(() => {
         console.log("Document successfully updated!");
@@ -456,6 +464,7 @@ const page = () => {
         setrange3(userData.range3);
         setrange4(userData.range4);
         setpaybill(userData.paybill);
+        setmessage(userData.message);
       }
     };
     loadSettings();
@@ -573,7 +582,7 @@ const page = () => {
   const [houseEdge, sethouseEdge] = useState("0.1");
   const [levelA, setlevelA] = useState("1");
   const [levelB, setlevelB] = useState("1");
-
+  const [message, setmessage] = useState("");
   const [paybill, setpaybill] = useState("155276");
   const handleSettings = async (e: any) => {
     e.preventDefault();
@@ -634,6 +643,10 @@ const page = () => {
       alert("Enter Paybill!");
       return;
     }
+    if (message.trim() === "") {
+      alert("Enter Scroll message!");
+      return;
+    }
 
     try {
       const userQuery = query(collection(db, "settings"));
@@ -653,7 +666,8 @@ const page = () => {
           range2,
           range3,
           range4,
-          paybill
+          paybill,
+          message
         );
         houseEdgeValue(
           Number(houseEdge),
@@ -687,6 +701,7 @@ const page = () => {
           range3: range3,
           range4: range4,
           paybill: paybill,
+          message: message,
           createdAt: serverTimestamp(),
         });
         houseEdgeValue(
@@ -1516,6 +1531,14 @@ const page = () => {
                             value={paybill}
                             onChange={(e) => setpaybill(e.target.value)}
                             className="col-span-2 h-8 text-gray-900"
+                          />
+                        </div>
+                        <div className="grid grid-cols-1 items-center gap-4">
+                          <Label htmlFor="height">Message</Label>
+                          <ReactQuill
+                            value={message}
+                            onChange={setmessage}
+                            className="bg-white rounded-sm p-1 w-full text-black"
                           />
                         </div>
                         <div className="grid grid-cols-3 items-center gap-4">
