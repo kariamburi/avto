@@ -3165,7 +3165,7 @@ const Game: React.FC = () => {
           </div> */}
           <div className="p-1 w-full overflow-hidden">
             <div className="inline-block w-full animate-marquee">
-              {<Scroll messages={message} />}
+              <Scroll messages={message} />
             </div>
             <style jsx>{`
               @keyframes marquee {
@@ -3177,7 +3177,9 @@ const Game: React.FC = () => {
                 }
               }
               .animate-marquee {
+                display: flex; /* Use flexbox to handle inline content */
                 animation: marquee 25s linear infinite;
+                white-space: nowrap; /* Prevent line breaks */
               }
             `}</style>
           </div>

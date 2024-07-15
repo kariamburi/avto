@@ -5,8 +5,7 @@ interface ScrollProps {
 
 const Scroll: React.FC<ScrollProps> = ({ messages }) => {
   return (
-    <div className="flex w-full gap-40 text-sm">
-      {" "}
+    <div className="flex w-full gap-40 text-xs">
       {/* Adjust gap as needed */}
       {messages.map((message, index) => (
         <span key={index} dangerouslySetInnerHTML={{ __html: message }} />

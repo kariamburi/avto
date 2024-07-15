@@ -35,6 +35,7 @@ import Sidebar from "../components/Sidebar";
 import Chat from "../components/Chat";
 import dynamic from "next/dynamic";
 import "react-quill/dist/quill.snow.css";
+import Loading from "../components/Loading";
 
 // Dynamically import ReactQuill to avoid SSR issues
 const ReactQuill = dynamic(() => import("react-quill"), { ssr: false });
@@ -729,6 +730,48 @@ const page = () => {
   const toggleChatPlayer = (id: string) => {
     setChatOpenPlay(id);
   };
+  // Define custom toolbar options
+  const modules = {
+    toolbar: [
+      [{ header: "1" }, { header: "2" }, { font: [] }],
+      [{ list: "ordered" }, { list: "bullet" }],
+      ["bold", "italic", "underline", "strike", "blockquote"],
+      [{ color: [] }, { background: [] }], // Color options
+      [{ align: [] }],
+      ["link", "image"],
+      ["clean"],
+    ],
+  };
+
+  const [isLoading, setIsLoading] = useState(true);
+  const [progress, setProgress] = useState(0);
+  useEffect(() => {
+    const totalLoadingTime = 2000; // Total loading time in milliseconds
+    const updateInterval = 100; // Update interval in milliseconds
+
+    const interval = setInterval(() => {
+      setProgress((prev) => {
+        const newProgress = Math.min(
+          prev + (updateInterval / totalLoadingTime) * 100,
+          100
+        );
+        return newProgress;
+      });
+    }, updateInterval);
+
+    const timer = setTimeout(() => {
+      setIsLoading(false);
+    }, totalLoadingTime);
+
+    return () => {
+      clearTimeout(timer);
+      clearInterval(interval);
+    };
+  }, []);
+  if (isLoading) {
+    return <Loading progress={progress} />;
+  }
+
   return (
     <div className="bg-gray-900 text-white min-h-screen flex flex-col">
       <Navbar />
@@ -1539,6 +1582,7 @@ const page = () => {
                             value={message}
                             onChange={setmessage}
                             className="bg-white rounded-sm p-1 w-full text-black"
+                            modules={modules} // Pass the custom toolbar modules
                           />
                         </div>
                         <div className="grid grid-cols-3 items-center gap-4">

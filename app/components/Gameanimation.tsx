@@ -11,7 +11,7 @@ type gameProps = {
 const Gameanimation = ({ gameStatus, multiplier, sound }: gameProps) => {
   return (
     <div
-      className={`mb-2 w-full h-72 rounded-lg flex items-center justify-center relative overflow-hidden ${
+      className={`mb-1 w-full h-72 rounded-lg flex items-center justify-center relative overflow-hidden ${
         gameStatus === "running" ? "bg-[#000000]" : "bg-[#000000]"
       }`}
     >
