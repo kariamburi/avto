@@ -3164,7 +3164,7 @@ const Game: React.FC = () => {
             `}</style>
           </div> */}
           <div className="p-1 w-full overflow-hidden">
-            <div className="flex gap-20 w-full animate-marquee">
+            <div className="inline-block animate-marquee">
               {<Scroll messages={message} />}
             </div>
             <style jsx>{`
