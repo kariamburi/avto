@@ -3093,7 +3093,7 @@ const Game: React.FC = () => {
                     </div>
                   </div>
 
-                  <ScrollArea className="h-m-[400px]">
+                  <ScrollArea className="max-h-[400px]">
                     <div className="bg-[#273445] grid grid-cols-5 p-1">
                       {multipliers
                         .slice()
