@@ -24,6 +24,9 @@ import HelpOutlineOutlinedIcon from "@mui/icons-material/HelpOutlineOutlined";
 import AdminPanelSettingsOutlinedIcon from "@mui/icons-material/AdminPanelSettingsOutlined";
 import VolumeUpOutlinedIcon from "@mui/icons-material/VolumeUpOutlined";
 import QuestionAnswerOutlinedIcon from "@mui/icons-material/QuestionAnswerOutlined";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faCircle, faCircleNotch } from "@fortawesome/free-solid-svg-icons";
+
 import {
   AlertDialog,
   AlertDialogAction,
@@ -393,7 +396,7 @@ const Game: React.FC = () => {
                 setBetMode(true);
                 toast({
                   variant: "destructive",
-                  title: "Wait betting time",
+                  title: "Wait Placing Time",
                   description: "Place your bet in the next round!",
                   duration: 5000,
                 });
@@ -946,7 +949,7 @@ const Game: React.FC = () => {
                 setBetMode2(true);
                 toast({
                   variant: "destructive",
-                  title: "Wait betting time",
+                  title: "Wait Placing Time",
                   description: "Place your bet in the next round!",
                   duration: 5000,
                 });
@@ -1772,6 +1775,15 @@ const Game: React.FC = () => {
           </div>
 
           <div className="flex gap-2 items-center text-xs">
+            <div className="text-xs text-gray-600">
+              <p>
+                {isConnected ? "Connected" : "Disconnected"}{" "}
+                <FontAwesomeIcon
+                  icon={isConnected ? faCircle : faCircleNotch}
+                  className={isConnected ? "text-green-500" : "text-red-500"}
+                />
+              </p>
+            </div>
             {/* Second Betting Area  <p>Server: {isConnected ? "Connected" : "Disconnected"}</p>
                <div className="text-xs">
               <p>Server: {isConnected ? "Connected" : "Disconnected"}</p>
@@ -3081,7 +3093,7 @@ const Game: React.FC = () => {
                 </div>
               </button>
               {isOpenHistory && (
-                <div className="absolute right-0 mt-2 py-2 w-[320px] bg-[#273445] rounded-md shadow-xl z-20">
+                <div className="absolute right-0 mt-2 py-2 w-[330px] bg-[#273445] rounded-md shadow-xl z-20">
                   <div className="flex items-center justify-between text-white p-1">
                     <h3 className="text-sm text-gray-200">History</h3>
 
@@ -3093,30 +3105,32 @@ const Game: React.FC = () => {
                     </div>
                   </div>
 
-                  <ScrollArea className="max-h-[400px]">
-                    <div className="bg-[#273445] grid grid-cols-5 p-1">
-                      {multipliers
-                        .slice()
-                        .reverse()
-                        .map((multiplier: number, index: number) => {
-                          const bgColor =
-                            multiplier >= 6
-                              ? "text-[#9F1C90]"
-                              : multiplier >= 2
-                              ? "text-[#4490CC]"
-                              : multiplier >= 1
-                              ? "text-[#7848B6]"
-                              : "text-[#29aa08]";
+                  <ScrollArea className="max-h-[400px] p-2">
+                    <div className="w-full">
+                      <div className="bg-[#273445] grid grid-cols-5 p-1">
+                        {multipliers
+                          .slice()
+                          .reverse()
+                          .map((multiplier, index) => {
+                            const bgColor =
+                              multiplier >= 6
+                                ? "text-[#9F1C90]"
+                                : multiplier >= 2
+                                ? "text-[#4490CC]"
+                                : multiplier >= 1
+                                ? "text-[#7848B6]"
+                                : "text-[#29aa08]";
 
-                          return (
-                            <li
-                              key={index}
-                              className={`flex flex-col m-1 p-1 text-xs justify-center items-center w-[60px] bg-gray-900 rounded-full ${bgColor}`}
-                            >
-                              x{multiplier.toFixed(2)}
-                            </li>
-                          );
-                        })}
+                            return (
+                              <li
+                                key={index}
+                                className={`flex flex-col m-1 p-1 text-xs justify-center items-center w-[60px] bg-gray-900 rounded-full ${bgColor}`}
+                              >
+                                x{multiplier.toFixed(2)}
+                              </li>
+                            );
+                          })}
+                      </div>
                     </div>
                   </ScrollArea>
                 </div>
