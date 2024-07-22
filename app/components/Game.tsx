@@ -1785,7 +1785,8 @@ const Game: React.FC = () => {
           </div>
 
           <div className="flex gap-2 items-center text-xs">
-            <div className="text-xs text-gray-600">
+            {/* Second Betting Area  <p>Server: {isConnected ? "Connected" : "Disconnected"}</p>
+              <div className="text-xs text-gray-600">
               <p>
                 {isConnected ? "Connected" : "Disconnected"}{" "}
                 <FontAwesomeIcon
@@ -1793,10 +1794,6 @@ const Game: React.FC = () => {
                   className={isConnected ? "text-green-500" : "text-red-500"}
                 />
               </p>
-            </div>
-            {/* Second Betting Area  <p>Server: {isConnected ? "Connected" : "Disconnected"}</p>
-               <div className="text-xs">
-              <p>Server: {isConnected ? "Connected" : "Disconnected"}</p>
             </div>
             <div className="text-xs">
               Game status:{gameStatus}-{betstatus}
