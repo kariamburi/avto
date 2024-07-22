@@ -68,7 +68,7 @@ const Aviator = ({ multiplier, sound }: CrashProps) => {
             <div className="flex gap-1">
               {" "}
               <img src="/rocket-icon.png" alt="logo" className="w-20 ml-1" />
-              <div className="text-4xl font-bold text-white">PLACE NOW...</div>
+              <div className="text-3xl font-bold text-white">PLACE NOW...</div>
             </div>
             <div className="w-full bg-gray-200 h-2.5 dark:bg-gray-700 mt-2">
               <div className="bg-[#DE3D26] h-2.5 loading-bar"></div>
