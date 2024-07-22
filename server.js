@@ -82,15 +82,29 @@ const broadcastMultiplier = () => {
 const startupdateserverPhase = () => {
   bettingPhase = true;
   broadcastGameStatus('updateserver');
+  let intervalId = setInterval(() => {
+    broadcastGameStatus('updateserver');
+  }, 100);
+
   setTimeout(() => {
+    clearInterval(intervalId); // Stop the interval
     startBettingPhase();
     addRandomPlayers();
   }, 2000);
 };
 
 const startBettingPhase = () => {
+  // Broadcast 'bettingphase' immediately
   broadcastGameStatus('bettingphase');
+  
+  // Create a variable to store the interval ID
+  let intervalId = setInterval(() => {
+    broadcastGameStatus('bettingphase');
+  }, 1000);
+
+  // Set a timeout to stop the interval after 20 seconds
   setTimeout(() => {
+    clearInterval(intervalId); // Stop the interval
     broadcastGameStatus('gameloop');
     bettingPhase = false;
     startGameLoop();

@@ -224,7 +224,7 @@ const Game: React.FC = () => {
   const CancelSound = useRef<HTMLAudioElement | null>(null);
   const cashOutSound = useRef<HTMLAudioElement | null>(null);
 
-  const [isMusicPlaying, setIsMusicPlaying] = useState<boolean>(false);
+  const [updateserver, setupdateserver] = useState<boolean>(false);
   const [isMusicPlaying1, setIsMusicPlaying1] = useState<boolean>(true);
   const [isSubmitting, setisSubmitting] = useState<boolean>(false);
 
@@ -597,7 +597,15 @@ const Game: React.FC = () => {
   // Effect to run when balance changes
 
   useEffect(() => {
-    if (gameStatus === "crashed" && betstatus === "updateserver") {
+    setupdateserver(true);
+    if (gameStatus === "crashed" && betstatus === "bettingphase") {
+      setupdateserver(true);
+    }
+    if (
+      gameStatus === "crashed" &&
+      betstatus === "updateserver" &&
+      updateserver
+    ) {
       //((prevMultipliers) => [...prevMultipliers, multiplier]);
       //console.log("crashed at " + multiplier);
       // setisbetOn(true);
@@ -632,8 +640,10 @@ const Game: React.FC = () => {
           Number(range3),
           Number(range4)
         );
+
         //}
       }
+      setupdateserver(false);
     }
     if (
       BetMode === false &&
