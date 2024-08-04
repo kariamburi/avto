@@ -28,6 +28,16 @@ interface accProps {
   username: string;
   balance: number;
 }
+function convertPhoneNumber(phoneNumber: string): string {
+  // Check if the phone number starts with '254'
+  if (phoneNumber.startsWith("254")) {
+    // Replace '254' with '0'
+    return "0" + phoneNumber.slice(3);
+  } else {
+    // Return the original number if it doesn't start with '254'
+    return phoneNumber;
+  }
+}
 async function fetchWithdraw(phone: string) {
   try {
     const betsRef = collection(db, "withdraw");
@@ -96,10 +106,10 @@ const Account: React.FC<accProps> = ({
     loadSettings();
   }, []);
   const [activeTabb, setActiveTabb] = useState(0);
-  const [deposit, setdeposit] = useState("");
+  const [deposit, setdeposit] = useState("200");
   const [stkresponse, setstkresponse] = useState("");
   const [errorstkresponse, errorsetstkresponse] = useState("");
-  const [payphone, setpayphone] = useState(userID);
+  const [payphone, setpayphone] = useState(convertPhoneNumber(userID));
   const [errordeposit, seterrordeposit] = useState("");
   const [errormpesaphone, seterrormpesaphone] = useState("");
 
