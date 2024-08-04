@@ -366,9 +366,8 @@ const Account: React.FC<accProps> = ({
                     <>
                       <div className="flex flex-col items-center">
                         <div className="flex flex-col rounded-lg bg-gray-100 p-2 mb-2 w-full">
-                          {" "}
                           <div className="text-lg p-1 text-gray-900">
-                            1. Deposit via MPESA EXPRESS
+                            Deposit via MPESA EXPRESS
                           </div>
                           <div className="flex flex-col gap-1 mb-4 w-full">
                             <TextField
@@ -412,7 +411,7 @@ const Account: React.FC<accProps> = ({
                             </div>
                           )}
                         </div>
-                        <div className="flex flex-col rounded-lg bg-gray-100 w-full p-2 mb-2">
+                        {/*<div className="flex flex-col rounded-lg bg-gray-100 w-full p-2 mb-2">
                           <div className="text-lg p-1 text-gray-900">
                             2. Deposit Via Paybill No
                           </div>
@@ -437,6 +436,7 @@ const Account: React.FC<accProps> = ({
                             </ul>
                           </div>
                         </div>
+                        */}
                       </div>
                     </>
                   )}
