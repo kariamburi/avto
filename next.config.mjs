@@ -1,4 +1,4 @@
-import { PHASE_PRODUCTION_BUILD } from 'next/constants';
+import { PHASE_PRODUCTION_BUILD } from 'next/constants.js';
 import withBundleAnalyzer from '@next/bundle-analyzer';
 
 /** @type {import('next').NextConfig} */
