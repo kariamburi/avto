@@ -3,17 +3,16 @@ import { useState, useEffect } from "react";
 import { Toaster } from "@/components/ui/toaster";
 import "react-toastify/dist/ReactToastify.css";
 import Loading from "../components/Loading";
-//import dynamic from "next/dynamic";
+import dynamic from "next/dynamic";
 import "react-toastify/dist/ReactToastify.css";
-import Game from "../components/Game";
 
-//const Game = dynamic(() => import("../components/Game"), { ssr: false });
+const Game = dynamic(() => import("../components/Game"), { ssr: false });
 
 export default function Home() {
   const [isLoading, setIsLoading] = useState(true);
   const [progress, setProgress] = useState(0);
   useEffect(() => {
-    const totalLoadingTime = 2000; // Total loading time in milliseconds
+    const totalLoadingTime = 10000; // Total loading time in milliseconds
     const updateInterval = 100; // Update interval in milliseconds
 
     const interval = setInterval(() => {
