@@ -1,5 +1,5 @@
 "use client";
-import { useState, useEffect } from "react";
+import { useState, useEffect, Suspense } from "react";
 import { Toaster } from "@/components/ui/toaster";
 import "react-toastify/dist/ReactToastify.css";
 import Loading from "../components/Loading";
@@ -12,7 +12,7 @@ export default function Home() {
   const [isLoading, setIsLoading] = useState(true);
   const [progress, setProgress] = useState(0);
   useEffect(() => {
-    const totalLoadingTime = 10000; // Total loading time in milliseconds
+    const totalLoadingTime = 30000; // Total loading time in milliseconds
     const updateInterval = 100; // Update interval in milliseconds
 
     const interval = setInterval(() => {
@@ -34,13 +34,26 @@ export default function Home() {
       clearInterval(interval);
     };
   }, []);
-  if (isLoading) {
-    return <Loading progress={progress} />;
-  }
 
   return (
     <main>
-      <Game />
+      {isLoading ? (
+        <Loading progress={progress} />
+      ) : (
+        <Suspense
+          fallback={
+            <div className="flex items-center bg-gray-900 justify-center h-screen relative">
+              <div className="absolute flex flex-col items-center justify-center">
+                <div className="text-gray-400 mt-1 text-xs">
+                  Loading game...
+                </div>
+              </div>
+            </div>
+          }
+        >
+          <Game />
+        </Suspense>
+      )}
       <Toaster />
     </main>
   );
