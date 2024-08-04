@@ -1,49 +1,9 @@
 "use client";
 import React, { useState, useEffect, useRef } from "react";
-import Crash from "../components/Crash";
+import dynamic from "next/dynamic";
 import { useToast } from "@/components/ui/use-toast";
-import RandomAvatar from "./RandomAvatar";
 import { format, isToday, isYesterday } from "date-fns";
-import Aviator from "./Aviator";
-import GameBackground from "./GameBackground";
-import ToggleSwitch from "./ToggleSwitch";
-import SliderSwitch from "./SliderSwitch";
-import AddCircleOutlineOutlinedIcon from "@mui/icons-material/AddCircleOutlineOutlined";
-import RemoveCircleOutlineOutlinedIcon from "@mui/icons-material/RemoveCircleOutlineOutlined";
-import MobileNav from "./MobileNav";
 import { useRouter } from "next/navigation";
-import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
-import Waiting from "./Waiting";
-import Placebet from "./Placebet";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import CustomToast from "./CustomToast";
-import { toast } from "react-toastify";
-import PersonOutlineOutlinedIcon from "@mui/icons-material/PersonOutlineOutlined";
-import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
-import HelpOutlineOutlinedIcon from "@mui/icons-material/HelpOutlineOutlined";
-import AdminPanelSettingsOutlinedIcon from "@mui/icons-material/AdminPanelSettingsOutlined";
-import VolumeUpOutlinedIcon from "@mui/icons-material/VolumeUpOutlined";
-import QuestionAnswerOutlinedIcon from "@mui/icons-material/QuestionAnswerOutlined";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCircle, faCircleNotch } from "@fortawesome/free-solid-svg-icons";
-
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-  AlertDialogTrigger,
-} from "@/components/ui/alert-dialog";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
-//import TextField from "@mui/material/TextField";
 import {
   addDoc,
   collection,
@@ -57,43 +17,134 @@ import {
   orderBy,
 } from "firebase/firestore";
 import { db } from "@/firebase";
-import Balance from "./Balance";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
 import { deleteBet, updateBalance, updateBets } from "@/lib/actions";
-import CloseOutlinedIcon from "@mui/icons-material/CloseOutlined";
-import { AnyPtrRecord } from "dns";
-import Gameanimation from "./Gameanimation";
 import { requeststkpush } from "@/lib/requeststkpush";
 import useWebSocket from "../hooks/useWebSocket";
-import Button from "@mui/material/Button";
-import Link from "next/link";
-import LoginOutlinedIcon from "@mui/icons-material/LoginOutlined";
-import AppRegistrationOutlinedIcon from "@mui/icons-material/AppRegistrationOutlined";
-import Share from "./Share";
-import { FaEye, FaEyeSlash } from "react-icons/fa";
-import ContactSupportOutlinedIcon from "@mui/icons-material/ContactSupportOutlined";
-import ChatWindow from "./ChatWindow";
-import FloatingChatIcon from "./FloatingChatIcon";
-import Avatar from "./Avatar";
-import Termspopup from "./termspopup";
-import Account from "./Account";
-import RestoreOutlinedIcon from "@mui/icons-material/RestoreOutlined";
-import ArrowDropDownOutlinedIcon from "@mui/icons-material/ArrowDropDownOutlined";
-import TextField from "@mui/material/TextField/TextField";
-import { Label } from "@/components/ui/label";
-import { Input } from "@/components/ui/input";
 import Image from "next/image";
-import Scroll from "./Scroll";
 import {
   getUserIDFromCookie,
   removeUserIDFromCookie,
   setUserIDInCookie,
 } from "./cookies";
+
+// Dynamically import components
+const RandomAvatar = dynamic(() => import("./RandomAvatar"), { ssr: false });
+const AddCircleOutlineOutlinedIcon = dynamic(() =>
+  import("@mui/icons-material/AddCircleOutlineOutlined").then(
+    (mod) => mod.default
+  )
+);
+const RemoveCircleOutlineOutlinedIcon = dynamic(() =>
+  import("@mui/icons-material/RemoveCircleOutlineOutlined").then(
+    (mod) => mod.default
+  )
+);
+const ScrollArea = dynamic(() =>
+  import("@/components/ui/scroll-area").then((mod) => mod.ScrollArea)
+);
+const ScrollBar = dynamic(() =>
+  import("@/components/ui/scroll-area").then((mod) => mod.ScrollBar)
+);
+const PersonOutlineOutlinedIcon = dynamic(() =>
+  import("@mui/icons-material/PersonOutlineOutlined").then((mod) => mod.default)
+);
+const LockOutlinedIcon = dynamic(() =>
+  import("@mui/icons-material/LockOutlined").then((mod) => mod.default)
+);
+const HelpOutlineOutlinedIcon = dynamic(() =>
+  import("@mui/icons-material/HelpOutlineOutlined").then((mod) => mod.default)
+);
+const AdminPanelSettingsOutlinedIcon = dynamic(() =>
+  import("@mui/icons-material/AdminPanelSettingsOutlined").then(
+    (mod) => mod.default
+  )
+);
+const VolumeUpOutlinedIcon = dynamic(() =>
+  import("@mui/icons-material/VolumeUpOutlined").then((mod) => mod.default)
+);
+const AlertDialog = dynamic(() =>
+  import("@/components/ui/alert-dialog").then((mod) => mod.AlertDialog)
+);
+const AlertDialogAction = dynamic(() =>
+  import("@/components/ui/alert-dialog").then((mod) => mod.AlertDialogAction)
+);
+const AlertDialogCancel = dynamic(() =>
+  import("@/components/ui/alert-dialog").then((mod) => mod.AlertDialogCancel)
+);
+const AlertDialogContent = dynamic(() =>
+  import("@/components/ui/alert-dialog").then((mod) => mod.AlertDialogContent)
+);
+const AlertDialogDescription = dynamic(() =>
+  import("@/components/ui/alert-dialog").then(
+    (mod) => mod.AlertDialogDescription
+  )
+);
+const AlertDialogFooter = dynamic(() =>
+  import("@/components/ui/alert-dialog").then((mod) => mod.AlertDialogFooter)
+);
+const AlertDialogHeader = dynamic(() =>
+  import("@/components/ui/alert-dialog").then((mod) => mod.AlertDialogHeader)
+);
+const AlertDialogTitle = dynamic(() =>
+  import("@/components/ui/alert-dialog").then((mod) => mod.AlertDialogTitle)
+);
+const AlertDialogTrigger = dynamic(() =>
+  import("@/components/ui/alert-dialog").then((mod) => mod.AlertDialogTrigger)
+);
+const Popover = dynamic(() =>
+  import("@/components/ui/popover").then((mod) => mod.Popover)
+);
+const PopoverContent = dynamic(() =>
+  import("@/components/ui/popover").then((mod) => mod.PopoverContent)
+);
+const PopoverTrigger = dynamic(() =>
+  import("@/components/ui/popover").then((mod) => mod.PopoverTrigger)
+);
+const Tooltip = dynamic(() =>
+  import("@/components/ui/tooltip").then((mod) => mod.Tooltip)
+);
+const TooltipContent = dynamic(() =>
+  import("@/components/ui/tooltip").then((mod) => mod.TooltipContent)
+);
+const TooltipProvider = dynamic(() =>
+  import("@/components/ui/tooltip").then((mod) => mod.TooltipProvider)
+);
+const TooltipTrigger = dynamic(() =>
+  import("@/components/ui/tooltip").then((mod) => mod.TooltipTrigger)
+);
+const CloseOutlinedIcon = dynamic(() =>
+  import("@mui/icons-material/CloseOutlined").then((mod) => mod.default)
+);
+const Gameanimation = dynamic(() => import("./Gameanimation"), { ssr: false });
+const LoginOutlinedIcon = dynamic(() =>
+  import("@mui/icons-material/LoginOutlined").then((mod) => mod.default)
+);
+const AppRegistrationOutlinedIcon = dynamic(() =>
+  import("@mui/icons-material/AppRegistrationOutlined").then(
+    (mod) => mod.default
+  )
+);
+const Share = dynamic(() => import("./Share"), { ssr: false });
+const FaEye = dynamic(() => import("react-icons/fa").then((mod) => mod.FaEye));
+const FaEyeSlash = dynamic(() =>
+  import("react-icons/fa").then((mod) => mod.FaEyeSlash)
+);
+const ChatWindow = dynamic(() => import("./ChatWindow"), { ssr: false });
+const FloatingChatIcon = dynamic(() => import("./FloatingChatIcon"), {
+  ssr: false,
+});
+const Termspopup = dynamic(() => import("./termspopup"), { ssr: false });
+const Account = dynamic(() => import("./Account"), { ssr: false });
+const RestoreOutlinedIcon = dynamic(() =>
+  import("@mui/icons-material/RestoreOutlined").then((mod) => mod.default)
+);
+const ArrowDropDownOutlinedIcon = dynamic(() =>
+  import("@mui/icons-material/ArrowDropDownOutlined").then((mod) => mod.default)
+);
+const Input = dynamic(() =>
+  import("@/components/ui/input").then((mod) => mod.Input)
+);
+const Scroll = dynamic(() => import("./Scroll"), { ssr: false });
 interface userData {
   name: string;
   phone: string;
