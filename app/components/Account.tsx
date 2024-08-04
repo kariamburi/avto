@@ -74,6 +74,26 @@ const Account: React.FC<accProps> = ({
   onClose,
 }) => {
   //const [balance, setBalance] = useState<number>(0);
+  const [activeTabb, setActiveTabb] = useState(0);
+  const [deposit, setdeposit] = useState("200");
+  const [stkresponse, setstkresponse] = useState("");
+  const [errorstkresponse, errorsetstkresponse] = useState("");
+  const [payphone, setpayphone] = useState("");
+  const [errordeposit, seterrordeposit] = useState("");
+  const [errormpesaphone, seterrormpesaphone] = useState("");
+
+  const [withdraw, setwithdraw] = useState("");
+  const [sendphone, setsendphone] = useState("");
+  const [errorwithdraw, seterrorwithdraw] = useState("");
+  const [errorwithdrawphone, seterrorwithdrawphone] = useState("");
+  const [minwithdraw, setminwithdraw] = useState("500");
+  const [maxwithdraw, setmaxwithdraw] = useState("any");
+  const [mindeposit, setmindeposit] = useState("10");
+  const [maxdeposit, setmaxdeposit] = useState("any");
+  const [paybill, setpaybill] = useState("155276");
+  const [isSubmitting, setisSubmitting] = useState<boolean>(false);
+  const [countryCode, setCountryCode] = useState("254"); // Default country code
+
   const { toast } = useToast();
   useEffect(() => {
     const loadbalance = async () => {
@@ -104,27 +124,10 @@ const Account: React.FC<accProps> = ({
       }
     };
     loadSettings();
-  }, []);
-  const [activeTabb, setActiveTabb] = useState(0);
-  const [deposit, setdeposit] = useState("200");
-  const [stkresponse, setstkresponse] = useState("");
-  const [errorstkresponse, errorsetstkresponse] = useState("");
-  const [payphone, setpayphone] = useState(convertPhoneNumber(userID));
-  const [errordeposit, seterrordeposit] = useState("");
-  const [errormpesaphone, seterrormpesaphone] = useState("");
+    setpayphone(convertPhoneNumber(userID));
+    setsendphone(convertPhoneNumber(userID));
+  }, [userID]);
 
-  const [withdraw, setwithdraw] = useState("");
-  const [sendphone, setsendphone] = useState(userID);
-  const [errorwithdraw, seterrorwithdraw] = useState("");
-  const [errorwithdrawphone, seterrorwithdrawphone] = useState("");
-  const [minwithdraw, setminwithdraw] = useState("500");
-  const [maxwithdraw, setmaxwithdraw] = useState("any");
-  const [mindeposit, setmindeposit] = useState("10");
-  const [maxdeposit, setmaxdeposit] = useState("any");
-
-  const [paybill, setpaybill] = useState("155276");
-  const [isSubmitting, setisSubmitting] = useState<boolean>(false);
-  const [countryCode, setCountryCode] = useState("254"); // Default country code
   const formatPhoneNumber = (input: any) => {
     // Remove all non-digit characters
     const cleaned = input.replace(/\D/g, "");
