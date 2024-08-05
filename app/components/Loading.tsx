@@ -31,7 +31,6 @@ const Loading: React.FC<LoadingProps> = ({ progress }) => {
         <div className="">
           <Image src="/logo1.png" width={100} height={24} alt="game logo" />
         </div>
-        <div className="text-gray-400 mt-1 text-xs">Loading...</div>
         <div className="flex flex-col items-center">
           <div style={styles.progressBarContainer}>
             <div style={{ ...styles.progressBar, width: `${progress}%` }}></div>

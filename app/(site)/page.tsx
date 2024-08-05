@@ -11,7 +11,13 @@ import "react-toastify/dist/ReactToastify.css";
 // Dynamically import SomeComponent
 const Game = dynamic(() => import("../components/Game"), {
   ssr: false, // Set this to true or false based on whether you want the component to be server-side rendered or not
-  loading: () => <p>Loading...</p>, // Optionally provide a loading component or message
+  loading: () => (
+    <div className="flex items-center bg-gray-900 justify-center h-screen relative">
+      <div className="absolute flex flex-col items-center justify-center">
+        <div className="text-gray-400 mt-1 text-xs">Loading Game...</div>
+      </div>
+    </div>
+  ), // Optionally provide a loading component or message
 });
 export default function Home() {
   const [isLoading, setIsLoading] = useState(true);
