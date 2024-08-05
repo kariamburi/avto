@@ -12,7 +12,6 @@ import {
   serverTimestamp,
   where,
   Timestamp,
-  onSnapshot,
   limit,
   orderBy,
 } from "firebase/firestore";
@@ -115,7 +114,16 @@ const TooltipTrigger = dynamic(() =>
 const CloseOutlinedIcon = dynamic(() =>
   import("@mui/icons-material/CloseOutlined").then((mod) => mod.default)
 );
-const Gameanimation = dynamic(() => import("./Gameanimation"), { ssr: false });
+const Gameanimation = dynamic(() => import("./Gameanimation"), {
+  ssr: false,
+  loading: () => (
+    <div>
+      <div className="w-full h-full flex flex-col items-center justify-center">
+        <Image src="/giphy.gif" width={60} height={60} alt="" unoptimized />
+      </div>
+    </div>
+  ),
+});
 const LoginOutlinedIcon = dynamic(() =>
   import("@mui/icons-material/LoginOutlined").then((mod) => mod.default)
 );
