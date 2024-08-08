@@ -68,10 +68,15 @@ const SendMessage = ({
 
   useEffect(() => {
     if (player && recipientUid && uid && !check) {
-      sendWelcomeMessage();
-      setCheck(true); // Mark the check as done after sending the message
+      const timer = setTimeout(() => {
+        setCheck(true);
+        sendWelcomeMessage();
+      }, 1000); // 3 seconds delay
+
+      // Clean up the timer if the component unmounts
+      return () => clearTimeout(timer);
     }
-  }, [player, recipientUid, uid, check, sendWelcomeMessage]);
+  }, []);
 
   const handleSendMessage = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
