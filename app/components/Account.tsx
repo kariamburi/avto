@@ -534,7 +534,7 @@ const Account: React.FC<accProps> = ({
                               </div>
 
                               <div className="border-gray-900 border w-full mb-1"></div>
-                              <div className="grid grid-cols-4 text-gray-600 text-xs">
+                              <div className="grid grid-cols-4 text-gray-600 text-xs bg-[#000000] text-white">
                                 <div className="justify-center items-center flex flex-col">
                                   Status
                                 </div>
@@ -550,86 +550,89 @@ const Account: React.FC<accProps> = ({
                                 </div>
                                 <div></div>
                               </div>
-                              <ScrollArea className="h-[300px]">
-                                <ul className="w-full">
-                                  {Withdraw.map((bet: any, index) => {
-                                    let formattedCreatedAt = "";
-                                    try {
-                                      const createdAtDate = new Date(
-                                        bet.createdAt.seconds * 1000
-                                      ); // Convert seconds to milliseconds
+                              <div className="grid grid-cols-4 text-gray-600 text-xs">
+                                <ScrollArea className="h-[300px]">
+                                  <ul className="w-full">
+                                    {Withdraw.map((bet: any, index) => {
+                                      let formattedCreatedAt = "";
+                                      try {
+                                        const createdAtDate = new Date(
+                                          bet.createdAt.seconds * 1000
+                                        ); // Convert seconds to milliseconds
 
-                                      // Get today's date
-                                      const today = new Date();
+                                        // Get today's date
+                                        const today = new Date();
 
-                                      // Check if the message was sent today
-                                      if (isToday(createdAtDate)) {
-                                        formattedCreatedAt =
-                                          "Today " +
-                                          format(createdAtDate, "HH:mm"); // Set as "Today"
-                                      } else if (isYesterday(createdAtDate)) {
-                                        // Check if the message was sent yesterday
-                                        formattedCreatedAt =
-                                          "Yesterday " +
-                                          format(createdAtDate, "HH:mm"); // Set as "Yesterday"
-                                      } else {
-                                        // Format the createdAt date with day, month, and year
-                                        formattedCreatedAt = format(
-                                          createdAtDate,
-                                          "dd-MM-yyyy"
-                                        ); // Format as 'day/month/year'
+                                        // Check if the message was sent today
+                                        if (isToday(createdAtDate)) {
+                                          formattedCreatedAt =
+                                            "Today " +
+                                            format(createdAtDate, "HH:mm"); // Set as "Today"
+                                        } else if (isYesterday(createdAtDate)) {
+                                          // Check if the message was sent yesterday
+                                          formattedCreatedAt =
+                                            "Yesterday " +
+                                            format(createdAtDate, "HH:mm"); // Set as "Yesterday"
+                                        } else {
+                                          // Format the createdAt date with day, month, and year
+                                          formattedCreatedAt = format(
+                                            createdAtDate,
+                                            "dd-MM-yyyy"
+                                          ); // Format as 'day/month/year'
+                                        }
+
+                                        // Append hours and minutes if the message is not from today or yesterday
+                                        if (
+                                          !isToday(createdAtDate) &&
+                                          !isYesterday(createdAtDate)
+                                        ) {
+                                          formattedCreatedAt +=
+                                            " " +
+                                            format(createdAtDate, "HH:mm"); // Append hours and minutes
+                                        }
+                                      } catch {
+                                        // Handle error when formatting date
                                       }
 
-                                      // Append hours and minutes if the message is not from today or yesterday
-                                      if (
-                                        !isToday(createdAtDate) &&
-                                        !isYesterday(createdAtDate)
-                                      ) {
-                                        formattedCreatedAt +=
-                                          " " + format(createdAtDate, "HH:mm"); // Append hours and minutes
-                                      }
-                                    } catch {
-                                      // Handle error when formatting date
-                                    }
-
-                                    return (
-                                      <li
-                                        className="w-full text-gray-600"
-                                        key={index}
-                                      >
-                                        <div
-                                          className={`p-1 mt-1 rounded-sm grid grid-cols-4 gap-1 w-full items-center text-xs`}
+                                      return (
+                                        <li
+                                          className="w-full text-gray-600"
+                                          key={index}
                                         >
-                                          <div className="justify-center items-center flex flex-col">
-                                            <div
-                                              className={`flex flex-col p-1 justify-center items-center w-[70px] rounded-full ${
-                                                bet.status === "pending"
-                                                  ? "text-yellow-600"
-                                                  : bet.status === "failed"
-                                                  ? "text-red-600 "
-                                                  : "text-green-600"
-                                              }`}
-                                            >
-                                              {bet.status}
+                                          <div
+                                            className={`p-1 mt-1 rounded-sm grid grid-cols-4 gap-1 w-full items-center text-xs`}
+                                          >
+                                            <div className="justify-center items-center flex flex-col">
+                                              <div
+                                                className={`flex flex-col p-1 justify-center items-center w-[70px] rounded-full ${
+                                                  bet.status === "pending"
+                                                    ? "text-yellow-600"
+                                                    : bet.status === "failed"
+                                                    ? "text-red-600 "
+                                                    : "text-green-600"
+                                                }`}
+                                              >
+                                                {bet.status}
+                                              </div>
+                                            </div>
+
+                                            <div className="justify-center items-center flex flex-col">
+                                              {bet.sendphone}
+                                            </div>
+
+                                            <div className="justify-center items-center flex flex-col">
+                                              KES {bet.amount.toFixed(2)}
+                                            </div>
+                                            <div className="justify-center items-center flex flex-col">
+                                              {formattedCreatedAt}
                                             </div>
                                           </div>
-
-                                          <div className="justify-center items-center flex flex-col">
-                                            {bet.sendphone}
-                                          </div>
-
-                                          <div className="justify-center items-center flex flex-col">
-                                            KES {bet.amount.toFixed(2)}
-                                          </div>
-                                          <div className="justify-center items-center flex flex-col">
-                                            {formattedCreatedAt}
-                                          </div>
-                                        </div>
-                                      </li>
-                                    );
-                                  })}
-                                </ul>
-                              </ScrollArea>
+                                        </li>
+                                      );
+                                    })}
+                                  </ul>
+                                </ScrollArea>
+                              </div>
                             </div>
                           </>
                         )}

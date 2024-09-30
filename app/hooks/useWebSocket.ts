@@ -11,7 +11,7 @@ const useWebSocket = () => {
   
   useEffect(() => {
     //const ws = new WebSocket('wss://23.227.167.127:3000/ws');
-    const ws = new WebSocket('wss://aviatorgm.com:3000/ws');
+    const ws = new WebSocket('wss://aviatorgm.com:3001/ws');
     //const ws = new WebSocket('ws://localhost:3000/ws');
     setSocket(ws);
 
