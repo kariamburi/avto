@@ -298,7 +298,7 @@ app.prepare().then(async () => {
     return handle(req, res);
   });
 
-  const PORT = process.env.PORT || 3000;
+  const PORT = process.env.PORT || 3001;
   httpsServer.listen(PORT, async (err) => {
     if (err) throw err;
     console.log(`> Ready on https://localhost:${PORT}`);
