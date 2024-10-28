@@ -201,16 +201,16 @@ const startGameLoop = () => {
 
 app.prepare().then(async () => {
   const server = express();
- // Middleware to redirect HTTP to HTTPS in production
-  if (!dev) {
-    server.use((req, res, next) => {
-      if (req.headers['x-forwarded-proto'] !== 'https') {
-        // Redirect to HTTPS
-        return res.redirect(`https://aviatorgm.com${req.url}`);
-      }
-      next();
-    });
-  }
+ 
+ // if (!dev) {
+   // server.use((req, res, next) => {
+   //   if (req.headers['x-forwarded-proto'] !== 'https') {
+    
+  //      return res.redirect(`https://aviatorgm.com${req.url}`);
+ //     }
+ //     next();
+ //   });
+//  }
   
   server.get('/api/hello', (req, res) => {
     res.json({ message: 'Hello from custom server!' });
