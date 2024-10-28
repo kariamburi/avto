@@ -62,7 +62,7 @@ const broadcastCurrentBets = () => {
   }));
   clients.forEach(client => {
     client.send(JSON.stringify({ type: 'currentBets', currentBets }));
-  //console.log(currentBets);
+  console.log(currentBets);
   });
 };
 
@@ -184,7 +184,7 @@ const startGameLoop = () => {
       clients.forEach(client => {
         client.send(JSON.stringify({ type: 'crash', multiplier }));
       });
-     // console.log('CRASHED: ' + multiplier);
+      console.log('CRASHED: ' + multiplier);
       clearInterval(interval);
       gameInProgress = false;
       crashPoint = generateCrashPoint();
