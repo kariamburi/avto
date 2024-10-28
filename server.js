@@ -205,16 +205,16 @@ app.prepare().then(async () => {
   server.get('/api/hello', (req, res) => {
     res.json({ message: 'Hello from custom server!' });
   });
- // ssl_certificate     /home/aviator/conf/web/aviatorgm.com/ssl/aviatorgm.com.pem;
-  //ssl_certificate_key /home/aviator/conf/web/aviatorgm.com/ssl/aviatorgm.com.key;
+  ssl_certificate     /home/aviator/conf/web/aviatorgm.com/ssl/aviatorgm.com.pem;
+  ssl_certificate_key /home/aviator/conf/web/aviatorgm.com/ssl/aviatorgm.com.key;
 
-//  const sslOptions = {
- //   key: fs.readFileSync('/home/aviator/conf/web/aviatorgm.com/ssl/aviatorgm.com.key'),
- //   cert: fs.readFileSync('/home/aviator/conf/web/aviatorgm.com/ssl/aviatorgm.com.pem')
- // };
+ const sslOptions = {
+   key: fs.readFileSync('/home/aviator/conf/web/aviatorgm.com/ssl/aviatorgm.com.key'),
+   cert: fs.readFileSync('/home/aviator/conf/web/aviatorgm.com/ssl/aviatorgm.com.pem')
+  };
 
-  //const httpsServer = https.createServer(sslOptions, server);
-  const httpsServer = http.createServer(server);
+  const httpsServer = https.createServer(sslOptions, server);
+ // const httpsServer = http.createServer(server);
 
   const wss = new WebSocket.Server({ noServer: true });
 
