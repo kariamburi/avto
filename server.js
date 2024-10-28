@@ -220,9 +220,9 @@ app.prepare().then(async () => {
    key: fs.readFileSync('/home/aviator/conf/web/aviatorgm.com/ssl/aviatorgm.com.key'),
    cert: fs.readFileSync('/home/aviator/conf/web/aviatorgm.com/ssl/aviatorgm.com.pem')
   };
-console.log('sslOptions:', sslOptions);
-  const httpsServer = https.createServer(sslOptions, server);
- // const httpsServer = http.createServer(server);
+//console.log('sslOptions:', sslOptions);
+ // const httpsServer = https.createServer(sslOptions, server);
+  const httpsServer = http.createServer(server);
 
   const wss = new WebSocket.Server({ noServer: true });
 
