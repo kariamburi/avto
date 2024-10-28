@@ -210,7 +210,7 @@ app.prepare().then(async () => {
    key: fs.readFileSync('/home/aviator/conf/web/aviatorgm.com/ssl/aviatorgm.com.key'),
    cert: fs.readFileSync('/home/aviator/conf/web/aviatorgm.com/ssl/aviatorgm.com.pem')
   };
-
+console.log('sslOptions:', sslOptions);
   const httpsServer = https.createServer(sslOptions, server);
  // const httpsServer = http.createServer(server);
 
@@ -296,7 +296,8 @@ app.prepare().then(async () => {
     return handle(req, res);
   });
 
-  const PORT = process.env.PORT || 3001;
+ // const PORT = process.env.PORT || 3001;
+  const PORT = 443;
   httpsServer.listen(PORT, async (err) => {
     if (err) throw err;
     console.log(`> Ready on https://localhost:${PORT}`);
