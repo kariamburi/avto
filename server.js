@@ -9,7 +9,7 @@ const crypto = require('crypto');
 // Create a Next.js app
 const app = next({ dev: process.env.NODE_ENV !== 'production' });
 const handle = app.getRequestHandler();
-
+const dev = process.env.NODE_ENV !== 'production';
 let players = [];
 let crashPoint;
 let gameInProgress = false;
@@ -201,7 +201,17 @@ const startGameLoop = () => {
 
 app.prepare().then(async () => {
   const server = express();
-
+ // Middleware to redirect HTTP to HTTPS in production
+  if (!dev) {
+    server.use((req, res, next) => {
+      if (req.headers['x-forwarded-proto'] !== 'https') {
+        // Redirect to HTTPS
+        return res.redirect(`https://aviatorgm.com${req.url}`);
+      }
+      next();
+    });
+  }
+  
   server.get('/api/hello', (req, res) => {
     res.json({ message: 'Hello from custom server!' });
   });
@@ -296,8 +306,8 @@ console.log('sslOptions:', sslOptions);
     return handle(req, res);
   });
 
- // const PORT = process.env.PORT || 3001;
-  const PORT = 443;
+  const PORT = process.env.PORT || 3001;
+
   httpsServer.listen(PORT, async (err) => {
     if (err) throw err;
     console.log(`> Ready on https://localhost:${PORT}`);
