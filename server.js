@@ -9,7 +9,7 @@ const crypto = require('crypto');
 // Create a Next.js app
 const app = next({ dev: process.env.NODE_ENV !== 'production' });
 const handle = app.getRequestHandler();
-
+const dev = process.env.NODE_ENV !== 'production';
 let players = [];
 let crashPoint;
 let gameInProgress = false;
@@ -62,7 +62,7 @@ const broadcastCurrentBets = () => {
   }));
   clients.forEach(client => {
     client.send(JSON.stringify({ type: 'currentBets', currentBets }));
-  //console.log(currentBets);
+  console.log(currentBets);
   });
 };
 
@@ -184,7 +184,7 @@ const startGameLoop = () => {
       clients.forEach(client => {
         client.send(JSON.stringify({ type: 'crash', multiplier }));
       });
-     // console.log('CRASHED: ' + multiplier);
+      console.log('CRASHED: ' + multiplier);
       clearInterval(interval);
       gameInProgress = false;
       crashPoint = generateCrashPoint();
@@ -201,20 +201,28 @@ const startGameLoop = () => {
 
 app.prepare().then(async () => {
   const server = express();
-
+ 
+ // if (!dev) {
+   // server.use((req, res, next) => {
+   //   if (req.headers['x-forwarded-proto'] !== 'https') {
+    
+  //      return res.redirect(`https://aviatorgm.com${req.url}`);
+ //     }
+ //     next();
+ //   });
+//  }
+  
   server.get('/api/hello', (req, res) => {
     res.json({ message: 'Hello from custom server!' });
   });
- // ssl_certificate     /home/aviator/conf/web/aviatorgm.com/ssl/aviatorgm.com.pem;
-  //ssl_certificate_key /home/aviator/conf/web/aviatorgm.com/ssl/aviatorgm.com.key;
 
-//  const sslOptions = {
- //   key: fs.readFileSync('/home/aviator/conf/web/aviatorgm.com/ssl/aviatorgm.com.key'),
- //   cert: fs.readFileSync('/home/aviator/conf/web/aviatorgm.com/ssl/aviatorgm.com.pem')
- // };
-
-  //const httpsServer = https.createServer(sslOptions, server);
-  const httpsServer = http.createServer(server);
+ const sslOptions = {
+   key: fs.readFileSync('/home/aviator/conf/web/aviatorgm.com/ssl/aviatorgm.com.key'),
+   cert: fs.readFileSync('/home/aviator/conf/web/aviatorgm.com/ssl/aviatorgm.com.pem')
+  };
+//console.log('sslOptions:', sslOptions);
+  const httpsServer = https.createServer(sslOptions, server);
+ // const httpsServer = http.createServer(server);
 
   const wss = new WebSocket.Server({ noServer: true });
 
@@ -298,7 +306,8 @@ app.prepare().then(async () => {
     return handle(req, res);
   });
 
-  const PORT = process.env.PORT || 3000;
+  const PORT = process.env.PORT || 3001;
+
   httpsServer.listen(PORT, async (err) => {
     if (err) throw err;
     console.log(`> Ready on https://localhost:${PORT}`);
