@@ -1,5 +1,11 @@
 import React, { useEffect, useRef, useState } from "react";
-import { motion, useAnimation } from "framer-motion";
+import dynamic from "next/dynamic";
+import { useAnimation } from "framer-motion";
+
+const MotionDiv = dynamic(
+  () => import("framer-motion").then((mod) => mod.motion.div),
+  { ssr: false }
+);
 
 type CrashProps = {
   multiplier: string;
@@ -8,7 +14,7 @@ type CrashProps = {
 
 const aviatorVariants = {
   initial: { y: 0 },
-  animate: { y: -250, x: 400 },
+  animate: { y: -250 },
   exit: { y: 0 },
 };
 
@@ -17,23 +23,20 @@ const Aviator = ({ multiplier, sound }: CrashProps) => {
   const [displayMessage, setDisplayMessage] = useState("flewAway");
   const controls = useAnimation();
   let timer: any;
+
   useEffect(() => {
-    try {
-      if (takeoffSound.current && sound === true) {
-        takeoffSound.current.play();
-      }
-
-      timer = setTimeout(() => {
-        setDisplayMessage("loadingNextRound");
-      }, 5000); // Switch message after 5 seconds
-
-      controls.start("animate"); // Start animation
-    } catch (error) {
-      console.error("Animation error:", error);
+    if (takeoffSound.current && sound) {
+      takeoffSound.current.play();
     }
 
+    timer = setTimeout(() => {
+      setDisplayMessage("loadingNextRound");
+    }, 5000); // Switch message after 5 seconds
+
+    controls.start("animate"); // Start animation only once on mount
+
     return () => clearTimeout(timer); // Cleanup timer on component unmount
-  }, [controls]);
+  }, []); // Removed controls from dependencies to prevent re-renders
 
   return (
     <>
@@ -52,21 +55,20 @@ const Aviator = ({ multiplier, sound }: CrashProps) => {
               </div>
               <div className="absolute z-[0] w-[250px] h-[250px] rounded-full blue__gradient" />
             </div>
-            <motion.div
+            <MotionDiv
               variants={aviatorVariants}
               initial="initial"
               animate={controls}
               exit="exit"
-              transition={{ duration: 1.5 }}
+              transition={{ duration: 1, ease: "easeInOut" }}
               className="relative"
             >
               <img src="/rocket.gif" alt="Aviator" height={150} width={150} />
-            </motion.div>
+            </MotionDiv>
           </>
         ) : (
           <div className="flex flex-col items-center">
             <div className="flex gap-1">
-              {" "}
               <img src="/rocket-icon.png" alt="logo" className="w-20 ml-1" />
               <div className="text-3xl font-bold text-white">PLACE NOW...</div>
             </div>
